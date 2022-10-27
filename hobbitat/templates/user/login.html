@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="../../static/css/user/login-style.css">
+	<link href="https://fonts.font.im/css?family=Kalam|Nunito" rel="stylesheet">
+	<title>Log in</title>
+</head>
+
+
+
+
+
+<body>
+
+	<div></div>
+	<div class="logo-text">
+		Hobbitat
+	</div>
+	<div class="slogan-text">
+		Habitat For Hobbies.
+	</div>
+
+	{% for message in get_flashed_messages() %}
+                    <div class="form-group">
+                        <div class="text-danger">
+                            {{ message}}
+                        </div>
+                    </div>
+	{% endfor %}
+
+	<div class="container right-panel-active">
+
+		<!-- Sign Up -->
+		<div class="container__form container--signup">
+			<form action="{{url_for('user.register')}}" class="form" id="form2" method="post">
+				<h2 class="form__title">注册</h2>
+				<input type="text" placeholder="用户名" class="input" />
+				<input type="email" placeholder="邮箱" class="input" />
+				<input type="password" placeholder="密码" class="input" />
+				<!-- <button  class="btn" href="{{url_for('user.register')}}">注册</button> -->
+				<button  class="btn" >注册</button>
+
+			</form>
+		</div>
+		
+
+		
+		<!-- Sign In -->
+		<div class="container__form container--signin">
+			<form action="{{url_for('user.login')}}" class="form" id="form1" method="post"> 
+				<h2 class="form__title">登录</h2>
+				<input type="text" placeholder="用户名/邮箱/管理员" class="input" />
+				<input type="password" placeholder="密码" class="input" />
+				<!-- <a href="#" class="link">Forgot your password?</a> -->
+				<div class="link">
+					<span>或 &nbsp; </span>
+				<a href="#" class=" jaccount-login">Jaccount登录</a>
+				</div>
+
+				<!-- <button class="btn" onclick="window.location.href='{{url_for('user.login')}}'">登录</button> -->
+				<button class="btn">登录</button>
+				
+			</form>
+		</div>
+
+
+
+		<!-- Overlay -->
+		<div class="container__overlay">
+			<div class="overlay">
+
+				<div class="overlay__panel overlay--right">
+					<button class="btn" id="signIn">登录</button>
+				</div>
+				<div class="overlay__panel overlay--left">
+					<button class="btn" id="signUp">注册</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="../../static/js/user/login-script.js"></script>
+</body>
+
+</html>
