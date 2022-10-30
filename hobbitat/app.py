@@ -1,3 +1,4 @@
+from datetime import timedelta
 from flask import Flask, session, g
 import config
 import os
@@ -54,5 +55,5 @@ def context_processor():
 
 
 if __name__ == '__main__':
-
-    app.run()
+    # app.config['SEND_FILE_MAX_AGE_DEFAULT']=timedelta(seconds=1)
+    app.run(debug=True)
