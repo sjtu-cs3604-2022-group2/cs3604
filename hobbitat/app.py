@@ -55,5 +55,4 @@ def context_processor():
 
 
 if __name__ == '__main__':
-    # app.config['SEND_FILE_MAX_AGE_DEFAULT']=timedelta(seconds=1)
-    app.run(debug=True)
+    app.run()
