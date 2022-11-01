@@ -1,6 +1,7 @@
 from extensions import db
 from datetime import datetime
 
+### 添加一行演示的注释
 class EmailModel(db.Model):
     __tablename__ = 'email_captcha'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
