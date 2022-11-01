@@ -54,8 +54,8 @@
 		<div class="container__form container--signin">
 			<form action="{{url_for('user.login')}}" class="form" id="form1" method="post"> 
 				<h2 class="form__title">登录</h2>
-				<input type="text" placeholder="用户名/邮箱/管理员" class="input" />
-				<input type="password" placeholder="密码" class="input" />
+				<input type="text" placeholder="用户名/邮箱/管理员" class="input" name='username' id=""username/>
+				<input type="password" placeholder="密码" class="input" name="password" id="password" />
 				<!-- <a href="#" class="link">Forgot your password?</a> -->
 				<div class="link">
 					<span>或 &nbsp; </span>

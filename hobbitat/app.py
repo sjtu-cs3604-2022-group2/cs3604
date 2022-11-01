@@ -6,7 +6,7 @@ from extensions import db, mail
 from blueprints.posts import bp as posts_bp
 from blueprints.user import bp as user_bp
 from flask_migrate import Migrate
-from models import UserModel
+from models import User
 # from extensions import manager
 from flask_script import Manager
 app = Flask(__name__)
@@ -17,6 +17,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 ### 初始化数据库
 db.init_app(app)
+
 
 ### 初始化命令工具
 migrate = Migrate(app, db)
@@ -38,7 +39,7 @@ def before_request():
     user_id = session.get('user_id')
     if user_id:
         try:
-            record = UserModel.query.get(user_id)
+            record = User.query.get(user_id)
             ### g是一个全局变量，给g一个叫做user的变量
             setattr(g, 'user', record)
             ## g.user=user
