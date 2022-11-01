@@ -5,10 +5,15 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" type="text/css" href="../../static/css/user/login-style.css">
+	<!-- <link rel="stylesheet" type="text/css" href="../../static/css/user/login-style.css"> -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/login-style.css')}}">
 	<link href="https://fonts.font.im/css?family=Kalam|Nunito" rel="stylesheet">
 	<title>Log in</title>
 </head>
+
+
+
+
 
 <body>
 
@@ -78,7 +83,7 @@
 			</div>
 		</div>
 	</div>
-	<script src="../../static/js/user/login-script.js"></script>
+	<script src="{{ url_for('static',filename='js/user/login-script.js')}}"></script>
 </body>
 
 </html>

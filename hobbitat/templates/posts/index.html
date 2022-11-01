@@ -12,9 +12,10 @@
         href='https://fonts.googlefonts.cn/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
         rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
-    <link rel="stylesheet" href="./imgs_icons/iconfonts/font_3724642_5trprailenv/iconfont.css">
+    <!-- <link rel="stylesheet" href="./imgs_icons/iconfonts/font_3724642_5trprailenv/iconfont.css"> -->
+    <link rel="stylesheet" href="{{url_for('static',filename='image/imgs_icons/iconfonts/font_3724642_5trprailenv/iconfont.css')}}">
     <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_3724642_qcv29v17ir.css">
-    <link rel="stylesheet" type="text/css" href="mystyle.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/login-style.css')}}">
 
 </head>
 
@@ -75,7 +76,7 @@
                                 aria-haspopup="true" aria-expanded="false"
                                 style="padding-top:0;padding-bottom:0;-webkit-transform: translate(0,-9px);transform: translate(0,-9px);">
 
-                                <img class="current-user-photo" src="./imgs_icons/girlphoto.svg" alt="个人中心">
+                                <img class="current-user-photo" src="{{url_for('static',filename='image/imgs_icons/girlphoto.svg')}}" alt="个人中心">
                                 <span class="caret"
                                     style="-webkit-transform: translate(0,11px);transform: translate(0,11px);"></span>
                             </a>
@@ -119,7 +120,8 @@
                                 <div class="wrapper pull-left">
                                     <div class="userinfo">
                                         <div class="index-user-photo detail-user-photo">
-                                            <img src="./imgs_icons/boyphoto1.svg">
+                                            
+                                            <img src="{{url_for('static',filename='image/imgs_icons/boyphoto1.svg')}}">
                                         </div>
 
                                         <div class="postername">
@@ -216,7 +218,7 @@
                                 <div class="wrapper pull-left">
                                     <div class="userinfo">
                                         <div class="index-user-photo detail-user-photo">
-                                            <img src="./imgs_icons/boyphoto1.svg">
+                                            <img src="{{url_for('static',filename='image/imgs_icons/boyphoto1.svg')}}">
                                         </div>
 
                                         <div class="postername">
@@ -314,7 +316,7 @@
                                 <div class="wrapper pull-left">
                                     <div class="userinfo">
                                         <div class="index-user-photo detail-user-photo">
-                                            <img src="./imgs_icons/boyphoto1.svg">
+                                            <img src="{{url_for('static',filename='image/imgs_icons/boyphoto1.svg')}}">
                                         </div>
 
                                         <div class="postername">
@@ -411,7 +413,7 @@
                                 <div class="wrapper pull-left">
                                     <div class="userinfo">
                                         <div class="index-user-photo detail-user-photo">
-                                            <img src="./imgs_icons/boyphoto1.svg">
+                                            <img src="{{url_for('static',filename='image/imgs_icons/boyphoto1.svg')}}">
                                         </div>
 
                                         <div class="postername">
@@ -601,7 +603,7 @@
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <script src="myscript.js"></script>
+    <!-- <script src="myscript.js"></script> -->
 </body>
 
 </html>
