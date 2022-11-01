@@ -8,7 +8,7 @@ from blueprints.user import bp as user_bp
 from flask_migrate import Migrate
 from models import User
 # from extensions import manager
-from flask_script import Manager
+# from flask_script import Manager
 app = Flask(__name__)
 ### 注册配置
 app.config.from_object(config)
@@ -23,7 +23,7 @@ db.init_app(app)
 migrate = Migrate(app, db)
 ###初始化邮件
 mail.init_app(app)
-manager=Manager(app)
+# manager=Manager(app)
 
 ### 注册蓝图
 app.register_blueprint(user_bp)
