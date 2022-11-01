@@ -1,4 +1,4 @@
-from extentions import db
+from extensions import db
 from datetime import datetime
 
 class EmailModel(db.Model):

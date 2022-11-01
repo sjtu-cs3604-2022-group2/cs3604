@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash,session
 from flask_mail import Message
-from extentions import mail, db
+from extensions import mail, db
 from models import EmailModel,UserModel
 import string, random
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -12,8 +12,9 @@ bp = Blueprint('user', __name__, url_prefix='/user')
 @bp.route('/login',methods=['GET','POST'])
 def login():
     # form=LoginForm(request.form)
-    flash('请登录')
+    
     if request.method=='GET':
+        flash('请登录')
         return render_template('user/login.html')
     else:
         form=LoginForm(request.form)

@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, g, flash, request, redirect, url_f
 from decorators import login_request
 
 from forms import QuestionForm
-from extentions import db
+from extensions import db
 from models import QuestionModel
 
 bp = Blueprint('posts', __name__)

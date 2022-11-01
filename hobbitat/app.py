@@ -1,12 +1,12 @@
 from flask import Flask, session, g
 import config
 import os
-from extentions import db, mail
+from extensions import db, mail
 from blueprints.posts import bp as posts_bp
 from blueprints.user import bp as user_bp
 from flask_migrate import Migrate
 from models import UserModel
-# from extentions import manager
+# from extensions import manager
 from flask_script import Manager
 app = Flask(__name__)
 ### 注册配置
