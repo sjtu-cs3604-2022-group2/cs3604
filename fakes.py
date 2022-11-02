@@ -7,12 +7,12 @@ from sqlalchemy.exc import IntegrityError
 from extensions import db
 from models import Category, Post, Comment, User
 fake = Faker()
-def fake_user():
-    for i in range(5):
+def fake_user(count=5):
+    for _ in range(count):
         user=User(
-            username= fake.word(),
+            username= fake.name(),
             about="hello",
-            password=fake.word(),
+            password=fake.pystr(),
         )
         db.session.add(user)
     db.session.commit()
@@ -34,10 +34,13 @@ def fake_posts(count=50):
     for i in range(count):
         post = Post(
             title=fake.sentence(),
-            body=fake.text(2000),
-            category=Category.query.get(random.randint(1, Category.query.count())),
+            body=fake.text(100),
+            category_id=random.randint(1, Category.query.count()),
             timestamp=fake.date_time_this_year(),
-            user=User.query.get(random.randint(1, User.query.count()))
+            user_id=random.randint(1, User.query.count()),
+            num_likes=random.randint(10,50),
+            num_comments=random.randint(0,10),
+            num_views=random.randint(50,100), 
         )
 
         db.session.add(post)
@@ -60,7 +63,7 @@ def fake_comments(count=500):
 
     salt = int(count * 0.1)
     for i in range(salt):
-        # from admin
+        # from user
         comment = Comment(
             author='Mima Kirigoe',
             email='mima@example.com',

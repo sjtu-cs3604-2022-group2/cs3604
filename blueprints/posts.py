@@ -3,6 +3,7 @@ from decorators import login_request
 
 from extensions import db
 
+from models import Post
 bp = Blueprint('posts', __name__)
 
 
@@ -10,7 +11,9 @@ bp = Blueprint('posts', __name__)
 def index():
     if hasattr(g, 'user'):
         flash(f'欢迎回来，{g.user.username}')
-    return render_template('posts/index.html')
+    
+    posts= Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template('posts/index-tmp.html',index_posts=posts)
     # return 
 
 

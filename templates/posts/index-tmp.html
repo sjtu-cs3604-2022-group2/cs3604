@@ -80,8 +80,7 @@
                                     aria-haspopup="true" aria-expanded="false"
                                     style="padding-top:0;padding-bottom:0;-webkit-transform: translate(0,-9px);transform: translate(0,-9px);">
 
-                                    <img class="current-user-photo"
-                                        src="{{url_for('static',filename=current_user.image)}}" alt="个人中心">
+                                    <img class="current-user-photo" class="current-user-photo" src="{{url_for('static',filename='image/imgs_icons/girlphoto.svg')}}" alt="个人中心">
                                     <span class="caret"
                                         style="-webkit-transform: translate(0,11px);transform: translate(0,11px);"></span>
                                 </a>
@@ -121,14 +120,14 @@
                 <div class="row">
                     <div class="col-lg-9 col-md-9" style="padding-left:0;margin-top:20px;">
                         {# POSTs #}
-                        {% for i in range(len(index_posts))%}
+                        {% for i in range( (index_posts | length) )%}
                         <div class="post post-block">
                             <div class="wrap-ut pull-left">
                                 <div class="wrapper pull-left">
                                     <div class="userinfo">
                                         <div class="index-user-photo detail-user-photo">
-
-                                            <img src="{{url_for('static',filename=(index_posts[i].user).image)}}">
+                                            
+                                            <img src="{{url_for('static',filename='image/imgs_icons/boyphoto1.svg')}}">
                                         </div>
 
                                         <div class="postername">
