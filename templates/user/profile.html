@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Hobbitat Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <link rel="stylesheet" type="text/css" href="profile.css"> -->
+  <!-- <script type="text/javascript" src="profile.js" ></script> -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.font.im/css?family=Kalam" rel="stylesheet">
+  <link
+    href='https://fonts.googlefonts.cn/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+    rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+  <!-- <link rel="stylesheet" type="text/css" href="profile.css"> -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/profile.css')}}">
+  <script  type="text/javascript" src="{{ url_for('static',filename='/user/profile.js')}}"></script>
+  <!-- <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+
+</head>
+
+<body style="margin:0;">
+  <main>
+
+  <header>
+    <div class="container-fluid detail user-profile">
+      <div class="container head" style="height:auto; width: 100%;;margin-left:0;">
+        <div class="row">
+          <nav class="navbar-default navbar ">
+            <div class="headwrap">
+              <!-- <div class="container"> -->
+              <!-- Brand and toggle get grouped for better mobile display -->
+              <div class="navbar-header">
+                <a class="navbar-brand" href="#">
+                  <!-- <img src="../imgs_icons/Hobbitat_cut.png" alt="Logo"> -->
+                  <div class="logo">
+                    Hobbitat
+                  </div>
+                </a>
+                <div class="slogan">
+                  校园兴趣爱好分享社区
+                </div>
+                <div class="navbar-search ">
+                  <form class="navbar-form" role="search">
+                    <div class="input-group add-on">
+                      <input class="form-control form-control222" placeholder="Search" name="srch-term" id="srch-term"
+                        type="text">
+                      <div class="input-group-btn">
+                        <button class="btn btn-default btn-default2913" type="submit"
+                          style="width:100%;height: 100%;text-align: center;">
+                          <i class="glyphicon glyphicon-search" style="margin: auto;"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+
+              <!-- Collect the nav links, forms, and other content for toggling -->
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding:15px 0px 5px 0px;">
+                <!-- <ul class="nav navbar-nav"> </ul> -->
+                <ul class="nav navbar-nav navbar-right" style="padding:0;margin-right:2px;">
+                  <li><a href="#">首页</a></li>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                      aria-expanded="false">分区<span class="caret"></span></a>
+                    <ul class="dropdown-menu animated zoomIn">
+                      <li><a href="#">Music</a></li>
+                      <li><a href="#">Art</a></li>
+                      <li><a href="#">Sports</a></li>
+                      <li><a href="#">Game</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="#">关注</a></li>
+
+                  <li class="dropdown current-user">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                      aria-expanded="false"
+                      style="padding-top:0;padding-bottom:0;-webkit-transform: translate(0,-9px);transform: translate(0,-9px);">
+
+                      <img class="current-user-photo" src="../../static/image/imgs_icons/girlphoto.svg" alt="个人中心">
+                      <span class="caret"
+                        style="-webkit-transform: translate(48px,-21px);transform: translate(48px,-21px);"></span>
+                    </a>
+
+
+                    <ul class="dropdown-menu animated zoomIn">
+                      <li>
+                        <div>
+                          用户名：
+                          <br>
+                          Alex
+                        </div>
+                      </li>
+                      <li><a href="#">个人中心</a></li>
+                      <li><a href="#"> 关注列表</a></li>
+                      <li><a href="#"> 通知 </a></li>
+                      <li><a href="#"> 历史 </a></li>
+                      <li><a href="#"> 设置 </a></li>
+                      <li><a href="#">帮助</a></li>
+                      <li><a href="#"> 联系我们 </a></li>
+
+                    </ul>
+                  </li>
+
+                </ul>
+              </div>
+              <!-- /.navbar-collapse -->
+              <!-- </div> -->
+              <!-- /.container-fluid -->
+            </div>
+          </nav>
+          <!-- <div style="display:block;width:100%;min-height:65px;"></div> -->
+        </div>
+      </div>
+    </div>
+  </header>
+  <div id="profile-upper">
+    <div id="profile-banner-image">
+      <img
+        src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fss2.meipian.me%2Fusers%2F41778126%2F0205581b4b99427d91416e53d3ecb137.jpg%3Fmeipian-raw%2Fbucket%2Fivwen%2Fkey%2FdXNlcnMvNDE3NzgxMjYvMDIwNTU4MWI0Yjk5NDI3ZDkxNDE2ZTUzZDNlY2IxMzcuanBn%2Fsign%2Fd0f7b5e8475826c6c9c03586dbbb31fc.jpg&refer=http%3A%2F%2Fss2.meipian.me&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1668822836&t=a2234a1b3e6a9c02213c8ff9140b9a24"
+        alt="Banner image">
+    </div>
+    <div id="profile-d">
+      <div id="profile-pic">
+        <img src="https://img2.baidu.com/it/u=3275146607,3109421865&fm=253&fmt=auto&app=138&f=JPEG?w=359&h=364">
+      </div>
+      <div id="u-name">John Smith</div>
+      <div class="tb" id="m-btns">
+        <div class="td">
+          <div class="m-btn"><i class="material-icons">format_list_bulleted</i><span>活动日志</span></div>
+        </div>
+        <div class="td">
+          <div class="m-btn"><i class="material-icons">lock</i><span>隐私</span></div>
+        </div>
+      </div>
+      <div id="edit-profile"><i class="material-icons">camera_alt</i></div>
+    </div>
+    <div id="black-grd"></div>
+  </div>
+  <div id="main-content">
+    <div class="tb">
+      <div class="td" id="l-col">
+        <div class="l-cnt">
+          <div class="cnt-label">
+            <i class="l-i" id="l-i-i"></i>
+            <span>关于我</span>
+            <div class="lb-action"><i class="material-icons">edit</i></div>
+          </div>
+          <div id="i-box">
+            <div id="intro-line">大三 本科生</div>
+            <div id="u-occ">我喜欢滑板！</div>
+            <div id="u-loc"><i class="material-icons">location_on</i><a href="#">Shanghai</a>, <a href="#">China</a>
+            </div>
+          </div>
+        </div>
+        <div class="l-cnt l-mrg">
+          <div class="cnt-label">
+            <i class="l-i" id="l-i-p"></i>
+            <span>相册</span>
+            <div class="lb-action" id="b-i"><i class="material-icons">keyboard_arrow_down</i></div>
+          </div>
+          <div id="photos">
+            <div class="tb">
+              <div class="tr">
+                <div class="td">
+                  <img
+                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
+                </div>
+                <div class="td">
+                  <img
+                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
+                </div>
+                <div class="td">
+                  <img
+                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
+                </div>
+              </div>
+              <div class="tr">
+                <div class="td">
+                  <img
+                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
+                </div>
+                <div class="td">
+                  <img
+                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
+                </div>
+                <div class="td">
+                  <img
+                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
+                </div>
+              </div>
+              <div class="tr">
+                <div class="td">
+                  <img
+                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
+                </div>
+                <div class="td">
+                  <img
+                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
+                </div>
+                <div class="td">
+                  <img
+                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="l-cnt l-mrg">
+          <div class="cnt-label">
+            <i class="l-i" id="l-i-k"></i>
+            <span>我喜欢<i id="k-nm">1</i></span>
+          </div>
+          <div>
+            <div class="q-ad-c">
+              <a href="#" class="q-ad">
+                <img src="../../static/image/imgs_icons/cake.jpg">
+                <span>我喜欢吃的东西是...</span>
+              </a>
+            </div>
+            <div class="q-ad-c">
+              <a href="#" class="q-ad" id="add_q">
+                <i class="material-icons">add</i>
+                <span>添加喜好</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="td" id="m-col">
+        <div class="m-mrg" id="p-tabs">
+          <div class="tb">
+            <div class="td">
+              <div class="tb" id="p-tabs-m">
+                <div class="td active"><i class="material-icons">av_timer</i><span>动态</span></div>
+                <div class="td"><i class="material-icons">people</i><span>朋友</span></div>
+                <div class="td"><i class="material-icons">photo</i><span>相册</span></div>
+                <div class="td"><i class="material-icons">explore</i><span>关于</span></div>
+                <div class="td"><i class="material-icons">archive</i><span>资料</span></div>
+              </div>
+            </div>
+            <div class="td" id="p-tab-m"><i class="material-icons">keyboard_arrow_down</i></div>
+          </div>
+        </div>
+        <div class="m-mrg" id="composer">
+          <div id="c-tabs-cvr">
+            <div class="tb" id="c-tabs">
+              <div class="td active"><i class="material-icons">subject</i><span>写 动态</span></div>
+              <div class="td"><i class="material-icons">camera_enhance</i><span>照片</span></div>
+              <div class="td"><i class="material-icons">videocam</i><span>录像</span></div>
+              <div class="td"><i class="material-icons">event</i><span>文档</span></div>
+            </div>
+          </div>
+          <div id="c-c-main">
+            <div class="tb">
+              <div class="td" id="p-c-i"><img
+                  src="https://img2.baidu.com/it/u=3275146607,3109421865&fm=253&fmt=auto&app=138&f=JPEG?w=359&h=364"
+                  alt="Profile pic"></div>
+              <div class="td" id="c-inp">
+                <input type="text" placeholder="记录一下想分享的内容吧！">
+              </div>
+            </div>
+            <div id="insert_emoji"><i class="material-icons">insert_emoticon</i></div>
+          </div>
+        </div>
+        <div>
+          <div class="post">
+            <div class="tb">
+              <a href="#" class="td p-p-pic"><img
+                  src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fblog%2F202101%2F25%2F20210125091442_ef220.thumb.1000_0.jpg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1668822960&t=8388afe74bb54d45dea7fb9bcc5b941d"
+                  alt="Rajeev's profile pic"></a>
+              <div class="td p-r-hdr">
+                <div class="p-u-info">
+                  <a href="#">小明</a>分享了一段经历关于 <a href="#">小红</a>
+                </div>
+                <div class="p-dt">
+                  <i class="material-icons">calendar_today</i>
+                  <span>10.20, 2022</span>
+                </div>
+              </div>
+              <div class="td p-opt"><i class="material-icons">keyboard_arrow_down</i></div>
+            </div>
+            <a href="#" class="p-cnt-v">
+              <img
+                src="https://t12.baidu.com/it/u=1507852253,172921355&fm=30&app=106&f=JPEG?w=640&h=541&s=E3ABB345049777C406BC5CBD03008000"
+                 style="margin: auto;width:400px; height:380px">
+            </a>
+            <div>
+              <div class="p-acts">
+                <div class="p-act like"><i class="material-icons">thumb_up_alt</i><span>25</span></div>
+                <div class="p-act comment"><i class="material-icons">comment</i><span>1</span></div>
+                <div class="p-act share"><i class="material-icons">reply</i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="loading"><i class="material-icons">autorenew</i></div>
+      </div>
+      <div class="td" id="r-col">
+        <div id="chat-bar">
+          <div id="chat-lb"><i class="material-icons"></i><span>好友</span></div>
+          <div id="cts">
+            <div class="on-ct active">
+              <a href="#"><img src="../../static/image/imgs_icons/boyphoto.svg"></a>
+            </div>
+            <div class="on-ct active">
+              <a href="#"><img src="../../static/image/imgs_icons/boyphoto1.svg"></a>
+            </div>
+            <div class="on-ct">
+              <a href="#"><img src="../../static/image/imgs_icons/boyphoto1.svg"></a>
+            </div>
+            <div class="on-ct active">
+              <a href="#"><img src="../../static/image/imgs_icons/boyphoto.svg"></a>
+            </div>
+            <div class="on-ct active">
+              <a href="#"><img src="../../static/image/imgs_icons/boyphoto1.svg"></a>
+            </div>
+            <div class="on-ct">
+              <a href="#"><img src="../../static/image/imgs_icons/boyphoto.svg"></a>
+            </div>
+            <div class="on-ct">
+              <a href="#"><img src="../../static/image/imgs_icons/boyphoto1.svg"></a>
+            </div>
+            <!-- <div class="on-ct active">
+              <a href="#"><img src="https://imagizer.imageshack.com/img924/4231/JnFicn.jpg"></a>
+            </div>
+            <div class="on-ct active">
+              <a href="#"><img src="https://imagizer.imageshack.com/img923/332/1abR4H.png"></a>
+            </div>
+            <div class="on-ct">
+              <a href="#"><img src="https://imagizer.imageshack.com/img924/4231/JnFicn.jpg"></a>
+            </div>
+            <div class="on-ct active">
+              <a href="#"><img src="https://imagizer.imageshack.com/img923/332/1abR4H.png"></a>
+            </div>
+            <div class="on-ct active">
+              <a href="#"><img src="https://imagizer.imageshack.com/img924/4231/JnFicn.jpg"></a>
+            </div>
+            <div class="on-ct">
+              <a href="#"><img src="https://imagizer.imageshack.com/img924/4231/JnFicn.jpg"></a>
+            </div>
+            <div class="on-ct">
+              <a href="#"><img src="https://imagizer.imageshack.com/img923/332/1abR4H.png"></a>
+            </div> -->
+            <div class="on-ct" id="ct-sett"><i class="material-icons">settings</i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div id="device-bar-2"><i class="fab fa-apple"></i></div> -->
+  </main>
+
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <!-- <script type="text/javascript" src="profile.js"></script> -->
+</body>
+
+</html>
