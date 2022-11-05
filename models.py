@@ -21,6 +21,7 @@ class User(db.Model):
     image = db.Column(db.String(100),nullable=True)
 
 
+
     posts = db.relationship('Post', backref='user')
     ### 在Post 对应的 实例上，会自动添加一个user的属性，这指向的是user对象。
 

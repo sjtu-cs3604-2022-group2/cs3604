@@ -1,33 +1,40 @@
+from flask_wtf import FlaskForm
 import wtforms
 from wtforms.validators import length, email, EqualTo
 from models import Email,User
 
 
-class LoginForm(wtforms.Form):
-    username = wtforms.StringField(validators=[length(1,10)])
-    password = wtforms.StringField(validators=[length(6, 20)])
+class LoginForm(FlaskForm):
+    username = wtforms.StringField('username',validators=[length(1,10)],render_kw={'placeholder': '用户名/邮箱',"class":'input'})
+    password = wtforms.StringField("password",validators=[length(1,20)],render_kw={'placeholder': '密码',"class":'input'})
+    submit1= wtforms.SubmitField('登录')
 
 
-class RegisterForm(wtforms.Form):
-    username = wtforms.StringField(validators=[length(3, 20)])
+
+class RegisterForm(FlaskForm):
+    username = wtforms.StringField(validators=[length(1, 20)])
     email = wtforms.StringField(validators=[email()])
     captcha = wtforms.StringField(validators=[length(4, 4)])
-    password = wtforms.StringField(validators=[length(6, 20)])
+    password = wtforms.StringField(validators=[length(1, 20)])
     password_confirm = wtforms.StringField(validators=[EqualTo('password')])
+    submit2=wtforms.SubmitField('注册')
 
-    def validate_captcha(self, field):  ### 额外验证验证码是否和数据库中相同
-        email = self.email.data
-        captcha = field.data
-        captchainModel = Email.query.filter_by(email=email).first()
-        # print('数据库中的验证码为：', captchainModel.captcha)
-        if not captchainModel or captchainModel.captcha.lower() != captcha.lower():
-            raise wtforms.ValidationError('邮箱验证码错误')
+    # def validate_captcha(self, field):  ### 额外验证验证码是否和数据库中相同
+    #     email = self.email.data
+    #     captcha = field.data
+    #     captchainModel = Email.query.filter_by(email=email).first()
+    #     # print('数据库中的验证码为：', captchainModel.captcha)
+    #     if not captchainModel or captchainModel.captcha.lower() != captcha.lower():
+    #         raise wtforms.ValidationError('邮箱验证码错误')
 
     def validate_email(self, field):
         email = field.data
         record = User.query.filter_by(email=email).first()
         if record:
             raise wtforms.ValidationError('邮箱已经注册过')
+    # def validate_csrf_token(self, field):
+    #     if not self.csrf_enabled:
+    #         return True
 
 
 class QuestionForm(wtforms.Form):

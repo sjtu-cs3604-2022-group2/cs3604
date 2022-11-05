@@ -16,6 +16,28 @@ def index():
     return render_template('posts/index-tmp.html',index_posts=posts)
     # return 
 
+@bp.route('/music')
+def music():
+    return "这是音乐分区"
+
+@bp.route('/games')
+def games():
+    return "这是游戏分区"
+
+@bp.route("/art")
+def art():
+    return "这是艺术分区"
+
+@bp.route("/")
+def sports():
+    return "这是运动分区"
+
+
+
+
+
+
+
 
 
 

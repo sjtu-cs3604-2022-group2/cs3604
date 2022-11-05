@@ -67,13 +67,13 @@
                                     role="button" aria-haspopup="true" aria-expanded="false">分区<span
                                         class="caret"></span></a>
                                 <ul class="dropdown-menu animated zoomIn">
-                                    <li><a href="#">Music</a></li>
-                                    <li><a href="#">Art</a></li>
-                                    <li><a href="#">Sports</a></li>
-                                    <li><a href="#">Game</a></li>
+                                    <li><a href="{{url_for('posts.music')}}">Music</a></li>
+                                    <li><a href="{{url_for('posts.art')}}">Art</a></li>
+                                    <li><a href="{{url_for('posts.sports')}}">Sports</a></li>
+                                    <li><a href="{{url_for('posts.games')}}">Game</a></li>
                                 </ul>
                             </li>
-                            <li><a href="#">关注</a></li>
+                            <li><a href="{{url_for('user.follows')}}">关注</a></li>
 
                             <li class="dropdown current-user">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
@@ -94,13 +94,16 @@
                                             Alex
                                         </div>
                                     </li>
-                                    <li><a href="./profile.HTML" target="_blank">个人中心</a></li>
-                                    <li><a href="./followLs.HTML" target="_blank"> 关注列表</a></li>
+                                    <li><a href="{{url_for('user.selfcenter')}}" target="_blank">个人中心</a></li>
+                                    <!-- <li><a href="{{url_for('user.login')}}" target="_blank"> 关注列表</a></li> -->
                                     <li><a href="#"> 通知 </a></li>
                                     <li><a href="#"> 历史 </a></li>
                                     <li><a href="#"> 设置 </a></li>
                                     <li><a href="#">帮助</a></li>
                                     <li><a href="#"> 联系我们 </a></li>
+                                    <li><a href="{{url_for('user.login')}}"> 登录 </a></li>
+                                    <li><a href="{{url_for('user.login')}}"> 注册 </a></li>
+
 
                                 </ul>
                             </li>
