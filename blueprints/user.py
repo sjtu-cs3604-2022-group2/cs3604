@@ -12,7 +12,8 @@ bp = Blueprint("user", __name__, url_prefix="/user")
 def login():
     form=LoginForm()
     registerform=RegisterForm()
-    
+
+
     if form.submit1.data and form.validate():
         username=form.username.data
         password=form.password.data
@@ -26,7 +27,6 @@ def login():
         else:
             flash('用户名或密码错误')
             return redirect(url_for('user.login'))
-    
     if registerform.submit2.data and registerform.validate():
         user=User(username=registerform.username.data,password=registerform.password.data,email=registerform.email.data)
         db.session.add(user)

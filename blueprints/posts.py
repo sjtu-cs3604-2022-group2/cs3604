@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, g, flash, request, redirect, url_for
+from flask import Blueprint, render_template, g, flash, request, redirect, url_for,current_app
 from decorators import login_request
 
 from extensions import db
@@ -7,14 +7,18 @@ from models import Post
 bp = Blueprint('posts', __name__)
 
 
-@bp.route('/')
-def index():
-    if hasattr(g, 'user'):
-        flash(f'欢迎回来，{g.user.username}')
+@bp.route('/',defaults={'page':1})
+@bp.route('/page/<int:page>')
+def index(page):
+
+    # page = request.args.get('page', 1, type=int)
+    print(page)
+    per_page = current_app.config['POST_PER_PAGE']
+    print(per_page)
+    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
+    posts = pagination.items
+    return render_template('posts/index-tmp.html', pagination=pagination, index_posts=posts)
     
-    posts= Post.query.order_by(Post.timestamp.desc()).all()
-    return render_template('posts/index-tmp.html',index_posts=posts)
-    # return 
 
 @bp.route('/music')
 def music():

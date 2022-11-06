@@ -21,6 +21,7 @@ class BaseConfig(object):
 
     CKEDITOR_ENABLE_CSRF = True
     CKEDITOR_FILE_UPLOADER = 'admin.upload_image'
+    CKEDITOR_LANGUAGE='zh-cn'
 
     MAIL_SERVER = os.getenv('MAIL_SERVER')
     MAIL_PORT = 465
@@ -30,7 +31,7 @@ class BaseConfig(object):
     MAIL_DEFAULT_SENDER = ('Bluelog Admin', MAIL_USERNAME)
 
     BLUELOG_EMAIL = os.getenv('BLUELOG_EMAIL')
-    BLUELOG_POST_PER_PAGE = 10
+    POST_PER_PAGE = 10
     BLUELOG_MANAGE_POST_PER_PAGE = 15
     BLUELOG_COMMENT_PER_PAGE = 15
     # ('theme name', 'display name')

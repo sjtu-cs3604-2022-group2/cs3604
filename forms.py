@@ -12,11 +12,11 @@ class LoginForm(FlaskForm):
 
 
 class RegisterForm(FlaskForm):
-    username = wtforms.StringField(validators=[length(1, 20)])
-    email = wtforms.StringField(validators=[email()])
-    captcha = wtforms.StringField(validators=[length(4, 4)])
-    password = wtforms.StringField(validators=[length(1, 20)])
-    password_confirm = wtforms.StringField(validators=[EqualTo('password')])
+    username = wtforms.StringField('username',validators=[length(1, 20)],render_kw={'placeholder': '用户名',"class":'input'})
+    email = wtforms.StringField('email',validators=[email()],render_kw={'placeholder': '邮箱',"class":'input'})
+    captcha = wtforms.StringField('captcha',validators=[length(4, 4)],render_kw={'placeholder': '验证码',"class":'input'})
+    password = wtforms.StringField('password',validators=[length(1, 20)],render_kw={'placeholder': '密码',"class":'input'})
+    password_confirm = wtforms.StringField('password_confirm',validators=[EqualTo('password')],render_kw={'placeholder': '再次填入密码',"class":'input'})
     submit2=wtforms.SubmitField('注册')
 
     # def validate_captcha(self, field):  ### 额外验证验证码是否和数据库中相同

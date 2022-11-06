@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,6 +18,7 @@
     <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_3724642_qcv29v17ir.css">
     <link rel="stylesheet" type="text/css"
         href="{{ url_for('static',filename='css/posts/index-and-detail-style.css')}}">
+    {% from 'bootstrap/pagination.html' import render_pagination%}
 
 </head>
 
@@ -259,6 +259,7 @@
             <div class="container pages" style="margin-bottom: 20px;">
                 <div class="row">
                     <div class="col-lg-9 col-xs-12 col-md-9" style="margin-left:74px">
+                        {#
                         <div class="pull-left"><a href="#" class="prevnext"><i class="fa fa-angle-left"></i></a></div>
                         <div class="pull-left">
                             <ul class="paginationforum">
@@ -277,7 +278,10 @@
                         </div>
                         <div class="pull-left"><a href="#" class="prevnext last"><i class="fa fa-angle-right"></i></a>
                         </div>
-                        <div class="clearfix"></div>
+                        <div class="clearfix"></div>  #}
+
+                        <div class="page-footer">{{ render_pagination(pagination) }}</div>
+                    
                     </div>
                 </div>
             </div>
