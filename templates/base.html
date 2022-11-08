@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_3724642_qcv29v17ir.css">
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='base.min.css'}}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.min.css')}}">
     <link href="https://unpkg.com/@wangeditor/editor@latest/dist/css/style.css" rel="stylesheet">
     {% endblock head %}
 </head>
@@ -40,7 +40,7 @@
                             校园兴趣爱好分享社区
                         </div>
                         <div class="navbar-search ">
-                            <form class="navbar-form" role="search">
+                            <form class="navbar-form" role="search" action="{{url_for('search')}}">
                                 <div class="input-group add-on">
                                     <input class="form-control form-control222" placeholder="搜索"
                                         name="srch-term" id="srch-term" type="text">
@@ -108,7 +108,7 @@
                                         <div>
                                             用户名：
                                             <br>
-                                            {{current_user.id}}
+                                            {{current_user.username}}
                                         </div>
                                     </li>
                                     <li><a href="#">个人中心</a></li>
