@@ -1,11 +1,11 @@
-
 import random
-
+import json
 from faker import Faker
 from sqlalchemy.exc import IntegrityError
-
 from extensions import db
 from models import Category, Post, Comment, User
+
+
 fake = Faker()
 def fake_user(count=5):
     for _ in range(count):
@@ -92,3 +92,25 @@ def fake_comments(count=500):
     db.session.commit()
 
 
+def real_post(count=50):
+    with open('./data/post.json', 'r', encoding='utf8') as f:
+        posts = json.load(f)
+    for p in Post.query.all():
+        db.session.delete(p)
+    db.session.commit()
+    for i in range(count):
+        raw = posts[i]
+        post = Post(
+            title=raw['title'],
+            body=raw['body'],
+            category_id=raw['category'],
+            # timestamp=raw['time'],
+            timestamp=fake.date_time_this_year(),
+            user_id=random.randint(1, User.query.count()),
+            num_likes=random.randint(10,50),
+            num_comments=raw['n_comment'],
+            num_views=random.randint(50,100),
+        )
+        db.session.add(post)
+    db.session.commit()
+    return

@@ -30,6 +30,8 @@ def games():
 
 @bp.route("/art")
 def art():
+    from fakes import real_post
+    real_post()
     return "这是艺术分区"
 
 @bp.route("/")
