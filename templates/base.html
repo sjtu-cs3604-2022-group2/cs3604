@@ -13,10 +13,10 @@
         href='https://fonts.googlefonts.cn/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
         rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
-    <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_3724642_qcv29v17ir.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_3724642_hbsxtnxlia6.css">
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.min.css')}}">
-    <link href="https://unpkg.com/@wangeditor/editor@latest/dist/css/style.css" rel="stylesheet">
+    {# <link href="https://unpkg.com/@wangeditor/editor@latest/dist/css/style.css" rel="stylesheet">#}
     {% endblock head %}
 </head>
 
@@ -27,11 +27,8 @@
         <div class="row">
             <nav class="navbar-default navbar ">
                 <div class="headwrap">
-                    <!-- <div class="container"> -->
-                    <!-- Brand and toggle get grouped for better mobile display -->
                     <div class="navbar-header">
                         <a class="navbar-brand" href="#">
-                            <!-- <img src="../imgs_icons/Hobbitat_cut.png" alt="Logo"> -->
                             <div class="logo">
                                 Hobbitat
                             </div>
@@ -40,7 +37,7 @@
                             校园兴趣爱好分享社区
                         </div>
                         <div class="navbar-search ">
-                            <form class="navbar-form" role="search" action="{{url_for('search')}}">
+                            <form class="navbar-form" role="search" action="{{url_for('posts.search')}}">
                                 <div class="input-group add-on">
                                     <input class="form-control form-control222" placeholder="搜索"
                                         name="srch-term" id="srch-term" type="text">
@@ -97,7 +94,7 @@
                                     aria-haspopup="true" aria-expanded="false"
                                     style="padding-top:0;padding-bottom:0;-webkit-transform: translate(0,-9px);transform: translate(0,-9px);">
 
-                                    <img class="current-user-photo" src="{{url_for('static',filename=current_user.image)}}" alt="个人中心">
+                                    <img class="current-user-photo" src={{current_user.image}} alt="个人中心">
                                     <span class="caret"
                                         style="-webkit-transform: translate(0,11px);transform: translate(0,11px);"></span>
                                 </a>
@@ -124,15 +121,13 @@
 
                         </ul>
                     </div>
-                    <!-- /.navbar-collapse -->
-                    <!-- </div> -->
-                    <!-- /.container-fluid -->
                 </div>
             </nav>
-            <!-- <div style="display:block;width:100%;min-height:65px;"></div> -->
+           
         </div>
     </div>
     {% endblock nav%}
+
     {% block content %}
     {% endblock content%}
     </div>
