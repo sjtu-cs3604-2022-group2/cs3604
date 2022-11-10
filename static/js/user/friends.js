@@ -9,13 +9,7 @@
 				columns: [
 					{ data: "ID" },
 					{ data: null, "defaultContent":	"<div class='btn-group dropright'>"+
-														"<button type='button' class='btn btn-primary btn-sm transactionButton' data-toggle='dropdown'>Action</button>"+
-														"<div class='dropdown-menu'>"+
-															"<a id='details' class='dropdown-item details text-dark font-weight-bold' href='#'>View Details</a>"+
-															"<a id='details' class='dropdown-item allocation text-dark font-weight-bold' href='#'>View Allocation Details</a>"+
-															"<a id='reprint' class='dropdown-item reprint text-dark font-weight-bold' href='#'>Reprint</a>"+
-															"<a id='reverse' class='dropdown-item reverse text-dark font-weight-bold' href='#'>Reverse</a>"+
-														"</div>"+
+														"<button type='button' class='btn btn-primary btn-sm transactionButton' data-toggle='dropdown'>取消关注</button>"+
 													"</div>"
 					},
 					{ data: "Age" },

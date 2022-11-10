@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
   <!-- <link rel="stylesheet" type="text/css" href="profile.css"> -->
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/profile.css')}}">
-  <script  type="text/javascript" src="{{ url_for('static',filename='/user/profile.js')}}"></script>
+  <script  type="text/javascript" src="{{ url_for('static',filename='js/user/profile.js')}}"></script>
   <!-- <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
 
@@ -133,7 +133,7 @@
       <div id="u-name">John Smith</div>
       <div class="tb" id="m-btns">
         <div class="td">
-          <div class="m-btn"><i class="material-icons">format_list_bulleted</i><span>活动日志</span></div>
+          <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href = "/user/chat"><span>聊天</span></a></div>
         </div>
         <div class="td">
           <div class="m-btn"><i class="material-icons">lock</i><span>隐私</span></div>
