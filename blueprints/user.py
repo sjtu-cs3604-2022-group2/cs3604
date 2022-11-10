@@ -98,8 +98,3 @@ def get_captcha():
     return "success"
 
     # return 'success'
-
-
-@bp.route('/chat')
-def chat():
-    return render_template("user/chat.html")
