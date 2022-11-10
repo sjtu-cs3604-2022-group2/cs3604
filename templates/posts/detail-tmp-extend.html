@@ -1,0 +1,502 @@
+{% extends 'base.html'%}
+
+{% block head %}
+{{super()}}
+
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/posts/index-and-detail-style.css')}}">
+<style>
+    .footer.pull-right i {
+        font-size: 10px;
+    }
+
+    .footer.pull-right span {
+        font-size: 10px;
+    }
+
+    .add-reply-btn {
+        width: 40%;
+        /* background-color: #b3d8fc4d; */
+        background-color: inherit;
+        /* border:none; */
+        outline: none;
+        margin-top: 30px;
+        color: #0555b3;
+        margin-left: 30%;
+        margin-right: 30%;
+    }
+
+    .quit-btn {
+        width: 50px;
+        /* background-color: #b3d8fc4d; */
+        background-color: inherit;
+        /* border:none; */
+        outline: none;
+        margin-top: 0px;
+        color: #0555b3;
+        border: 0;
+        /* margin-left: 30%; */
+        /* margin-right: 30%; */
+        display: inline-block;
+    }
+
+    .quit-btn:hover, .quit-btn:active, .quit-btn:focus {
+        width: 50px;
+        /* background-color: #b3d8fc4d; */
+        background-color: #fbfbfb;
+        /* border:none; */
+        outline: none;
+        margin-top: 0px;
+        color: #0555b3;
+        border: 0;
+        /* margin-left: 30%; */
+        /* margin-right: 30%; */
+        display: inline-block;
+    }
+    .reply-to {
+        margin-bottom: 10px;
+    }
+
+    .black_overlay {
+        display: none;
+        position: absolute;
+        top: 0%;
+        left: 0%;
+        width: 100%;
+        height: 100%;
+        background-color: #222;
+        z-index: 1001;
+        -moz-opacity: 0.8;
+        opacity: .80;
+        filter: alpha(opacity=78);
+    }
+
+    .pop_win {
+        display: none;
+        position: fixed;
+        top: 15%;
+        left: 20%;
+        width: 60%;
+        /* height: 60%; */
+        border: 2px solid #3b3e41;
+        background-color: white;
+        z-index: 9999;
+        overflow: auto;
+        border-radius: 25px;
+        padding-left: 30px;
+        padding-right: 30px;
+        padding-top: 24px;
+        padding-bottom: 40px;
+        overflow-y: hidden;
+        text-align: center;
+    }
+
+    .pop_win_report{
+        width:20%;
+        left:40%;
+        text-align: left;
+        /* padding:10px; */
+    }
+
+    .pop_win h4 {
+        font-size: 20px;
+        margin-bottom: 16px;
+        margin-top:0px;
+    }
+
+    
+
+    .cke_top {
+        border-bottom: 0px;
+        background-color: #fbfbfb;
+    }
+</style>
+{% endblock %}
+
+{%block content %}
+<div class="detail">
+
+    <div class="container total-content ">
+        <div class="row" style="margin-top:40px">
+            <div class="col-lg-9 col-md-9 col-9" width="75%">
+                <div class="post-and-reply" style="box-shadow:0px 0px 13px -3px">
+                    <div class="detail-block topic-block" style="padding-left:0;">
+                        <div class="wrapper pull-left">
+                            <div class="detail-author-info">
+                                <div class="detail-author-photo">
+                                    <!-- <i class="fa fa-user-circle-o fa-3x" aria-hidden="true"></i> -->
+                                    <a href="#">
+                                        <img src={{topic.poster.image}}>
+                                    </a>
+                                </div>
+
+                                <div class="postername">
+                                    {{topic.poster.username}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="topic-content pull-right">
+                            <div class="topic-header">
+                                <h3>
+                                    {{topic.title}}
+                                </h3>
+                            </div>
+                            <div class="topic-description">
+                                {% for paragraph in topic.text%}
+                                <p>
+                                    {{paragraph}}
+                                </p>
+                                {% endfor %}
+                                {% if topic.image != '' %}
+                                <img class='topic_image' src={{topic.image}} width="60%">
+                                {% endif %}
+                            </div>
+
+                            <div class="tag pull-right">
+                                <div class="category{{(topic.category).id}}">
+                                    <a href="#">
+                                        <!-- <i class="fa fa-circle" aria-hidden="true"></i> -->
+                                        <span class="tag-icon"></span>
+                                        {{(topic.category).name}}
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="footer pull-right">
+                                <div class="post-stamps pull-left">
+
+                                    <i class="iconfont icon-view" aria-hidden="true"> {{post.num_views}} 浏览</i>
+                                    <i class="iconfont icon-comment1" aria-hidden="true"> {{post.num_comments}} 回复</i>
+                                    <i class="iconfont icon-time" aria-hidden="true"> {{post.post_time}}</i>
+                                    <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
+                                        data-placement="bottom" onclick="report();"
+                                        style="border:none;background-color:#ffffff;margin-left: 4px;">
+                                        <i class="iconfont icon-jubao " aria-hidden="true"> 举报</i>
+                                    </button>
+                                </div>
+
+                                <div class="actions pull-right">
+                                    <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
+                                        data-placement="bottom" title="Like">
+                                        <i class="iconfont icon-like " aria-hidden="true"></i>
+                                        <span> {{post.num_likes}}</span>
+                                    </button>
+
+                                    <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
+                                        data-placement="bottom" title="Reply" onclick="add_comment();">
+                                        <i class="iconfont icon-comment-o " aria-hidden="true"></i>
+                                        <span> 添加回复</span>
+                                    </button>
+                                </div>
+
+
+
+
+                            </div>
+                        </div>
+
+
+                        <div class="clearfix"></div>
+
+                    </div>
+
+
+                    {% for i in range(post.comments|length) %}
+                    {% set comment=post.comments[i] %}
+                    <hr />
+                    <div class="detail-block" style="padding-left:0;">
+                        <div id='comment{{i+2}}' class="answer-block">
+                            <div class="wrapper pull-left">
+                                <div class="userinfo">
+                                    <div class="detail-user-photo">
+                                        <a href="#">
+                                            <img src={{comment.responder.image}}>
+                                        </a>
+                                    </div>
+
+                                    <div class="postername">
+                                        {{comment.responder.username}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="answer-content pull-right">
+                                {% if comment.towards != 1 %}
+                                <div class="reply-to">
+                                    <a href="#comment{{comment.towards}}">
+                                        <span>回复 </span>
+                                        <span>{{comment.towards}}楼 </span>
+                                        <span>{{post.comments[comment.towards-2].responder.username}}</span>
+                                    </a>
+                                </div>
+                                {% endif %}
+                                <div class="answer-description" style="margin-bottom: 20px;">
+                                    {% for paragraph in comment.text %}
+                                    <p>
+                                        {{paragraph}}
+                                    </p>
+                                    {% endfor %}
+
+                                </div>
+
+                                <div class="footer pull-right">
+
+                                    <div class="post-stamps pull-left">
+                                        <i class="iconfont icon-time" aria-hidden="true"> {{comment.time}}</i>
+                                        <span> &nbsp;{{i+2}}楼</span>
+                                        <!-- <i class="fa fa-eye" aria-hidden="true"> 70 views</i>
+                                            <i class="fa fa-commenting commenting2" aria-hidden="true"> 3 replies</i> -->
+                                        <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
+                                            data-placement="bottom" onclick="report();"
+                                            style="border:none;background-color:#ffffff;margin-left: 4px; " >
+                                            <i class="iconfont icon-jubao " aria-hidden="true"> 举报</i>
+                                        </button>
+                                    </div>
+                                    <div class="actions pull-right">
+                                        <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
+                                            data-placement="bottom" title="Like">
+                                            <i class="iconfont icon-like " aria-hidden="true"></i>
+                                            <span> {{comment.num_likes}}</span>
+                                        </button>
+
+                                        {# 待定！ #}
+                                        <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
+                                            data-placement="bottom" title="Reply" onclick='reply_comment({{i+2}});''>
+                                            <i class="iconfont icon-Reply " aria-hidden="true"></i>
+                                            <span> 回复</span>
+                                        </button>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                    {% endfor %}
+
+
+                </div>
+
+                <div class="add-reply-section" style="padding-left:0;padding-right:0;margin-top:10px">
+                    <div class="add-reply">
+
+                        <div class="leave-a-reply" style="padding: 15px;">
+                            <h3>
+                                添加回复
+                            </h3>
+                        </div>
+
+                        
+                        <div class="editor-wrap">
+                            <form method="post">
+                                {{ add_reply_form.csrf_token}}
+                                {{add_reply_form.text_body1}}
+                                {{add_reply_form.submit1(class=' btn btn-primary add-reply-btn')}} {{ ckeditor.load()}}
+                                            {{ ckeditor.config(name='text_body1' ,height=250,custom_config="" ) }}
+                                            </form>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-lg-3 col-md-3 col-3">
+                            <div class="sidebarblock recommendations">
+
+                                <h3
+                                    style="line-height: 66px;padding-left:20px;padding-top:10px;padding-bottom: 10px;margin:0">
+                                    相关话题</h3>
+                                <div class="divline"></div>
+                                <div class="blocktxt">
+                                    <ul class="recom related">
+                                        {% for related in related_topics %}
+                                        <li><a href="#">{{related['title']}} <span
+                                                    class="badge pull-right">{{related['num_comments']}}
+                                                    讨论</span></a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+
+                            </div>
+                            <div class="sidebarblock recommendations">
+
+                                <h3
+                                    style="line-height: 66px;padding-left:20px;padding-top:10px;padding-bottom: 10px;margin:0">
+                                    推荐话题</h3>
+                                <div class="divline"></div>
+                                <div class="blocktxt">
+                                    <ul class="recom">
+                                        {% for recom in recommendations%}
+                                        <li><a href="#">{{recom['title']}} <span
+                                                    class="badge pull-right">{{recom['num_comments']}}
+                                                    讨论</span></a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% endblock content %}
+
+            {% block other_content%}
+            <div class="black_overlay" id="fade"></div>
+
+            <div class="pop_win" id="light-form1">
+                <div>
+                    <button class="btn btn-primary quit-btn pull-right" onclick="quit();">取消</button>
+                </div>
+                <div class="clearfix"></div>
+                <h4>
+                    回复楼主
+                </h4>
+                <div class="pop-editor-wrap">
+                    <form method="post">
+                        {{ add_reply_pop_form.csrf_token}}
+                        {{ add_reply_pop_form.text_body3}}
+                        {{ add_reply_pop_form.submit3(class=' btn btn-primary add-reply-btn')}}
+                        {{ ckeditor.load() }}
+                        {{ ckeditor.config(name='text_body3' ,custom_config="" ) }}
+                    </form>
+                    
+                </div>
+
+
+
+            </div>
+            <div class="pop_win" id="light-form2">
+                <div>
+                    <button class="btn btn-primary quit-btn pull-right" onclick="quit();">取消</button>
+                </div>
+                <div class="clearfix"></div>
+                <h4>
+
+                </h4>
+                <div class="pop-editor-wrap">
+                    <form method="post">
+                        {{ comment_towards_form.csrf_token}}
+                        {{ comment_towards_form.towards(style='display:none')}}
+                        {{comment_towards_form.text_body2}}
+                        {{comment_towards_form.submit2(class=' btn btn-primary add-reply-btn')}}
+                        {{ ckeditor.load() }}
+                        {{ ckeditor.config(name='text_body2' ,custom_config="" ) }}
+                    </form>
+                   
+                </div>
+            </div>
+
+            <div class="pop_win pop_win_report" id="light-form-report">
+                <div>
+                    <button class="btn btn-primary quit-btn pull-right" onclick="quit();">取消</button>
+                </div>
+                <div class="clearfix"></div>
+                <h4>
+                    举报理由
+                </h4>
+                <div class="pop-form-wrap">
+                    <form method="post">
+                        {{ report_form.csrf_token}}
+                        {{ report_form.towards(style='display:none')}}
+                        {{report_form.reason}}
+                        或其他理由：{{report_form.other_reason}}
+                        {{report_form.submit4(class=' btn btn-primary add-reply-btn')}}
+                        
+                    </form>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock other_content%}
+
+
+
+
+{% block scripts %}
+{{ super() }}
+<style>
+    .cke_top {
+        border-bottom: 0px;
+        background-color: #fbfbfb;
+    }
+
+    .cke_bottom {
+        border-top: 0px;
+        background-color: #fbfbfb;
+    }
+</style>
+
+<script>
+    function reply_comment(a) {
+        $('#light-form2 h4')[0].innerHTML = '回复 ' + a + '楼';
+        popWin();
+        document.getElementById('towards').value = a + '';
+        return 0;
+    }
+
+    function report(){
+        document.getElementById('light-form-report').style.display = 'block';
+        document.getElementById('fade').style.display = 'block';
+    }
+</script>
+<script>
+
+    function popWin() {
+
+        document.getElementById('light-form2').style.display = 'block';
+        document.getElementById('fade').style.display = 'block';
+
+    }
+
+    function add_comment() {
+
+        document.getElementById('light-form1').style.display = 'block';
+        document.getElementById('fade').style.display = 'block';
+    }
+    // function reason_submit() {
+    //     (document.getElementById('form-reason')).submit();
+    // }
+
+    function quit() {
+        //document.getElementById('light').style.display = 'none';
+        document.getElementById('fade').style.display = 'none';
+        var lst = document.getElementsByClassName('pop_win');
+        for (var i = 0; i < lst.length; ++i) {
+            lst[i].style.display = 'none';
+        }
+    }
+
+</script>
+
+<script>
+    function adjust_picture() {
+        var pic_list = $('.topic_image');
+        for (var i = 0; i < pic_list.length; ++i) {
+            var pic = pic_list[i];
+            var cur_width = pic.clientWidth;
+            var cur_height = pic.clientHeight;
+            var rate = 50 * cur_height / cur_width;
+            pic.style.width = '50%';
+            pic.style.height = rate + '%';
+        }
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        adjust_picture();
+        var h = document.documentElement.scrollHeight * 2;
+        $('#fade').css('height', h + 'px');
+    }
+    )
+</script>
+
+{% endblock %}
