@@ -69,7 +69,7 @@ class ReportForm(FlaskForm):
         render_kw={
             'style': 'list-style-type:none;margin-left:0px;text-align:left;padding-left:0px'
         },
-        choices=[(1, '不实信息'), (2, '引战嫌疑'), (3, '不适当内容'),(4,'涉及抄袭')],
+        choices=[(1, '不实信息'), (2, '引战嫌疑'), (3, '不适当内容'),(4,'涉及抄袭'),(5,'其他')],
         
         coerce=int
     )
