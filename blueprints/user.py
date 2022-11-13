@@ -39,11 +39,14 @@ def login():
 
 @bp.route('/follows')
 def follows():
-    return render_template("user/followLs.html")
+    return render_template("user/friends.html")
 
 @bp.route('/selfcenter')
 def selfcenter():
     return render_template("user/profile.html")
+@bp.route('/chat')
+def chat():
+    return render_template("user/chat.html")
 
 
 @bp.route("/logout")
