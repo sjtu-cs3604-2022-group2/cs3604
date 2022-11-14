@@ -4,7 +4,7 @@ from faker import Faker
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 from extensions import db
-from models import Category, Post, Comment, User
+from models import Category, Post, Comment, User, Follow
 
 
 fake = Faker()
@@ -92,6 +92,15 @@ def fake_comments(count=500):
         db.session.add(comment)
     db.session.commit()
 
+# --------------------------------------
+
+
+def random_relation(count, active):
+    positive = random.randint(0, count-1)
+    while (positive == active):
+        positive = random.randint(0, count-1)
+    return positive
+
 
 def real_post(count=100):
     with open("./data/post.json", "r", encoding="utf8") as f:
@@ -104,7 +113,7 @@ def real_post(count=100):
         post = Post(
             title=raw["title"],
             body=raw["body"],
-            category_id=raw["category"],
+            category_id=raw["category"]+1,
             timestamp=datetime.strptime(raw["time"][0], "%Y-%m-%d %H:%M"),
             user_id=random.randint(1, User.query.count()),
             num_likes=random.randint(10, 50),
@@ -112,6 +121,18 @@ def real_post(count=100):
             num_views=random.randint(50, 100),
         )
         db.session.add(post)
+        db.session.commit()
+        all_comment = raw['comment']+raw['sub_cmt']
+        for j in range(raw['n_comment']):
+            comment = Comment(
+                body=all_comment[j],
+                timestamp=datetime.strptime(raw["time"][j+1], "%Y-%m-%d %H:%M"),
+                post_id=post.id,
+                user_id=random.randint(1, User.query.count()),
+            )
+            post.comments.append(comment)
+            db.session.add(comment)
+            db.session.commit()
     db.session.commit()
     return
 
@@ -120,9 +141,11 @@ def real_categories(count=10):
     for c in Category.query.all():
         db.session.delete(c)
     db.session.commit()
+    category = Category(name="Default")
+    db.session.add(category)
     for i in range(count):
-        if i <= 2:
-            names = ["动画", "小说", "游戏"]
+        if i <= 4:
+            names = ["动画", "小说", "游戏", "音乐", "体育"]
             category = Category(name=names[i])
         else:
             category = Category(name=fake.word())
@@ -139,14 +162,34 @@ def real_user(count=50):
     for u in User.query.all():
         db.session.delete(u)
     db.session.commit()
+    user=User(username='test', password='123')
+    db.session.add(user)
     for i in range(count):
         raw = users[i]
         user = User(
             username=raw["name"],
             password=fake.pystr(),
             email=fake.email(),
+            join_time=fake.date_time_this_year(),
             about=raw["sign"],
             image=raw["face"],
         )
         db.session.add(user)
     db.session.commit()
+    for u in User.query.all():
+        for i in range(3):
+            if not u.id:
+                positive = random_relation(count, u.id)
+                follow_u = User.query.get(positive)
+                if not follow_u:
+                    u.follow(follow_u)
+    db.session.commit()
+
+
+def real_data_load(user=50, category=10, post=100):
+    db.drop_all()
+    db.create_all()
+    real_categories(category)
+    real_user(user)
+    real_post(post)
+    return

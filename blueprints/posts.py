@@ -32,10 +32,8 @@ def games():
 
 @bp.route("/art")
 def art():
-    from fakes import real_post, real_categories, real_user
-    real_categories()
-    real_user()
-    real_post()
+    from fakes import real_data_load
+    real_data_load()
     
     return "这是艺术分区"
 

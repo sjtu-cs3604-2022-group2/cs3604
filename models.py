@@ -14,7 +14,7 @@ class Follow(db.Model):
     __tablename__ = "follows"
     follower_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)  ### 记录关注的时间
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)  # 记录关注的时间
 
 
 class Email(db.Model):
@@ -28,48 +28,47 @@ class Email(db.Model):
 class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(100), nullable=True, unique=True)
-    password = db.Column(db.String(200), nullable=True)
-    email = db.Column(db.String(100), nullable=True, unique=True)
+    username = db.Column(db.String(128), nullable=True, unique=True)
+    password = db.Column(db.String(256), nullable=True)
+    email = db.Column(db.String(128), nullable=True, unique=True)
     join_time = db.Column(db.DateTime, default=datetime.now)
     about = db.Column(db.Text, nullable=True)
-    image = db.Column(db.String(100), nullable=True)
+    image = db.Column(db.String(128), nullable=True)
+    posts = db.relationship("Post", backref="user", lazy="dynamic")
+    comments = db.relationship("Comment", backref="user", lazy="dynamic")
+    followed = db.relationship("Follow",
+                               foreign_keys=[Follow.follower_id],
+                               backref=db.backref("follower", lazy="joined"),
+                               lazy="dynamic",
+                               cascade="all, delete-orphan")
+    followers = db.relationship("Follow",
+                                foreign_keys=[Follow.followed_id],
+                                backref=db.backref("followed", lazy="joined"),
+                                lazy="dynamic",
+                                cascade="all, delete-orphan")
+    
+    def follow(self, user):
+        if not self.is_following(user):
+            f = Follow(follower=self, followed=user)
+            db.session.add(f)
 
-    posts = db.relationship("Post", backref="user")
-    followed = db.relationship(
-        "Follow",
-        foreign_keys=[Follow.follower_id],
-        backref=db.backref("follower", lazy="joined"),
-        lazy="dynamic",
-        cascade="all,delete-orphan",
-    )
+    def unfollow(self, user):
+        f = self.followed.filter_by(followed_id=user.id).first()
+        if f:
+            db.session.delete(f)
 
-    followers = db.relationship(
-        "Follow",
-        foreign_keys=[Follow.follower_id],
-        backref=db.backref("followed", lazy="joined"),
-        lazy="dynamic",
-        cascade="all, delete-orphan",
-    )
+    def is_following(self, user):
+        return self.followed.filter_by(
+            followed_id=user.id).first() is not None
 
-    ### 在Post 对应的 实例上，会自动添加一个user的属性，这指向的是user对象。
-
-
-# class QuestionModel(db.Model):
-#     __tablename__ = 'question'
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     title = db.Column(db.String(100), nullable=True)
-#     content=db.Column(db.Text,nullable=False)
-#     ### 创建外键
-#     author_id=db.Column(db.Integer, db.ForeignKey('user.id'))
-#
-#     author=db.relationship('User',backref="questions")
-
+    def is_followed_by(self, user):
+        return self.followers.filter_by(
+            follower_id=user.id).first() is not None
 
 class Category(db.Model):
+    __tablename__ = "category"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(30), unique=True)
-
+    name = db.Column(db.String(32), unique=True)
     posts = db.relationship("Post", backref="category")
 
     def delete(self):
@@ -81,12 +80,10 @@ class Category(db.Model):
         db.session.commit()
 
 
-### 定义用户与用户之间的关联表
-
-
 class Post(db.Model):
+    __tablename__ = "post"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String(60))
+    title = db.Column(db.String(64))
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     can_comment = db.Column(db.Boolean, default=True)
@@ -95,10 +92,9 @@ class Post(db.Model):
     num_comments = db.Column(db.Integer)
     num_views = db.Column(db.Integer)
 
-    # user = db.relationship('user', back_populates='posts')
+    # 隐式属性
+    # user = db.relationship('User', back_populates='posts')
     # category = db.relationship('Category', back_populates='posts')
-    # user_id=db.Column(db.Integer, db.ForeignKey('user.id'))
-    ## 这里会有一个user属性
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     category_id = db.Column(db.Integer, db.ForeignKey("category.id"))
 
@@ -106,20 +102,18 @@ class Post(db.Model):
 
 
 class Comment(db.Model):
+    __tablename__ = "comment"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    author = db.Column(db.String(30))
-    email = db.Column(db.String(254))
-    site = db.Column(db.String(255))
     body = db.Column(db.Text)
     from_author = db.Column(db.Boolean, default=False)
-
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
-
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
-
     post = db.relationship("Post", back_populates="comments")
+    # 隐式属性
+    # user = db.relationship('User', back_populates='comments')
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
-    ### add a foreign key pointing self. 在同一个模型内的一对多关系称为邻接列表关系（Adjacency List Relationship)
+    # add a foreign key pointing self. 在同一个模型内的一对多关系称为邻接列表关系（Adjacency List Relationship)
     replied_id = db.Column(db.Integer, db.ForeignKey("comment.id"))
 
     replies = db.relationship("Comment", back_populates="replied", cascade="all, delete-orphan")
