@@ -1,9 +1,10 @@
 {% extends 'base.html'%}
 {% from 'bootstrap/pagination.html' import render_pagination %}
 {% block head %}
-{{ super() }}
+
 <title>Index</title>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/posts/index-and-detail-style.css')}}">
+{{ super() }}
 {# {% from 'bootstrap/pagination.html' import render_pagination %} #}
 {% endblock head%}
 
