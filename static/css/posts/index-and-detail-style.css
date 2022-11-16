@@ -703,7 +703,8 @@ theme blue:6fa8dc
   text-overflow: ellipsis;
   height: 38px;
   overflow: hidden;
-  width: 720px;
+  /* width: 720px; */
+  width: 90%;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   word-break: break-all;
