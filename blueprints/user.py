@@ -41,11 +41,8 @@ def login():
     return render_template("user/login.html", form=form, registerform=registerform)
 
 
-<<<<<<< HEAD
+
 @bp.route('/follows',methods=['GET'])
-=======
-@bp.route("/follows")
->>>>>>> 4c41120914802bbfe10d7e55ea459b6125a9a05a
 def follows():
     return render_template("user/friends.html")
 
