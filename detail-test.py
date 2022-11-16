@@ -14,12 +14,19 @@ from blueprints.posts import bp as postsbp
 from setting import config
 import models
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField,RadioField
+from wtforms import StringField, SubmitField, SelectField,RadioField,SelectMultipleField
 from wtforms . validators import DataRequired,Length
+from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField
+
 from flask_ckeditor import CKEditorField
 
 from flask_ckeditor import CKEditor
 
+from blueprints import posts
+
+from flask_dropzone import Dropzone
+from flask_wtf.file import FileField,FileAllowed,FileRequired
+from blueprints import posts
 
 current_user=models.User()
 current_user.image='static/image/imgs_icons/boyphoto.svg'
@@ -37,6 +44,7 @@ user3.username="Cathy"
 
 app = Flask(__name__)
 ckeditor = CKEditor(app)
+dropzone = Dropzone(app)
 
 @app.route('/base')
 def base():
@@ -45,6 +53,8 @@ def base():
 @app.route('/search')
 def search():
     return 1
+
+
 
 
 class AddReplyForm(FlaskForm):
@@ -123,7 +133,7 @@ recommendations=[recom1,recom2]
 
 app.config['SECRET_KEY']='AASDFASDF'
 
-@app.route('/')
+@app.route('/detail')
 def detail():
     add_reply_form=AddReplyForm()
     comment_towards_form=CommentTowardsForm()
@@ -139,6 +149,41 @@ def detail():
                             report_form=report_form,
                             related_topics=related_topics,
                             recommendations=recommendations
+                            )
+
+
+# =============================================================================================================
+
+class NewPostForm(FlaskForm):
+    object_list=[(0,'音乐'), (1,'艺术'),(2,'运动'),(3,'游戏')]
+    title=StringField(label='title')
+    post_text = CKEditorField( label='post_text', validators= [ DataRequired () ])
+    categories=SelectMultipleField( 'categories',choices=object_list,coerce=int)
+    
+    submit = SubmitField(label='提交')
+
+basedir=os.path.abspath(os.path.dirname(__file__))
+upload_path=os.path.join(basedir,'upload')
+
+@app.route('/upload',methods=['POST'])
+def upload():
+    if 'file' in request.files:
+        f=request.files.get('file')
+        filename=f.filename
+        f.save(os.path.join(upload_path,filename))
+    return '202'
+    #return render_template
+
+@app.route('/textform',methods=['POST'])
+def textform():
+    return '202 '
+
+@app.route('/')
+def newpost():
+    new_post_form=NewPostForm()
+    return render_template('posts/newpost-tmp-extend.html',
+                            current_user=current_user,
+                            new_post_form=new_post_form
                             )
 
 if __name__ == '__main__':

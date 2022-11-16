@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g
 from flask_mail import Message
 from extensions import mail, db
 from models import User, Email
@@ -8,40 +8,49 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from forms import RegisterForm, LoginForm
 
 bp = Blueprint("user", __name__, url_prefix="/user")
-@bp.route("/login", methods=["GET","POST"])
+
+
+@bp.route("/login", methods=["GET", "POST"])
 def login():
-    form=LoginForm()
-    registerform=RegisterForm()
-
-
+    form = LoginForm()
+    registerform = RegisterForm()
     if form.submit1.data and form.validate():
-        username=form.username.data
-        password=form.password.data
+        username = form.username.data
+        password = form.password.data
         # flash(f'{username,password}')
-        record=User.query.filter_by(username=username,password=password).first()
+        record = User.query.filter_by(username=username, password=password).first()
         if record:
-            return redirect(url_for('posts.index'))
+            # g.user = record
+            session['user_id']=record.id
+            return redirect(url_for("posts.index"))
         # if username=='zkn' and password=='111':
         #     flash('登陆成功')
         #     return redirect(url_for('posts.index'))
         else:
-            flash('用户名或密码错误')
-            return redirect(url_for('user.login'))
+            flash("用户名或密码错误")
+            return redirect(url_for("user.login"))
     if registerform.submit2.data and registerform.validate():
-        user=User(username=registerform.username.data,password=registerform.password.data,email=registerform.email.data)
+        user = User(
+            username=registerform.username.data, password=registerform.password.data, email=registerform.email.data
+        )
         db.session.add(user)
         db.session.commit()
-        flash('已经成功注册')
-        return redirect(url_for('user.login'))
-    
-    return render_template("user/login.html",form=form,registerform=registerform)
+        flash("已经成功注册")
+        return redirect(url_for("user.login"))
+
+    return render_template("user/login.html", form=form, registerform=registerform)
 
 
+<<<<<<< HEAD
 @bp.route('/follows',methods=['GET'])
+=======
+@bp.route("/follows")
+>>>>>>> 4c41120914802bbfe10d7e55ea459b6125a9a05a
 def follows():
     return render_template("user/friends.html")
 
-@bp.route('/selfcenter')
+
+@bp.route("/selfcenter")
 def selfcenter():
     return render_template("user/profile.html")
 @bp.route('/chat')
@@ -53,11 +62,6 @@ def chat():
 def logout():
     session.clear()
     return redirect(url_for("user.login"))
-
-
-
-
-
 
     # if request.method == "GET":
     #     return render_template("user/register.html")

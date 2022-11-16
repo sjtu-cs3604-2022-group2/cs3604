@@ -1,23 +1,25 @@
-from flask import Blueprint, render_template, g, flash, request, redirect, url_for,current_app
+from flask import Blueprint, render_template, g, flash, request, redirect, url_for,current_app,session
 from decorators import login_request
 
 from extensions import db
 
-from models import Post
+from models import Post,User
+
 bp = Blueprint('posts', __name__)
 
 
 @bp.route('/',defaults={'page':1})
 @bp.route('/page/<int:page>')
+@login_request
 def index(page):
-
-    # page = request.args.get('page', 1, type=int)
+    user_id=int(session.get('user_id'))
+    user=User.query.get(user_id)
     print(page)
     per_page = current_app.config['POST_PER_PAGE']
     print(per_page)
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
     posts = pagination.items
-    return render_template('posts/index-tmp.html', pagination=pagination, index_posts=posts)
+    return render_template('posts/index-tmp.html', pagination=pagination, index_posts=posts,user=user)
     
 
 @bp.route('/music')
@@ -30,10 +32,8 @@ def games():
 
 @bp.route("/art")
 def art():
-    from fakes import real_post, real_categories, real_user
-    real_categories()
-    real_user()
-    real_post()
+    from fakes import real_data_load
+    real_data_load()
     
     return "这是艺术分区"
 
@@ -43,6 +43,10 @@ def sports():
 
 
 
+@bp.route('/search')
+def search():
+    pass
+    
 
 
 
