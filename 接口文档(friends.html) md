@@ -1,0 +1,9 @@
+# friends.html
+
+friends.html暂定由某用户个人主页跳转到，所以显示的是该用户的关注的人
+1. 定义该用户为main_user，所有关注的人的信息在main_user.friends中
+关注的人的头像main_user.friends[i].image
+关注的人的昵称main_user.friends[i].name
+...（根据数据库有的条目再选择几项）
+
+
