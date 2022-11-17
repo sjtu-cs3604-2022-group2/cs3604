@@ -44,12 +44,24 @@ def login():
 
 @bp.route('/follows',methods=['GET'])
 def follows():
-    return render_template("user/friends.html")
+    try:
+        id = session['user_id']
+        user = User.query.get(id)
+    except:
+        return redirect(url_for("user.login"))
+    return render_template("user/friends.html", poster_user=user)
 
 
 @bp.route("/selfcenter")
 def selfcenter():
-    return render_template("user/profile.html")
+    try:
+        id = session['user_id']
+        user = User.query.get(id)
+    except:
+        return redirect(url_for("user.login"))
+    return render_template("user/profile.html", current_user=user)
+
+
 @bp.route('/chat')
 def chat():
     return render_template("user/chat.html")
