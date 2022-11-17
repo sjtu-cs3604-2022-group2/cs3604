@@ -28,23 +28,38 @@ render_pagination %} {% block head %}
                     <img src="{{(index_posts[i].user).image}}" />
                   </div>
 
-                                    <div class="postername">
-                                        {{(index_posts[i].user).username}}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="posttext pull-right">
-                                <h3>
-                                    <a href="#" target="_blank">
-                                        {{index_posts[i].title}}
-                                    </a>
-                                </h3>
-                                
-                                <p style="text-overflow: ellipsis;height:38px;overflow:hidden;width:720px;
-                                -webkit-line-clamp:2;line-clamp: 2; word-break:break-all; display: -webkit-box;
-                                -webkit-box-orient: vertical;letter-spacing: 2px; font-size:13px;">
-                                    {{index_posts[i].body}}
-                                </p>
+                  <div class="postername">
+                    {{(index_posts[i].user).username}}
+                  </div>
+                </div>
+              </div>
+              <div class="posttext pull-right">
+                <h3>
+                  <a
+                    href="{{url_for('posts.detail',post_id=index_posts[i].id)}}"
+                    target="_blank"
+                  >
+                    {{index_posts[i].title}}
+                  </a>
+                </h3>
+
+                <p
+                  style="
+                    text-overflow: ellipsis;
+                    height: 38px;
+                    overflow: hidden;
+                    width: 720px;
+                    -webkit-line-clamp: 2;
+                    line-clamp: 2;
+                    word-break: break-all;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    letter-spacing: 2px;
+                    font-size: 13px;
+                  "
+                >
+                  {{index_posts[i].body}}
+                </p>
 
                 <div class="tag">
                   <div class="category{{(index_posts[i].category).id}}">
