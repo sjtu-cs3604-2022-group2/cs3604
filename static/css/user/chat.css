@@ -25,13 +25,14 @@
     height: 100vh;
     background-image: var(--body-bg);
     font-family: Helvetica, sans-serif;
+    flex-flow: column wrap;
   }
 
   .msger {
     display: flex;
     flex-flow: column wrap;
     justify-content: space-between;
-    width: 50%;
+    width: 100%;
     max-width: 867px;
     margin: 25px 10px;
     height: calc(80% - 50px);
