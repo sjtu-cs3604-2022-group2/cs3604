@@ -1,163 +1,163 @@
-{% extends 'base.html'%}
-{% from 'bootstrap/pagination.html' import render_pagination %}
-{% block head %}
+{% extends 'base.html'%} {% from 'bootstrap/pagination.html' import
+render_pagination %} {% block head %}
 
 <title>Index</title>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/posts/index-and-detail-style.css')}}">
-{{ super() }}
-{# {% from 'bootstrap/pagination.html' import render_pagination %} #}
-{% endblock head%}
-
-
-{% block content%}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='css/posts/index-and-detail-style.css')}}"
+/>
+{{ super() }} {# {% from 'bootstrap/pagination.html' import render_pagination %}
+#} {% endblock head%} {% block content%}
 
 <div class="index">
+  {# Posts now #}
+  <section class="content">
+    <div class="container">
+      <div class="row">
+        <div
+          class="col-lg-9 col-md-9"
+          style="padding-left: 0; margin-top: 20px"
+        >
+          {# POSTs #} {% for i in range( (index_posts | length) )%}
+          <div class="post post-block">
+            <div class="wrap-ut pull-left">
+              <div class="wrapper pull-left">
+                <div class="userinfo">
+                  <div class="index-user-photo detail-user-photo">
+                    <img src="{{(index_posts[i].user).image}}" />
+                  </div>
 
-
-
-
-    {# Posts now #}
-    <section class="content">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-9 col-md-9" style="padding-left:0;margin-top:20px;">
-                    {# POSTs #}
-                    {% for i in range( (index_posts | length) )%}
-                    <div class="post post-block">
-                        <div class="wrap-ut pull-left">
-                            <div class="wrapper pull-left">
-                                <div class="userinfo">
-                                    <div class="index-user-photo detail-user-photo">
-                                        
-                                        <img src={{(index_posts[i].user).image}}>
-                                    </div>
-
-                                    <div class="postername">
-                                        {{(index_posts[i].user).username}}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="posttext pull-right">
-                                <h3>
-                                    <a href="#" target="_blank">
-                                        {{index_posts[i].title}}
-                                    </a>
-                                </h3>
-                                
-                                <p>
-                                    {{index_posts[i].body}}
-                                </p>
-
-                                <div class="tag">
-                                    <div class="category{{(index_posts[i].category).id}}">
-                                        <a href="#">
-                                           
-                                            <span class="tag-icon"></span>
-                                            <span>{{(index_posts[i].category).name}}</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                        </div>
-
-                        <div class="postinfo pull-right">
-
-                            <div class="likes">
-                                <i class="iconfont icon-like"></i>
-                                <span> {{index_posts[i].num_likes}}</span>
-                                <span> 点赞</span>
-                            </div>
-                            <div class="replies">
-                                <i class="iconfont icon-comment1"></i>
-                                <span>{{index_posts[i].num_comments}}</span>
-                                <span> 回复</span>
-                            </div>
-                            <div class="views">
-                                <i class="iconfont icon-view"></i>
-                                <span>{{index_posts[i].num_views}}</span>
-                                <span> 浏览</span>
-                            </div>
-                            <div class="latest">
-                                <i class="iconfont icon-time"></i>
-                                <span>{{index_posts[i].latest_time}}</span>
-                                
-                            </div>
-                        </div>
-
-                        <div class="clearfix"></div>
-                    </div>
-                    {% endfor %}
-
-
-
-
+                  <div class="postername">
+                    {{(index_posts[i].user).username}}
+                  </div>
                 </div>
+              </div>
+              <div class="posttext pull-right">
+                <h3>
+                  <a
+                    href="{{url_for('posts.detail',post_id=index_posts[i].id)}}"
+                    target="_blank"
+                  >
+                    {{index_posts[i].title}}
+                  </a>
+                </h3>
 
-                {# Siderbars #}
-                <div class="col-lg-3 col-md-3">
+                <p
+                  style="
+                    text-overflow: ellipsis;
+                    height: 38px;
+                    overflow: hidden;
+                    width: 720px;
+                    -webkit-line-clamp: 2;
+                    line-clamp: 2;
+                    word-break: break-all;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    letter-spacing: 2px;
+                    font-size: 13px;
+                  "
+                >
+                  {{index_posts[i].body}}
+                </p>
 
-                    <div class="sidebarblock">
-                        <a href="#" class="topost">
-                            <div class="topost">
-
-                                <i class="iconfont icon-add"> 新建话题</i>
-
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="sidebarblock">
-                        <a href="#" class="activities">
-                            <div class="activities">
-
-                                <i class="iconfont icon-activity">
-                                    活动</i>
-
-                            </div>
-                        </a>
-                    </div>
-
-
-                    <div class="sidebarblock recommendations">
-
-                        <h3 style="line-height: 66px;padding-left:20px;padding-top:10px;padding-bottom: 10px;margin:0">
-                            推荐话题</h3>
-                        <div class="divline"></div>
-                        <div class="blocktxt">
-                            <ul class="recom">
-                                {% for recomm in recommendations%}
-                                <li><a href="#">{{recomm['title']}} <span class="badge pull-right">{{recom['comments']}} 讨论</span></a></li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-
-                    </div>
-
-
+                <div class="tag">
+                  <div class="category{{(index_posts[i].category).id}}">
+                    <a href="#">
+                      <span class="tag-icon"></span>
+                      <span>{{(index_posts[i].category).name}}</span>
+                    </a>
+                  </div>
                 </div>
-
-
-
-
-
+              </div>
+              <div class="clearfix"></div>
             </div>
 
-        </div>
-        {# Pages #}
-        <div class="container pages" style="margin-bottom: 20px;">
-            <div class="row">
-                <div class="col-lg-9 col-xs-12 col-md-9" style="margin-left:74px">
-
-                    
-                    <div class="page-footer">{{ render_pagination(pagination) }}</div>
-                
-                </div>
+            <div class="postinfo pull-right">
+              <div class="likes">
+                <i class="iconfont icon-like"></i>
+                <span> {{index_posts[i].num_likes}}</span>
+                <span> 点赞</span>
+              </div>
+              <div class="replies">
+                <i class="iconfont icon-comment1"></i>
+                <span>{{index_posts[i].num_comments}}</span>
+                <span> 回复</span>
+              </div>
+              <div class="views">
+                <i class="iconfont icon-view"></i>
+                <span>{{index_posts[i].num_views}}</span>
+                <span> 浏览</span>
+              </div>
+              <div class="latest">
+                <i class="iconfont icon-time"></i>
+                <span>{{index_posts[i].latest_time}}</span>
+              </div>
             </div>
+
+            <div class="clearfix"></div>
+          </div>
+          {% endfor %}
         </div>
 
+        {# Siderbars #}
+        <div class="col-lg-3 col-md-3">
+          <div class="sidebarblock">
+            <a href="{{url_for('posts.newpost')}}" class="topost">
+              <div class="topost">
+                <i class="iconfont icon-add"> 新建话题</i>
+              </div>
+            </a>
+          </div>
 
-    </section>
+          <div class="sidebarblock">
+            <a href="" class="activities">
+              <div class="activities">
+                <i class="iconfont icon-activity"> 活动</i>
+              </div>
+            </a>
+          </div>
+
+          <div class="sidebarblock recommendations">
+            <h3
+              style="
+                line-height: 66px;
+                padding-left: 20px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                margin: 0;
+              "
+            >
+              推荐话题
+            </h3>
+            <div class="divline"></div>
+            <div class="blocktxt">
+              <ul class="recom">
+                {% for recomm in recommendations%}
+                <li>
+                  <a href="#"
+                    >{{recomm['title']}}
+                    <span class="badge pull-right"
+                      >{{recom['comments']}} 讨论</span
+                    ></a
+                  >
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {# Pages #}
+    <div class="container pages" style="margin-bottom: 20px">
+      <div class="row">
+        <div class="col-lg-9 col-xs-12 col-md-9" style="margin-left: 74px">
+          <div class="page-footer">{{ render_pagination(pagination) }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 
 {% endblock content %}

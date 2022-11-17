@@ -86,7 +86,7 @@
 {%block content %}
 <div class="newpost" style="padding-left:10%;padding-right:10%">
 
-    <form method="post" enctype="multipart/form-data" action="{{url_for('textform')}}" id="new_post_form">
+    <form method="post" enctype="multipart/form-data" action="{{url_for('posts.textform')}}" id="new_post_form">
         {{ new_post_form.csrf_token}}
         <h3> 输入标题</h3>
         {{new_post_form.title(id='post_title',style='width:50%;
@@ -104,7 +104,7 @@
     
     <div class="wrap" >
     <h4> 上传图片</h4>
-    {{dropzone.create(action=url_for("upload"),id="uploadform")}}
+    {{dropzone.create(action=url_for("posts.upload"),id="uploadform")}}
     </div>
 
     

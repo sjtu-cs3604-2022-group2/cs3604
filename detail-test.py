@@ -24,7 +24,7 @@ from flask_ckeditor import CKEditor
 
 from blueprints import posts
 
-from flask_dropzone import Dropzone
+from flask_dropzone import Dropzone,random_filename
 from flask_wtf.file import FileField,FileAllowed,FileRequired
 from blueprints import posts
 
@@ -50,9 +50,12 @@ dropzone = Dropzone(app)
 def base():
     return render_template('base.html',current_user=current_user)
 
-@app.route('/search')
+@app.route('/search',methods=['GET'])
 def search():
-    return 1
+    args=request.args
+    content=args.get('search-content')
+    category=args.get('search-category')
+    return '202'
 
 
 
@@ -169,7 +172,7 @@ upload_path=os.path.join(basedir,'upload')
 def upload():
     if 'file' in request.files:
         f=request.files.get('file')
-        filename=f.filename
+        filename=random_filename(f.filename)
         f.save(os.path.join(upload_path,filename))
     return '202'
     #return render_template
