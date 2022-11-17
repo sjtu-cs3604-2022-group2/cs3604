@@ -4,8 +4,9 @@ from decorators import login_request
 from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
 from extensions import db
 import os
-from models import Post, User
-from sqlalchemy import or_,and_
+from models import Category, Post, User
+from sqlalchemy import or_, and_
+
 bp = Blueprint("posts", __name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 upload_path = os.path.join(basedir, "upload")
@@ -112,7 +113,8 @@ def search():
     if srchterm == "":
         return redirect(request.referrer or url_for("posts.index"))
     print(srchterm)
-    category = "全局搜索"
+    category = request.args.get("search-category", "帖子内容")
+    print(category)
     page = request.args.get("page", 1, type=int)
 
     per_page = current_app.config["POST_PER_PAGE"]
@@ -129,6 +131,22 @@ def search():
             .paginate(page=page, per_page=per_page)
         )
         posts = pagination.items
+    elif category == "帖子内容":
+        pagination = (
+            Post.query.filter(Post.body.like("%" + srchterm + "%"))
+            .order_by(Post.timestamp.desc())
+            .paginate(page=page, per_page=per_page)
+        )
+        posts = pagination.items
+    elif category == "分区":
+        #### 分区还没写好
+        # pagination = (
+        #     Category.query.filter_by(Category.names==category).first().post
+        #     .order_by(Post.timestamp.desc())
+        #     .paginate(page=page, per_page=per_page)
+        # )
+        posts = pagination.items
+
     elif category == "帖子标题":
         pagination = (
             Post.query.filter(Post.title.like("%" + srchterm + "%"))

@@ -22,7 +22,7 @@ def login():
         if record:
             # g.user = record
             session["user_id"] = record.id
-            session["user"] = record
+            # session["user"] = record
             return redirect(url_for("posts.index"))
         # if username=='zkn' and password=='111':
         #     flash('登陆成功')

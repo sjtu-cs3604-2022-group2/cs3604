@@ -69,7 +69,7 @@ class Category(db.Model):
     __tablename__ = "category"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(32), unique=True)
-    posts = db.relationship("Post", backref="category")
+    posts = db.relationship("Post", backref="category") 
 
     def delete(self):
         default_category = Category.query.get(1)
