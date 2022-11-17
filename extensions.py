@@ -8,6 +8,9 @@ from flask_wtf import CSRFProtect
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
 
+from flask_ckeditor import CKEditor
+from flask_dropzone import Dropzone
+
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 # login_manager = LoginManager()
@@ -17,4 +20,5 @@ mail = Mail()
 moment = Moment()
 toolbar = DebugToolbarExtension()
 migrate = Migrate()
-# manager=Manager()
+ckeditor= CKEditor()
+dropzone=Dropzone()

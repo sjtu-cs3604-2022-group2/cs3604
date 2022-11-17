@@ -21,7 +21,8 @@ def login():
         record = User.query.filter_by(username=username, password=password).first()
         if record:
             # g.user = record
-            session['user_id']=record.id
+            session["user_id"] = record.id
+            session["user"] = record
             return redirect(url_for("posts.index"))
         # if username=='zkn' and password=='111':
         #     flash('登陆成功')
@@ -41,8 +42,7 @@ def login():
     return render_template("user/login.html", form=form, registerform=registerform)
 
 
-
-@bp.route('/follows',methods=['GET'])
+@bp.route("/follows", methods=["GET"])
 def follows():
     return render_template("user/friends.html")
 
@@ -50,7 +50,9 @@ def follows():
 @bp.route("/selfcenter")
 def selfcenter():
     return render_template("user/profile.html")
-@bp.route('/chat')
+
+
+@bp.route("/chat")
 def chat():
     return render_template("user/chat.html")
 
