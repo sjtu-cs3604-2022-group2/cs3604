@@ -202,9 +202,10 @@
     </div>
     {% block other_content %} {% endblock other_content%} {% block scripts %}
     <script>
-      function shows(a) {
-        $(".search-in-area").text(a);
-      }
+        function shows(a) {
+            $('.search-in-area').text(a);
+            $('#search-category').val(a);
+        }
     </script>
 
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
