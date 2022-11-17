@@ -13,6 +13,7 @@ theme blue:6fa8dc
 .container {
   padding: 0;
   margin-left: 5%;
+  width:90%;
 }
 
 .headernav {
@@ -646,7 +647,7 @@ theme blue:6fa8dc
 }
 
 .index .post-block .postinfo {
-  width: 50%;
+  width: 45%;
   height: 100%;
   margin: auto;
 }
@@ -696,3 +697,57 @@ theme blue:6fa8dc
   color: #001871;
   background-image: linear-gradient(to right bottom, #bbfefa, #b8fff4, #b6ffed, #b6ffe6, #b8ffdd, #bfffd7, #c6ffd1, #ceffcb, #d9ffc9, #e4ffc8, #eeffc7, #f7ffc8);
 } */
+
+
+.posttext p{
+  text-overflow: ellipsis;
+  height: 38px;
+  overflow: hidden;
+  /* width: 720px; */
+  width: 90%;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  letter-spacing: 2px;
+  font-size: 13px;
+
+}
+
+
+@media only screen and (min-width:1700px) {
+  .posttext p{
+    text-overflow: ellipsis;
+    height: 57px;
+    overflow: hidden;
+    width: 94%;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    word-break: break-all;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    letter-spacing: 2px;
+    font-size: 13px;
+  
+  }
+
+  .sidebarblock{
+    min-height:130px;
+  }
+
+.index .sidebarblock .topost div i,
+.index .sidebarblock .activities div i {
+  font-size: 33px;
+}
+  
+.index .sidebarblock .topost div ,
+.index .sidebarblock .activities div  {
+  line-height:130px;
+}
+
+.index .post-block .postinfo {
+  width:34%;
+}
+  
+}
