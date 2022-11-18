@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<!-- <link rel="stylesheet" type="text/css" href="../../static/css/user/login-style.css"> -->
+	<link rel="shortcut icon"  href="#"/>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/login-style.css')}}">
 	<link href="https://fonts.font.im/css?family=Kalam|Nunito" rel="stylesheet">
 	<title>Log in</title>
@@ -21,6 +21,12 @@
 		Habitat For Hobbies.
 	</div>
 
+	<div class="hidden">
+		<form action="{{url_for('user.get_captcha')}}" id="email_only" class="hidden">
+			<input type="text" class="hidden" name="email" id="hidden_email">
+		</form>
+	</div>
+
 	{% for message in get_flashed_messages() %}
                     <div class="form-group">
                         <div class="text-danger">
@@ -33,15 +39,18 @@
 
 		<!-- Sign Up -->
 		<div class="container__form container--signup">
-			<form action="{{url_for('user.login')}}" class="form" method="post">
+			<form action="{{url_for('user.login')}}" class="form" method="post" id="form2">
 				<h2 class="form__title">注册</h2>
-				{{registerform.csrf_token}}
+				{{registerform.csrf_token(class='notclear')}}
 				{{registerform.username}}
-				{{registerform.email}} 
+				{{registerform.email(id='register_email')}} 
+				<div class="add-on">
 				{{registerform.captcha}}
+				<button id="send-btn" onclick="send_captcha();return false;">发送验证码</button>
+				</div>
 				{{registerform.password}}
 				{{registerform.password_confirm}}
-				{{registerform.submit2}}
+				{{registerform.submit2(class='mybtn notclear')}}
 				
 			</form>
 		</div>
@@ -53,16 +62,16 @@
 				<button  class="btn" type="submit">注册</button> --><!-- Sign In --> #}
 				
 		<div class="container__form container--signin">
-			<form action="{{url_for('user.login')}}" class="form" method="post"> 
+			<form action="{{url_for('user.login')}}" class="form" method="post" id="form1"> 
 				<h2 class="form__title">登录</h2>
-				{{form.csrf_token}}
+				{{form.csrf_token(class='notclear')}}
 				{{form.username}}  <br>
 				{{form.password}}  <br>
 				<div class="link">
 					<span>或 &nbsp; </span>
 				<a href="#" class=" jaccount-login">Jaccount登录</a>
 				</div>
-				{{form.submit1}} 
+				{{form.submit1(class='mybtn notclear')}} 
 
 			</form>
 		</div>
@@ -91,15 +100,36 @@
 			<div class="overlay">
 
 				<div class="overlay__panel overlay--right">
-					<button class="btn" id="signIn">登录</button>
+					<button class="mybtn" id="signIn">登录</button>
 				</div>
 				<div class="overlay__panel overlay--left">
-					<button class="btn" id="signUp">注册</button>
+					<button class="mybtn" id="signUp">注册</button>
 				</div>
 			</div>
 		</div>
 	</div>
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
 	<script src="{{ url_for('static',filename='js/user/login-script.js')}}"></script>
+	<script>
+		function send_captcha(){
+			var email=$('#register_email')[0].value;
+			$('#hidden_email').val(email);
+			$.ajax({
+                type: "GET",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{url_for('user.get_captcha')}}" ,//url
+                data: $('#email_only').serialize(),
+                success: function () {},
+                error : function() { }
+            });
+			return false;
+		}
+	</script>
+	<script>
+		$(window).on('load',function(){
+			$('input:not(.notclear)').val('');
+		})
+	</script>
 </body>
 
 </html>
