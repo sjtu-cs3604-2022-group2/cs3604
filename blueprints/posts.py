@@ -109,7 +109,7 @@ def sports():
 def search():
     user_id = int(session.get("user_id"))
     user = User.query.get(user_id)
-    srchterm = request.args.get("srch-term", "")
+    srchterm = request.args.get("search-content", "")
     if srchterm == "":
         return redirect(request.referrer or url_for("posts.index"))
     print(srchterm)
