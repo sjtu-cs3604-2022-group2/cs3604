@@ -92,5 +92,4 @@ class NewPostForm(FlaskForm):
     title = StringField(label="title")
     post_text = CKEditorField(label="post_text", validators=[DataRequired()])
     categories = SelectMultipleField("categories", choices=object_list, coerce=int)
-
     submit = SubmitField(label="提交")

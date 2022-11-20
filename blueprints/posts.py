@@ -63,6 +63,7 @@ def upload():
     if "file" in request.files:
         f = request.files.get("file")
         filename = f.filename
+        print("filename:", filename)
         f.save(os.path.join(upload_path, filename))
     return "202"
 
@@ -72,11 +73,23 @@ def textform():
     return "202 "
 
 
-@bp.route("/newpost")
+@bp.route("/newpost", methods=["POST", "GET"])
 def newpost():
     user_id = int(session.get("user_id"))
     current_user = User.query.get(user_id)
     new_post_form = NewPostForm()
+    if new_post_form.submit.data:
+        print("hello word")
+        title = new_post_form.title.data
+        cats = new_post_form.categories.data  ### 这里允许多分类，但是目前数据库里面一篇post对应一个分类。
+        body = new_post_form.post_text.data
+
+        new_post = Post(title=title, category=cats[0], body=body)
+
+        db.session.add(new_post)
+        db.session.commit()
+        return "已经成功提交"
+
     return render_template("posts/newpost-tmp-extend.html", current_user=current_user, new_post_form=new_post_form)
 
 
@@ -139,9 +152,16 @@ def search():
         )
         posts = pagination.items
     elif category == "分区":
-        #### 分区还没写好
+        ### 分区还没写好
+        post_category = Category.query.filter( Category.name == srchterm).first()
+        pagination = Post.query.with_parent(post_category).order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
         # pagination = (
-        #     Category.query.filter_by(Category.names==category).first().post
+        #     # Category.query.filter(Category.name == srchterm)
+        #     # .first()
+        #     # .posts
+        #     # .paginate(page=page, per_page=per_page)
+        #     Post.query.filter( Category.query.get(Post.category_id).first().name == srchterm)
+
         #     .order_by(Post.timestamp.desc())
         #     .paginate(page=page, per_page=per_page)
         # )
@@ -157,4 +177,5 @@ def search():
 
     # return url_for("search_result", search_content="")
     # return srchterm
+        
     return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)

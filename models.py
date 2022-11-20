@@ -68,7 +68,7 @@ class Category(db.Model):
     __tablename__ = "category"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(32), unique=True)
-    posts = db.relationship("Post", backref="category") 
+    posts = db.relationship("Post", backref="category",lazy='dynamic') 
 
     def delete(self):
         default_category = Category.query.get(1)
@@ -93,7 +93,7 @@ class Post(db.Model):
 
     # 隐式属性
     # user = db.relationship('User', back_populates='posts')
-    # category = db.relationship('Category', back_populates='posts')
+    # category = db.relationship('Category', back_ref='posts')
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     category_id = db.Column(db.Integer, db.ForeignKey("category.id"))
 
