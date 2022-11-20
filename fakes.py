@@ -178,10 +178,10 @@ def real_user(count=50):
     db.session.commit()
     for u in User.query.all():
         for i in range(3):
-            if not u.id:
+            if getattr(u, 'id', 0):
                 positive = random_relation(count, u.id)
                 follow_u = User.query.get(positive)
-                if not follow_u:
+                if follow_u:
                     u.follow(follow_u)
     db.session.commit()
 
@@ -190,6 +190,9 @@ def real_data_load(user=50, category=10, post=100):
     db.drop_all()
     db.create_all()
     real_categories(category)
+    print(f'create categories: {category}')
     real_user(user)
+    print(f'create user: {user}')
     real_post(post)
+    print(f'create post: {post}')
     return
