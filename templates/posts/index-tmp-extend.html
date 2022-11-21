@@ -19,7 +19,8 @@ render_pagination %} {% block head %}
           class="col-lg-9 col-md-9"
           style="padding-left: 0; margin-top: 20px"
         >
-          {# POSTs #} {% for i in range( (index_posts | length) )%}
+          {% if (index_posts | length) >0 %} {# POSTs #} {% for i in range(
+          (index_posts | length) )%}
           <div class="post post-block">
             <div class="wrap-ut pull-left">
               <div class="wrapper pull-left">
@@ -97,7 +98,8 @@ render_pagination %} {% block head %}
 
             <div class="clearfix"></div>
           </div>
-          {% endfor %}
+          {% endfor %} 
+          {% else %} "暂无结果" {% endif %}
         </div>
 
         {# Siderbars #}

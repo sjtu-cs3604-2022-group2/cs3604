@@ -63,6 +63,7 @@ def upload():
     if "file" in request.files:
         f = request.files.get("file")
         filename = f.filename
+        print("filename:", filename)
         f.save(os.path.join(upload_path, filename))
     return "202"
 
@@ -72,17 +73,44 @@ def textform():
     return "202 "
 
 
-@bp.route("/newpost")
+@bp.route("/newpost", methods=["POST", "GET"])
 def newpost():
     user_id = int(session.get("user_id"))
     current_user = User.query.get(user_id)
     new_post_form = NewPostForm()
+    if new_post_form.submit.data:
+        print("hello word")
+        title = new_post_form.title.data
+        cats = new_post_form.categories.data  ### 这里允许多分类，但是目前数据库里面一篇post对应一个分类。
+        body = new_post_form.post_text.data
+
+        new_post = Post(title=title, category=cats[0], body=body)
+
+        db.session.add(new_post)
+        db.session.commit()
+        return "已经成功提交"
+
     return render_template("posts/newpost-tmp-extend.html", current_user=current_user, new_post_form=new_post_form)
+
+
+@bp.route("/anime")
+def anime():
+    user_id = int(session.get("user_id"))
+    user = User.query.get(user_id)
+    per_page = current_app.config["POST_PER_PAGE"]
+    pagination = Post.query.filter(Post.category_id==2).order_by(Post.timestamp.desc()).paginate(page=1, per_page=per_page)
+    posts = pagination.items
+    return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)
 
 
 @bp.route("/music")
 def music():
-    return "这是音乐分区"
+    user_id = int(session.get("user_id"))
+    user = User.query.get(user_id)
+    per_page = current_app.config["POST_PER_PAGE"]
+    pagination = Post.query.filter(Post.category_id==5).order_by(Post.timestamp.desc()).paginate(page=1, per_page=per_page)
+    posts = pagination.items
+    return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)
 
 
 @bp.route("/games")
@@ -90,18 +118,18 @@ def games():
     return "这是游戏分区"
 
 
-@bp.route("/art")
-def art():
+@bp.route("/sport")
+def sports():
+    return "这是体育分区"
+
+
+@bp.route("/local")
+def local():
     from fakes import real_data_load
 
     real_data_load()
 
-    return "这是艺术分区"
-
-
-@bp.route("/sport")
-def sports():
-    return "这是运动分区"
+    return "从本地成功更新数据库"
 
 
 @bp.route("/search", methods=["GET", "POST"])
@@ -109,7 +137,7 @@ def sports():
 def search():
     user_id = int(session.get("user_id"))
     user = User.query.get(user_id)
-    srchterm = request.args.get("srch-term", "")
+    srchterm = request.args.get("search-content", "")
     if srchterm == "":
         return redirect(request.referrer or url_for("posts.index"))
     print(srchterm)
@@ -139,9 +167,16 @@ def search():
         )
         posts = pagination.items
     elif category == "分区":
-        #### 分区还没写好
+        ### 分区还没写好
+        post_category = Category.query.filter( Category.name == srchterm).first()
+        pagination = Post.query.with_parent(post_category).order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
         # pagination = (
-        #     Category.query.filter_by(Category.names==category).first().post
+        #     # Category.query.filter(Category.name == srchterm)
+        #     # .first()
+        #     # .posts
+        #     # .paginate(page=page, per_page=per_page)
+        #     Post.query.filter( Category.query.get(Post.category_id).first().name == srchterm)
+
         #     .order_by(Post.timestamp.desc())
         #     .paginate(page=page, per_page=per_page)
         # )
@@ -157,4 +192,5 @@ def search():
 
     # return url_for("search_result", search_content="")
     # return srchterm
+        
     return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)

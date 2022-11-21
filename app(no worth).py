@@ -1,6 +1,6 @@
 from datetime import timedelta
 from flask import Flask, session, g
-import config
+# import config
 import os
 from extensions import db, mail
 from blueprints.posts import bp as posts_bp
@@ -11,7 +11,7 @@ from models import User
 # from flask_script import Manager
 app = Flask(__name__)
 ### 注册配置
-app.config.from_object(config)
+# app.config.from_object(config)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///'+ os.path.join(app.root_path, 'data.db'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

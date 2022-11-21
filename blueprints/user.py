@@ -1,4 +1,5 @@
 from datetime import datetime
+from collections import namedtuple
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g
 from flask_mail import Message
 from extensions import mail, db
@@ -45,7 +46,7 @@ def login():
 @bp.route("/follows", methods=["GET"])
 def follows():
     try:
-        id = session['user_id']
+        id = session["user_id"]
         user = User.query.get(id)
     except:
         return redirect(url_for("user.login"))
@@ -54,15 +55,18 @@ def follows():
 
 @bp.route("/selfcenter")
 def selfcenter():
+    Current = namedtuple('Current', ['image', 'username', 'follow', 'posts'])
     try:
-        id = session['user_id']
+        id = session["user_id"]
         user = User.query.get(id)
+        followers = user.followers.all()
+        current_user = Current(user.image, user.username, followers, user.posts)
     except:
         return redirect(url_for("user.login"))
-    return render_template("user/profile.html", current_user=user)
+    return render_template("user/profile.html", current_user=current_user, poster_user=current_user)
 
 
-@bp.route('/chat')
+@bp.route("/chat")
 def chat():
     return render_template("user/chat.html")
 
@@ -98,7 +102,7 @@ def get_captcha():
     address = request.args.get("email")  ### 通过get方法获得的邮箱地址
     chars = string.ascii_letters + string.digits
     captcha = "".join(random.sample(chars, 4))  ##随机生成的验证码
-    message = Message(subject="发送验证码", recipients=[address], body=f"【康宁问答】你的注册验证码是，{captcha}")
+    message = Message(subject="发送验证码", recipients=[address], body=f"【Hobbitat】你的注册验证码是，{captcha}")
     record = Email.query.filter_by(email=address).first()
 
     if record:
