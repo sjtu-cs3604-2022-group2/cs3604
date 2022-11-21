@@ -153,7 +153,7 @@
             <div class="lb-action"><i class="material-icons">edit</i></div>
           </div>
           <div id="i-box">
-            {{poster_user.text_profile}}
+            {{poster_user.about}}
             <div id="u-loc"><i class="material-icons">location_on</i><a href="#">Shanghai</a>, <a href="#">China</a>
             </div>
           </div>
@@ -234,7 +234,7 @@
             <div class="td">
               <div class="tb" id="p-tabs-m">
                 <div class="td active"><i class="material-icons">av_timer</i><span>动态</span></div>
-                <div class="td"><a href = "./friends.html"><i class="material-icons">people</i><span>关注的人</span></a></div>
+                <div class="td"><a href = "./follows.html"><i class="material-icons">people</i><span>关注的人</span></a></div>
                 <div class="td"><i class="material-icons">photo</i><span>相册</span></div>
                 <div class="td"><i class="material-icons">explore</i><span>关于</span></div>
                 <div class="td"><i class="material-icons">archive</i><span>资料</span></div>
@@ -272,23 +272,26 @@
                   alt="Rajeev's profile pic"></a>
               <div class="td p-r-hdr">
                 <div class="p-u-info">
-                  <a href="#">{{poster_user.username}}</a>分享了一段经历关于 <a href="#">{{poster_user.posts[0].atuser}}</a>
+                  <a href="#">{{poster_user.username}}</a>分享了一段经历关于 <a href="#">{{poster_user.posts[0].category}}</a>
                 </div>
                 <div class="p-dt">
                   <i class="material-icons">calendar_today</i>
-                  <span>{{poster_user.posts[0].date}}</span>
+                  <span>{{poster_user.posts[0].timestamp}}</span>
+                </div>
+                <div class="post-body">
+                  {{poster_user.posts[0].body}}
                 </div>
               </div>
               <div class="td p-opt"><i class="material-icons">keyboard_arrow_down</i></div>
             </div>
             <a href="#" class="p-cnt-v">
               <img
-                src={{poster_user.posts[0].image}}
+                src="{{poster_user.posts[0].image}}?"
                  style="margin: auto;width:400px; height:380px">
             </a>
             <div>
               <div class="p-acts">
-                <div class="p-act like"><i class="material-icons">thumb_up_alt</i><span>{{poster_user.posts[0].thumb}}</span></div>
+                <div class="p-act like"><i class="material-icons">thumb_up_alt</i><span>{{poster_user.posts[0].num_likes}}</span></div>
                 <!-- <div class="p-act comment"><i class="material-icons">comment</i><span>1</span></div>
                 <div class="p-act share"><i class="material-icons">reply</i></div> -->
               </div>
@@ -302,7 +305,7 @@
           <div id="chat-lb"><i class="material-icons"></i><span>好友</span></div>
           <div id="cts">
             <div class="on-ct active">
-              <a href="#"><img src={{poster_user.all_followers[0].image}}></a>
+              <a href="#"><img src={{poster_user.follow[0].image}}></a>
             </div>
             
             <!-- <div class="on-ct active">

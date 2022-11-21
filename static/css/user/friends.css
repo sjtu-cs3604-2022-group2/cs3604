@@ -1,3 +1,26 @@
 img.avatar {
 	width: 50px;
   }
+
+  body {
+    display: flex;
+    background-image: var(--body-bg);
+    font-family: Helvetica, sans-serif;
+    flex-flow: column wrap;
+    padding:0px; margin:0px;
+    
+
+  }
+  .line-limit-length {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; 
+    max-width: 15px;
+}
+.hanzi-font{
+
+    text-align: center; /*居中*/
+    font-size: 50px; /*字体大小*/
+    color: rgb(47, 140, 211); /*字体颜色*/
+    font-family:STKaiti3   ; /*设置字体为华文彩云*/
+}

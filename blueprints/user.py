@@ -1,5 +1,4 @@
 from datetime import datetime
-from collections import namedtuple
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g
 from flask_mail import Message
 from extensions import mail, db
@@ -46,7 +45,7 @@ def login():
 @bp.route("/follows", methods=["GET"])
 def follows():
     try:
-        id = session["user_id"]
+        id = session['user_id']
         user = User.query.get(id)
     except:
         return redirect(url_for("user.login"))
@@ -55,20 +54,18 @@ def follows():
 
 @bp.route("/selfcenter")
 def selfcenter():
-    Current = namedtuple('Current', ['image', 'username', 'follow', 'posts'])
     try:
-        id = session["user_id"]
+        id = session['user_id']
         user = User.query.get(id)
-        followers = user.followers.all()
-        current_user = Current(user.image, user.username, followers, user.posts)
     except:
         return redirect(url_for("user.login"))
-    return render_template("user/profile.html", current_user=current_user, poster_user=current_user)
+    return render_template("user/profile.html", current_user=user)
 
 
-@bp.route("/chat")
+@bp.route('/chat')
 def chat():
-    return render_template("user/chat.html")
+    chat={'url':"https://tse1-mm.cn.bing.net/th/id/OIP-C.4AJntm4bSRu9C2_h90WTfAAAAA?w=225&h=220&c=7&r=0&o=5&dpr=1.6&pid=1.7",'rightuser':{'username':'sam'},'message':[{"text":"hi"},{"text":"nihao"},{"text":"加个好友吧？"}]}
+    return render_template("user/chat.html",chat=chat)
 
 
 @bp.route("/logout")
@@ -102,7 +99,7 @@ def get_captcha():
     address = request.args.get("email")  ### 通过get方法获得的邮箱地址
     chars = string.ascii_letters + string.digits
     captcha = "".join(random.sample(chars, 4))  ##随机生成的验证码
-    message = Message(subject="发送验证码", recipients=[address], body=f"【Hobbitat】你的注册验证码是，{captcha}")
+    message = Message(subject="发送验证码", recipients=[address], body=f"【康宁问答】你的注册验证码是，{captcha}")
     record = Email.query.filter_by(email=address).first()
 
     if record:
