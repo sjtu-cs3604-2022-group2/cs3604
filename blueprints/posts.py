@@ -4,13 +4,13 @@ from decorators import login_request
 from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
 from extensions import db
 import os
-from models import Category, Post, User
+from models import Category, Photo, Post, User
 from sqlalchemy import or_, and_
 import random
-
+# from 
 bp = Blueprint("posts", __name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
-upload_path = os.path.join(basedir, "upload")
+# upload_path = os.path.join(basedir, "uploads")
 
 
 @bp.route("/", defaults={"page": 1})
@@ -83,13 +83,23 @@ def detail(post_id):
     )
 
 
-@bp.route("/upload", methods=["POST"])
+@bp.route("/upload", methods=["GET","POST"])
 def upload():
-    if "file" in request.files:
+    
+    if request.method=='POST' and "file" in request.files:
+
+        current_user= User.query.get(session['user_id'])
         f = request.files.get("file")
         filename = f.filename
+        upload_path= current_app.config['FILE_UPLOAD_PATH']
         print("filename:", filename)
         f.save(os.path.join(upload_path, filename))
+        photo=Photo(
+            filename=filename,
+            user=current_user   
+        )
+        db.session.add(photo)
+        db.session.commit()
     return "202"
 
 

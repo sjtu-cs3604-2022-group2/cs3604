@@ -36,7 +36,7 @@ class User(db.Model):
     about = db.Column(db.Text, nullable=True)
     image = db.Column(db.String(128), nullable=True)
     posts = db.relationship("Post", backref="user", lazy="dynamic")
-    
+    photos= db.relationship("Photo", back_populates="user", cascade="all")
     comments = db.relationship("Comment", backref="user", lazy="dynamic")
     followed = db.relationship("Follow",
                                foreign_keys=[Follow.follower_id],
@@ -67,6 +67,15 @@ class User(db.Model):
         return self.followers.filter_by(
             follower_id=user.id).first() is not None
 
+class Photo(db.Model):
+    id=db.Column(db.Integer,primary_key=True)
+    description=db.Column(db.String(500))
+    filename=db.Column(db.String(64))
+    timestamp=db.Column(db.DateTime,default=datetime.utcnow)
+    user_id=db.Column(db.Integer,db.ForeignKey('user.id'))
+    user=db.relationship('User',back_populates='photos')
+    
+                        
 class Category(db.Model):
     __tablename__ = "category"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
