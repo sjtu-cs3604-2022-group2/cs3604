@@ -93,9 +93,24 @@ def newpost():
     return render_template("posts/newpost-tmp-extend.html", current_user=current_user, new_post_form=new_post_form)
 
 
+@bp.route("/anime")
+def anime():
+    user_id = int(session.get("user_id"))
+    user = User.query.get(user_id)
+    per_page = current_app.config["POST_PER_PAGE"]
+    pagination = Post.query.filter(Post.category_id==2).order_by(Post.timestamp.desc()).paginate(page=1, per_page=per_page)
+    posts = pagination.items
+    return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)
+
+
 @bp.route("/music")
 def music():
-    return "这是音乐分区"
+    user_id = int(session.get("user_id"))
+    user = User.query.get(user_id)
+    per_page = current_app.config["POST_PER_PAGE"]
+    pagination = Post.query.filter(Post.category_id==5).order_by(Post.timestamp.desc()).paginate(page=1, per_page=per_page)
+    posts = pagination.items
+    return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)
 
 
 @bp.route("/games")
@@ -103,18 +118,18 @@ def games():
     return "这是游戏分区"
 
 
-@bp.route("/art")
-def art():
+@bp.route("/sport")
+def sports():
+    return "这是体育分区"
+
+
+@bp.route("/local")
+def local():
     from fakes import real_data_load
 
     real_data_load()
 
-    return "这是艺术分区"
-
-
-@bp.route("/sport")
-def sports():
-    return "这是运动分区"
+    return "从本地成功更新数据库"
 
 
 @bp.route("/search", methods=["GET", "POST"])
