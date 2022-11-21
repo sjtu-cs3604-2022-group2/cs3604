@@ -6,6 +6,7 @@ LastEditTime: 2022-11-13 20:46:47
 FilePath: \hobbitat\models.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 """
+from email.policy import default
 from extensions import db
 from datetime import datetime
 
@@ -35,6 +36,7 @@ class User(db.Model):
     about = db.Column(db.Text, nullable=True)
     image = db.Column(db.String(128), nullable=True)
     posts = db.relationship("Post", backref="user", lazy="dynamic")
+    
     comments = db.relationship("Comment", backref="user", lazy="dynamic")
     followed = db.relationship("Follow",
                                foreign_keys=[Follow.follower_id],
@@ -46,6 +48,7 @@ class User(db.Model):
                                 backref=db.backref("followed", lazy="joined"),
                                 lazy="dynamic",
                                 cascade="all, delete-orphan")
+    
     def follow(self, user):
         if not self.is_following(user):
             f = Follow(follower=self, followed=user)
@@ -87,9 +90,9 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     can_comment = db.Column(db.Boolean, default=True)
 
-    num_likes = db.Column(db.Integer)
-    num_comments = db.Column(db.Integer)
-    num_views = db.Column(db.Integer)
+    num_likes = db.Column(db.Integer,default=0)
+    num_comments = db.Column(db.Integer,default=0)
+    num_views = db.Column(db.Integer,default=0)
 
     # 隐式属性
     # user = db.relationship('User', back_populates='posts')

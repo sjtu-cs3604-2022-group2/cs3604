@@ -6,6 +6,7 @@ from extensions import db
 import os
 from models import Category, Post, User
 from sqlalchemy import or_, and_
+import random
 
 bp = Blueprint("posts", __name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -24,7 +25,31 @@ def index(page):
     # print(per_page)
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
     posts = pagination.items
-    return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)
+    cat_record = dict()
+    for p in user.posts:
+        cat_record[p.category_id] = cat_record.get(p.category_id, 0) + 1
+
+    recommend_category = sorted(list(cat_record.keys()), key=lambda x: cat_record[x], reverse=True)[:2]
+    print(recommend_category)
+    recommend_posts = Post.query.filter(
+        or_(Post.category_id == recommend_category[0], Post.category_id == recommend_category[1])
+    ).all()
+    recommend_posts = recommend_posts[:10]
+    random.shuffle(recommend_posts)
+
+    # for po in Post.query.filter(
+    #     or_(
+    #     Post.category_id==recommend_category[0],
+    #     Post.category_id==recommend_category[1]
+    #     )).all():
+
+    return render_template(
+        "posts/index-tmp-extend.html",
+        pagination=pagination,
+        index_posts=posts,
+        current_user=user,
+        recommend_posts=recommend_posts,
+    )
 
 
 @bp.route("/detail/<int:post_id>")
@@ -78,17 +103,19 @@ def newpost():
     user_id = int(session.get("user_id"))
     current_user = User.query.get(user_id)
     new_post_form = NewPostForm()
-    if new_post_form.submit.data:
+    if request.method == "POST":
         print("hello word")
         title = new_post_form.title.data
-        cats = new_post_form.categories.data  ### 这里允许多分类，但是目前数据库里面一篇post对应一个分类。
-        body = new_post_form.post_text.data
-
-        new_post = Post(title=title, category=cats[0], body=body)
-
+        cat_id = new_post_form.categories.data[0]  ### 这里允许多分类，但是目前数据库里面一篇post对应一个分类。
+        body = new_post_form.post_text.data[3:-6]  ### 去掉两边的标签
+        # print(title,cat_id,body)
+        new_post = Post(title=title, category_id=cat_id, body=body)
+        new_post.user_id = user_id
+        new_post.user = current_user
         db.session.add(new_post)
         db.session.commit()
-        return "已经成功提交"
+        # return "已经成功提交"
+        return redirect(url_for("posts.index"))
 
     return render_template("posts/newpost-tmp-extend.html", current_user=current_user, new_post_form=new_post_form)
 
@@ -98,7 +125,9 @@ def anime():
     user_id = int(session.get("user_id"))
     user = User.query.get(user_id)
     per_page = current_app.config["POST_PER_PAGE"]
-    pagination = Post.query.filter(Post.category_id==2).order_by(Post.timestamp.desc()).paginate(page=1, per_page=per_page)
+    pagination = (
+        Post.query.filter(Post.category_id == 2).order_by(Post.timestamp.desc()).paginate(page=1, per_page=per_page)
+    )
     posts = pagination.items
     return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)
 
@@ -108,7 +137,9 @@ def music():
     user_id = int(session.get("user_id"))
     user = User.query.get(user_id)
     per_page = current_app.config["POST_PER_PAGE"]
-    pagination = Post.query.filter(Post.category_id==5).order_by(Post.timestamp.desc()).paginate(page=1, per_page=per_page)
+    pagination = (
+        Post.query.filter(Post.category_id == 5).order_by(Post.timestamp.desc()).paginate(page=1, per_page=per_page)
+    )
     posts = pagination.items
     return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)
 
@@ -132,16 +163,16 @@ def local():
     return "从本地成功更新数据库"
 
 
-@bp.route("/search", methods=["GET", "POST"])
-@bp.route("/search_result")
+# @bp.route("/search", methods=["GET", "POST"])
+@bp.route("/search/")
 def search():
     user_id = int(session.get("user_id"))
     user = User.query.get(user_id)
-    srchterm = request.args.get("search-content", "")
+    srchterm = request.args.get("search_content", "")
     if srchterm == "":
         return redirect(request.referrer or url_for("posts.index"))
-    print(srchterm)
-    category = request.args.get("search-category", "帖子内容")
+    # print(srchterm)
+    category = request.args.get("search_category", "分区")
     print(category)
     page = request.args.get("page", 1, type=int)
 
@@ -168,8 +199,10 @@ def search():
         posts = pagination.items
     elif category == "分区":
         ### 分区还没写好
-        post_category = Category.query.filter( Category.name == srchterm).first()
-        pagination = Post.query.with_parent(post_category).order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
+        post_category = Category.query.filter(Category.name == srchterm).first()
+        pagination = (
+            Post.query.with_parent(post_category).order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
+        )
         # pagination = (
         #     # Category.query.filter(Category.name == srchterm)
         #     # .first()
@@ -192,5 +225,5 @@ def search():
 
     # return url_for("search_result", search_content="")
     # return srchterm
-        
+
     return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)

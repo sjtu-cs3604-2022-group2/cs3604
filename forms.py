@@ -88,7 +88,7 @@ class ReportForm(FlaskForm):
 
 
 class NewPostForm(FlaskForm):
-    object_list = [(0, "音乐"), (1, "艺术"), (2, "运动"), (3, "游戏")]
+    object_list = [(1, "Default"), (2, "动画"), (3, "小说"), (4, "游戏"),(5,"音乐"),(6,"体育")]
     title = StringField(label="title")
     post_text = CKEditorField(label="post_text", validators=[DataRequired()])
     categories = SelectMultipleField("categories", choices=object_list, coerce=int)

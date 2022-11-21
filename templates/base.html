@@ -41,9 +41,9 @@
                         <div class="navbar-search ">
                             <form class="navbar-form" role="search" method='get' action="{{url_for('posts.search')}}">
                                 <div class="input-group add-on">
-                                    <input id="search-category" name="search-category" type='text' value='帖子标题' style="display: none;">
+                                    <input id="search_category" name="search_category" type='text' value='帖子标题' style="display: none;">
                                     <input class="form-control form-control222" placeholder="搜索"
-                                        name="search-content" id="srch-term" type="text">
+                                        name="search_content" id="srch-term" type="text">
                                     
                                         <div class="input-group-btn">
                                             <button type="button" class="btn btn-default 
@@ -144,7 +144,7 @@
     <script>
         function shows(a) {
             $('.search-in-area').text(a);
-            $('#search-category').val(a);
+            $('#search_category').val(a);
         }
     </script>
 

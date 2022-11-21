@@ -30,7 +30,10 @@ render_pagination %} {% block head %}
                   </div>
 
                   <div class="postername">
-                    {{(index_posts[i].user).username}}
+                    <a href="#">
+                      <span>{{(index_posts[i].user).username}}</span>
+                    </a>
+                   
                   </div>
                 </div>
               </div>
@@ -64,7 +67,7 @@ render_pagination %} {% block head %}
 
                 <div class="tag">
                   <div class="category{{(index_posts[i].category).id}}">
-                    <a href="#">
+                    <a href="{{url_for("posts.search",search_content=index_posts[i].category.name,search_category="分区")}}">
                       <span class="tag-icon"></span>
                       <span>{{(index_posts[i].category).name}}</span>
                     </a>
@@ -92,7 +95,7 @@ render_pagination %} {% block head %}
               </div>
               <div class="latest">
                 <i class="iconfont icon-time"></i>
-                <span>{{index_posts[i].latest_time}}</span>
+                <span>{{index_posts[i].timestamp}}</span>
               </div>
             </div>
 
@@ -131,6 +134,12 @@ render_pagination %} {% block head %}
               "
             >
               推荐话题
+              {% for po in recommend_posts%}
+                    <a href={{url_for('posts.detail',post_id=po.id)}}>
+                      {{po.title}} 
+                    </a>
+              {% endfor %}
+
             </h3>
             <div class="divline"></div>
             <div class="blocktxt">
