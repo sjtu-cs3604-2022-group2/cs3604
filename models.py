@@ -87,7 +87,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(64))
     body = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     can_comment = db.Column(db.Boolean, default=True)
 
     num_likes = db.Column(db.Integer,default=0)
