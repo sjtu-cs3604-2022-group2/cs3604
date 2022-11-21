@@ -162,45 +162,49 @@
             <span><i class="fas fa-cog"></i></span>
           </div>
         </header>
-
         <main class="msger-chat">
-          <div class="msg left-msg">
-            <div
-             class="msg-img"
-             style="background-image: url(https://tse2-mm.cn.bing.net/th/id/OIP-C.GG8lVnnjn-tUYAjlL4LGAQAAAA?w=198&h=198&c=7&r=0&o=5&dpr=1.6&pid=1.7)"
-            ></div>
-
-            <div class="msg-bubble">
-              <div class="msg-info">
-                <div class="msg-info-name">BOT</div>
-                <div class="msg-info-time">12:45</div>
+        {% for message in chat.message %}
+            {% if message.owner =='left' %}
+            <div class="msg left-msg">
+                <div
+                 class="msg-img"
+                 style="background-image: url({{chat.leftuser.image}})"
+                ></div>
+    
+                <div class="msg-bubble">
+                  <div class="msg-info">
+                    <div class="msg-info-name">{{chat.leftuser.username}}</div>
+                    <div class="msg-info-time">{{message.date_and_time}}</div>
+                  </div>
+    
+                  <div class="msg-text">
+                    {{message.text}}
+                  </div>
+                </div>
+              </div>
+            {% else %}
+            <div class="msg right-msg">
+                <div
+                 class="msg-img"
+                 style="background-image: url({{chat.rightuser.image}})"
+                ></div>
+    
+                <div class="msg-bubble">
+                  <div class="msg-info">
+                    <div class="msg-info-name">{{chat.rightuser.username}}</div>
+                    <div class="msg-info-time">{{message.date_and_time}}</div>
+                  </div>
+    
+                  <div class="msg-text">
+                    {{message.text}}
+                  </div>
+                </div>
               </div>
 
-              <div class="msg-text">
-                Hi, welcome to SimpleChat! Go ahead and send me a message. 😄
-              </div>
-            </div>
-          </div>
-        {%for i in chat['message']%}
-          <div class="msg right-msg">
-            <div
-             class="msg-img"
-             style="background-image: url(https://cn.bing.com/images/search?view=detailV2&ccid=JP4p6VvD&id=81DFEB13CF0B2E4FAF56CA24DF5CFB6AF544A3BB&thid=OIP.JP4p6VvD-8-eeKPUhEzmIwAAAA&mediaurl=https%3a%2f%2ftupian.qqw21.com%2farticle%2fUploadPic%2f2020-1%2f20201122246510666.jpg&exph=420&expw=420&q=%e5%a4%b4%e5%83%8f&simid=608012965414322770&FORM=IRPRST&ck=2D8991EBF9A31CC0AEE07F0693B78642&selectedIndex=33)"
-            ></div>
 
-            <div class="msg-bubble">
-              <div class="msg-info">
-                <div class="msg-info-name">{{chat['rightuser']['username']}}</div>
-                <div class="msg-info-time">2022.11.20 12:23</div>
-              </div>
+            {% endif %}
 
-              <div class="msg-text">
-                {{i['text']}}
-              </div>
-            </div>
-          </div>
-
-        {%endfor%}
+        {% endfor %}
           
         </main>
 

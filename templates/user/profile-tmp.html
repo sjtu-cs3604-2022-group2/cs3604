@@ -130,7 +130,7 @@
       <div id="profile-pic">
         <img src="https://img2.baidu.com/it/u=3275146607,3109421865&fm=253&fmt=auto&app=138&f=JPEG?w=359&h=364">
       </div>
-      <div id="u-name">Username</div>
+      <div id="u-name">{{poster_user.username}}</div>
       <div class="tb" id="m-btns">
         <div class="td">
           <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href = "/user/chat"><span>聊天</span></a></div>
@@ -153,7 +153,7 @@
             <div class="lb-action"><i class="material-icons">edit</i></div>
           </div>
           <div id="i-box">
-            user自我简介
+            {{poster_user.text_profile}}
             <div id="u-loc"><i class="material-icons">location_on</i><a href="#">Shanghai</a>, <a href="#">China</a>
             </div>
           </div>
@@ -272,23 +272,23 @@
                   alt="Rajeev's profile pic"></a>
               <div class="td p-r-hdr">
                 <div class="p-u-info">
-                  <a href="#">Username</a>分享了一段经历关于 <a href="#">@的用户</a>
+                  <a href="#">{{poster_user.username}}</a>分享了一段经历关于 <a href="#">{{poster_user.posts[0].atuser}}</a>
                 </div>
                 <div class="p-dt">
                   <i class="material-icons">calendar_today</i>
-                  <span>动态发送时间</span>
+                  <span>{{poster_user.posts[0].date}}</span>
                 </div>
               </div>
               <div class="td p-opt"><i class="material-icons">keyboard_arrow_down</i></div>
             </div>
             <a href="#" class="p-cnt-v">
               <img
-                src="动态图片"
+                src={{poster_user.posts[0].image}}
                  style="margin: auto;width:400px; height:380px">
             </a>
             <div>
               <div class="p-acts">
-                <div class="p-act like"><i class="material-icons">thumb_up_alt</i><span>11111111111</span></div>
+                <div class="p-act like"><i class="material-icons">thumb_up_alt</i><span>{{poster_user.posts[0].thumb}}</span></div>
                 <!-- <div class="p-act comment"><i class="material-icons">comment</i><span>1</span></div>
                 <div class="p-act share"><i class="material-icons">reply</i></div> -->
               </div>
@@ -302,7 +302,7 @@
           <div id="chat-lb"><i class="material-icons"></i><span>好友</span></div>
           <div id="cts">
             <div class="on-ct active">
-              <a href="#"><img src="image"></a>
+              <a href="#"><img src={{poster_user.all_followers[0].image}}></a>
             </div>
             
             <!-- <div class="on-ct active">
