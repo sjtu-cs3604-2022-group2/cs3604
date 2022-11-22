@@ -26,6 +26,19 @@ class Email(db.Model):
     create_time = db.Column(db.DateTime, default=datetime.now)
 
 
+user_like_post_table=db.Table('user_like_post', 
+                        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
+                        db.Column('post_id',db.Integer(),db.ForeignKey('post.id'))
+                        )
+
+
+user_like_comment_table=db.Table('user_like_comment', 
+                        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
+                        db.Column('commment_id',db.Integer(),db.ForeignKey('comment.id'))
+                        )
+
+
+    
 class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -38,6 +51,9 @@ class User(db.Model):
     posts = db.relationship("Post", backref="user", lazy="dynamic")
     photos= db.relationship("Photo", back_populates="user", cascade="all")
     comments = db.relationship("Comment", backref="user", lazy="dynamic")
+    like_posts= db.relationship("Post", secondary=user_like_post_table,back_populates='like_users')
+    like_comments=db.relationship('Comment', secondary=user_like_comment_table,back_populates='like_users')
+    
     followed = db.relationship("Follow",
                                foreign_keys=[Follow.follower_id],
                                backref=db.backref("follower", lazy="joined"),
@@ -102,6 +118,7 @@ class Post(db.Model):
     num_likes = db.Column(db.Integer,default=0)
     num_comments = db.Column(db.Integer,default=0)
     num_views = db.Column(db.Integer,default=0)
+    like_users= db.relationship('User',secondary=user_like_post_table,back_populates='like_posts')
 
     # 隐式属性
     # user = db.relationship('User', back_populates='posts')
@@ -123,6 +140,7 @@ class Comment(db.Model):
     # 隐式属性
     # user = db.relationship('User', back_populates='comments')
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    like_users= db.relationship('User',secondary=user_like_comment_table,back_populates='like_comments')
 
     # add a foreign key pointing self. 在同一个模型内的一对多关系称为邻接列表关系（Adjacency List Relationship)
     replied_id = db.Column(db.Integer, db.ForeignKey("comment.id"))

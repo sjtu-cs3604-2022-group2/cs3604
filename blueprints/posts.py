@@ -1,13 +1,15 @@
 # from unicodedata import category
+
 from flask import Blueprint, render_template, g, flash, request, redirect, url_for, current_app, session
 from decorators import login_request
 from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
 from extensions import db
 import os
-from models import Category, Photo, Post, User
+from models import Category, Photo, Post, User, Comment
 from sqlalchemy import or_, and_
 import random
-# from 
+
+# from
 bp = Blueprint("posts", __name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 # upload_path = os.path.join(basedir, "uploads")
@@ -83,23 +85,22 @@ def detail(post_id):
     )
 
 
-from app import  csrf
+from app import csrf
 from flask_dropzone import random_filename
+
+
 @csrf.exempt
-@bp.route("/upload", methods=["POST","GET"])
-def upload():  
-    if request.method=='POST' and "file" in request.files:
-        current_user= User.query.get(session['user_id'])
+@bp.route("/upload", methods=["POST", "GET"])
+def upload():
+    if request.method == "POST" and "file" in request.files:
+        current_user = User.query.get(session["user_id"])
         f = request.files.get("file")
         filename = f.filename
-        upload_path= current_app.config['FILE_UPLOAD_PATH']
+        upload_path = current_app.config["FILE_UPLOAD_PATH"]
         # print("filename:", filename)
-        filename=random_filename(filename)
+        filename = random_filename(filename)
         f.save(os.path.join(upload_path, filename))
-        photo=Photo(
-            filename=filename,
-            user=current_user   
-        )
+        photo = Photo(filename=filename, user=current_user)
         db.session.add(photo)
         db.session.commit()
     return "202"
@@ -242,35 +243,53 @@ def search():
 
 
 @csrf.exempt
-@bp.route('/like',methods=['POST'])
+@bp.route("/like", methods=["POST"])
 def like():
-    if(request.method=='POST'):
-        form=request.form
-        post_id=form['post_id']
-        comment_id=form['comment_id']
-        user_id=form['user_id']
-        print(post_id,comment_id,user_id)
-        if(comment_id == -1):
+    if request.method == "POST":
+        form = request.form
+        post_id = int(form["post_id"])
+        comment_id = int(form["comment_id"])
+        user_id = int(form["user_id"])
+        print(post_id, comment_id, user_id)
+        # print(type(post_id), type(comment_id), type(user_id))
+
+        current_user = User.query.get(session["user_id"])
+        if comment_id == -1:
+            # current_user=User.query.get(session['user_id'])
+            post = Post.query.get(post_id)
+            current_user.like_posts.append(post)
+            print("点赞成功")
             # 点赞的是post本身，更新数据库
-            pass
+            # pass
         else:
             # 点赞的是post下的评论，评论id为comment_id，更新数据库
-            pass
-    return '202'
+            comment = Comment.query.get(comment_id)
+            current_user.like_comments.append(comment)
+            # pass/
+    return "202"
+
 
 @csrf.exempt
-@bp.route('/unlike',methods=['POST'])
+@bp.route("/unlike", methods=["POST"])
 def unlike():
-    if(request.method=='POST'):
-        form=request.form
-        post_id=form['post_id']
-        comment_id=form['comment_id']
-        user_id=form['user_id']
-        print(post_id,comment_id,user_id)
-        if(comment_id == -1):
+    if request.method == "POST":
+        form = request.form
+        post_id = int(form["post_id"])
+        comment_id = int(form["comment_id"])
+        user_id = int(form["user_id"])
+        print(post_id, comment_id, user_id)
+        current_user = User.query.get(session["user_id"])
+
+        if comment_id == -1:
             # 取消赞的是post本身，更新数据库
-            pass
+            post = Post.query.get(post_id)
+            current_user.like_posts.remove(post)
+            print("移除成功")
         else:
             # 取消赞的是post下的评论，评论id为comment_id，更新数据库
-            pass
-    return '202'
+            # pass
+            #
+            comment = Comment.query.get(comment_id)
+            current_user.like_comments.append(comment)
+
+    return "202"
