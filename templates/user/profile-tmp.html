@@ -304,9 +304,11 @@
         <div id="chat-bar">
           <div id="chat-lb"><i class="material-icons"></i><span>好友</span></div>
           <div id="cts">
+            {% for follow_user in poster_user.follow %}
             <div class="on-ct active">
-              <a href="#"><img src={{poster_user.follow[0].image}}></a>
+              <a href="#"><img src={{follow_user.image}}></a>
             </div>
+            {% endfor %}
             
             <!-- <div class="on-ct active">
               <a href="#"><img src="https://imagizer.imageshack.com/img924/4231/JnFicn.jpg"></a>

@@ -1,4 +1,5 @@
 from datetime import datetime
+from collections import namedtuple
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g
 from flask_mail import Message
 from extensions import mail, db
@@ -44,22 +45,28 @@ def login():
 
 @bp.route("/follows", methods=["GET"])
 def follows():
+    Current = namedtuple('Current', ['image', 'username', 'follow', 'posts'])
     try:
         id = session['user_id']
         user = User.query.get(id)
+        followers = [f.followed for f in user.followed.all()]
+        current_user = Current(user.image, user.username, followers, user.posts)
     except:
         return redirect(url_for("user.login"))
-    return render_template("user/friends.html", poster_user=user)
+    return render_template("user/friends-tmp.html", main_user=current_user)
 
 
 @bp.route("/selfcenter")
 def selfcenter():
+    Current = namedtuple('Current', ['image', 'username', 'follow', 'posts'])
     try:
         id = session['user_id']
         user = User.query.get(id)
+        followers = [f.followed for f in user.followed.all()]
+        current_user = Current(user.image, user.username, followers, user.posts)
     except:
         return redirect(url_for("user.login"))
-    return render_template("user/profile.html", current_user=user)
+    return render_template("user/profile-tmp.html", current_user=current_user, poster_user=current_user)
 
 
 @bp.route('/chat')
