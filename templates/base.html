@@ -85,10 +85,11 @@
                                     role="button" aria-haspopup="true" aria-expanded="false">分区<span
                                         class="caret"></span></a>
                                 <ul class="dropdown-menu animated zoomIn">
-                                    <li><a href="#">音乐</a></li>
+                                    <li><a href="{{url_for('posts.music')}}">音乐</a></li>
+                                    <li><a href="{{url_for('posts.anime')}}">动画</a></li>
                                     <li><a href="#">绘画</a></li>
-                                    <li><a href="#">运动</a></li>
-                                    <li><a href="#">游戏</a></li>
+                                    <li><a href="{{url_for('posts.sports')}}">运动</a></li>
+                                    <li><a href="{{url_for('posts.games')}}">游戏</a></li>
                                 </ul>
                             </li>
                             <li><a href="#">关注</a></li>

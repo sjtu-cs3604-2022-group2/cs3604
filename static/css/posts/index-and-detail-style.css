@@ -715,6 +715,20 @@ theme blue:6fa8dc
 
 }
 
+.sidebarblock li p{
+  text-overflow: ellipsis;
+  height: 28px;
+  overflow: hidden;
+  width: 70%;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  /* letter-spacing: 2px; */
+  font-size: 13px;
+}
+
 
 @media only screen and (min-width:1700px) {
   .posttext p{

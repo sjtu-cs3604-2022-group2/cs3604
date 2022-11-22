@@ -67,7 +67,7 @@ render_pagination %} {% block head %}
 
                 <div class="tag">
                   <div class="category{{(index_posts[i].category).id}}">
-                    <a href="{{url_for("posts.search",search_content=index_posts[i].category.name,search_category="分区")}}">
+                    <a href="{{url_for('posts.search',search_content=index_posts[i].category.name,search_category='分区')}}">
                       <span class="tag-icon"></span>
                       <span>{{(index_posts[i].category).name}}</span>
                     </a>
@@ -134,24 +134,36 @@ render_pagination %} {% block head %}
               "
             >
               推荐话题
-              {% for po in recommend_posts%}
-                    <a href={{url_for('posts.detail',post_id=po.id)}}>
-                      {{po.title}} 
-                    </a>
-              {% endfor %}
-
             </h3>
+
+
+            
             <div class="divline"></div>
             <div class="blocktxt">
               <ul class="recom">
-                {% for recomm in recommendations%}
+                {% for po in recommend_posts%}
                 <li>
-                  <a href="#"
-                    >{{recomm['title']}}
-                    <span class="badge pull-right"
-                      >{{recom['comments']}} 讨论</span
-                    ></a
-                  >
+                  <a href="{{url_for('posts.detail',post_id=po.id)}}">
+                    <p class='pull-left' style="
+                    text-overflow: ellipsis;
+                    height: 28px;
+                    overflow: hidden;
+                    width: 70%;
+                    -webkit-line-clamp: 1;
+                    line-clamp: 1;
+                    word-break: break-all;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    /* letter-spacing: 2px; */
+                    font-size: 13px;
+                  "
+                    >
+                    {{po.title}}
+                    </p>
+                    <span class="badge pull-right" >{{po.num_comments}} 讨论</span> 
+                    <!-- <div class="badge pull-right" style="width:25%;">{{po.num_comments}} 讨论</div>  -->
+                    <div class="clearfix"></div>
+                    </a>
                 </li>
                 {% endfor %}
               </ul>

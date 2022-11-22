@@ -149,7 +149,7 @@
                                 </p>
                                 {% endfor %} {% endcomment %} #}
                                 
-                                <p style="width: 95%;">
+                                <p style="width: 95%;word-break: break-all;">
                                     {{ topic.body }}
                                 </p>
                                 {% if topic.image != '' %}
@@ -224,7 +224,7 @@
                                 </div>
                             </div>
                          <div class="answer-content pull-right">  {# 
-                                {% if comment.towards != 1 %}
+                                <!-- {% if comment.towards != 1 %}
                                 <div class="reply-to">
                                     <a href="#comment{{comment.towards}}">
                                         <span>回复 </span>
@@ -234,14 +234,23 @@
                                 </div> 
                                 {% endif %}
                                 <div class="answer-description" style="margin-bottom: 20px;">
-                                    {% for paragraph in comment.text %}
-                                    <p>
+                                    {% for paragraph in comment.body %}
+                                    <p style="width: 95%;word-break: break-all;">
                                         {{paragraph}}
                                     </p>
                                     {% endfor %}
 
-                                </div>  
+                                </div>   -->
                             #}    
+
+                            <div class="answer-description" style="margin-bottom: 20px;">
+                                
+                                <p style="width: 95%;word-break: break-all;">
+                                    {{comment.body}}
+                                </p>
+                               
+
+                            </div>
 
                                 <div class="footer pull-right">
 
