@@ -239,3 +239,38 @@ def search():
     # return srchterm
 
     return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)
+
+
+@csrf.exempt
+@bp.route('/like',methods=['POST'])
+def like():
+    if(request.method=='POST'):
+        form=request.form
+        post_id=form['post_id']
+        comment_id=form['comment_id']
+        user_id=form['user_id']
+        print(post_id,comment_id,user_id)
+        if(comment_id == -1):
+            # 点赞的是post本身，更新数据库
+            pass
+        else:
+            # 点赞的是post下的评论，评论id为comment_id，更新数据库
+            pass
+    return '202'
+
+@csrf.exempt
+@bp.route('/unlike',methods=['POST'])
+def unlike():
+    if(request.method=='POST'):
+        form=request.form
+        post_id=form['post_id']
+        comment_id=form['comment_id']
+        user_id=form['user_id']
+        print(post_id,comment_id,user_id)
+        if(comment_id == -1):
+            # 取消赞的是post本身，更新数据库
+            pass
+        else:
+            # 取消赞的是post下的评论，评论id为comment_id，更新数据库
+            pass
+    return '202'

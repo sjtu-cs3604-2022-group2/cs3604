@@ -181,7 +181,7 @@
 
                                 <div class="actions pull-right">
                                     <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
-                                        data-placement="bottom" title="Like">
+                                        data-placement="bottom" title="Like" onclick="like(this,0,-1);return false;">
                                         <i class="iconfont icon-like " aria-hidden="true"></i>
                                         <span> {{post.num_likes}}</span>
                                     </button>
@@ -255,7 +255,7 @@
                                 <div class="footer pull-right">
 
                                     <div class="post-stamps pull-left">
-                                        <i class="iconfont icon-time" aria-hidden="true"> {{comment.time}}</i>
+                                        <i class="iconfont icon-time" aria-hidden="true"> {{comment.timestamp}}</i>
                                         <span> &nbsp;{{i+2}}楼</span>
                                         <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
                                             data-placement="bottom" onclick="report();"
@@ -265,7 +265,7 @@
                                     </div>
                                     <div class="actions pull-right">
                                         <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
-                                            data-placement="bottom" title="Like">
+                                            data-placement="bottom" title="Like" onclick="like(this,0,{{comment.id}});return false;">
                                             <i class="iconfont icon-like " aria-hidden="true"></i>
                                             <span> {{comment.num_likes}}</span>
                                         </button>
@@ -510,6 +510,39 @@
         $('#fade').css('height', h + 'px');
     }
     )
+</script>
+<script>
+    function like(obj,a,i){
+        var dic={
+                post_id:{{post.id}},
+                comment_id:i,
+                user_id:{{current_user.id}}
+            };
+
+        if(!a){
+            $(obj).css('color','#5dc362');
+            $.ajax({
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{url_for('posts.like')}}" ,//url
+                data: dic,
+                success: function () {},
+                error : function() { }
+            });
+        }
+        else{
+            $(obj).css('color','inherit');
+            $.ajax({
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{url_for('posts.unlike')}}" ,//url
+                data: dic,
+                success: function () {},
+                error : function() { }
+            });
+        }
+        return false;
+    }
 </script>
 
 {% endblock %}
