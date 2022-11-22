@@ -89,12 +89,11 @@ from flask_dropzone import random_filename
 @bp.route("/upload", methods=["POST","GET"])
 def upload():  
     if request.method=='POST' and "file" in request.files:
-
         current_user= User.query.get(session['user_id'])
         f = request.files.get("file")
         filename = f.filename
         upload_path= current_app.config['FILE_UPLOAD_PATH']
-        print("filename:", filename)
+        # print("filename:", filename)
         filename=random_filename(filename)
         f.save(os.path.join(upload_path, filename))
         photo=Photo(
