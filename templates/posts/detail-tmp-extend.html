@@ -181,7 +181,16 @@
 
                                 <div class="actions pull-right">
                                     <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
-                                        data-placement="bottom" title="Like" onclick="like(this,0,-1);return false;">
+                                        data-placement="bottom" title="Like" 
+                                        style="color:
+                                            {%if likes[0]%}
+                                                #5dc362;
+                                            {%else%}
+                                                inherit;
+                                            {%endif%}
+                                            "
+
+                                        onclick="like(this,{{likes[0]}},-1);return false;">
                                         <i class="iconfont icon-like " aria-hidden="true"></i>
                                         <span> {{post.num_likes}}</span>
                                     </button>
@@ -265,7 +274,15 @@
                                     </div>
                                     <div class="actions pull-right">
                                         <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
-                                            data-placement="bottom" title="Like" onclick="like(this,0,{{comment.id}});return false;">
+                                            data-placement="bottom" title="Like" 
+                                            style="color:
+                                            {%if likes[i+1]%}
+                                                #5dc362;
+                                            {%else%}
+                                                inherit;
+                                            {%endif%}
+                                            " 
+                                            onclick="like(this,{{likes[i+1]}},{{comment.id}});return false;">
                                             <i class="iconfont icon-like " aria-hidden="true"></i>
                                             <span> {{comment.num_likes}}</span>
                                         </button>
@@ -518,9 +535,23 @@
                 comment_id:i,
                 user_id:{{current_user.id}}
             };
+        console.log(obj);
+        var span=obj.lastElementChild;
+        console.log(span.innerHTML);
+        var str=(span.innerHTML).substring(1);
+        var newstate=!a;
+        console.log(a);
+        console.log(newstate);
+        var newfunc=Function("like(this,"+newstate+","+i+");return false;");
+        console.log(newfunc);
+        obj.onclick=newfunc;
 
         if(!a){
             $(obj).css('color','#5dc362');
+            var num=parseInt(str)+1;
+            var newstr=' '+num+'';
+            span.innerHTML=newstr;
+
             $.ajax({
                 type: "POST",//方法类型
                 dataType: "json",//预期服务器返回的数据类型
@@ -532,6 +563,9 @@
         }
         else{
             $(obj).css('color','inherit');
+            var num=parseInt(str)-1;
+            var newstr=' '+num+'';
+            span.innerHTML=newstr;
             $.ajax({
                 type: "POST",//方法类型
                 dataType: "json",//预期服务器返回的数据类型
@@ -541,6 +575,8 @@
                 error : function() { }
             });
         }
+        
+
         return false;
     }
 </script>

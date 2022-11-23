@@ -87,6 +87,7 @@ def detail(post_id):
         report_form=report_form,
         related_topics=related_topics,
         recommendations=recommendations,
+        likes=list_like_of_user
     )
 
 
@@ -250,18 +251,18 @@ def get_list_of_like(post_id,user_id):
     post=Post.query.get(post_id)
     commentsofpost=post.comments
     user= User.query.get(user_id)
-    user_like_comments_id=set()
-    for comment in user.like_comments:
-        user_like_comments_id.add(comment.id)
+    user_like_comments_id=set(user.like_comments)
+    # for comment in user.like_comments:
+    #     user_like_comments_id.add(comment.id)
         
-    list_like_of_user=[False for _ in range(len(commentsofpost)+1)]
+    list_like_of_user=[0 for _ in range(len(commentsofpost)+1)]
     
     if post in user.like_posts:
-        list_like_of_user[0]=True
+        list_like_of_user[0]=1
     
     for i in range(1,len(commentsofpost)+1):
-        if commentsofpost[i].id in user_like_comments_id:
-            list_like_of_user[i]=True
+        if commentsofpost[i-1].id in user_like_comments_id:
+            list_like_of_user[i]=1
     
     return list_like_of_user    
 
@@ -273,7 +274,7 @@ def like():
         post_id = int(form["post_id"])
         comment_id = int(form["comment_id"])
         user_id = int(form["user_id"])
-        # print(post_id, comment_id, user_id)
+        print(post_id, comment_id, user_id)
         # print(type(post_id), type(comment_id), type(user_id))
 
         current_user = User.query.get(session["user_id"])
