@@ -59,7 +59,7 @@ def detail(post_id):
     related1 = {"title": "Guide for beginner", "num_comments": 20}
     related2 = {"title": "Online Help", "num_comments": 30}
     related_topics = [related1, related2]
-
+    
     recom1 = {"title": "Guide for art", "num_comments": 210}
     recom2 = {"title": "Guide for music", "num_comments": 230}
     recommendations = [recom1, recom2]
@@ -68,12 +68,17 @@ def detail(post_id):
     add_reply_pop_form = AddReplyPopForm()
     report_form = ReportForm()
     post = Post.query.get(post_id)
-    user = post.user
+    post_user = post.user
+    user_id= session["user_id"]
+    
+    list_like_of_user= get_list_of_like(post_id,user_id)
+    
+    
     return render_template(
         "posts/detail-tmp-extend.html",
         User=User,
-        current_user=User.query.get(session["user_id"]),
-        post_user=user,
+        current_user=User.query.get(user_id),
+        post_user=post_user,
         topic=post,
         post=post,
         add_reply_form=add_reply_form,
@@ -241,6 +246,24 @@ def search():
 
     return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)
 
+def get_list_of_like(post_id,user_id):
+    post=Post.query.get(post_id)
+    commentsofpost=post.comments
+    user= User.query.get(user_id)
+    user_like_comments_id=set()
+    for comment in user.like_comments:
+        user_like_comments_id.add(comment.id)
+        
+    list_like_of_user=[False for _ in range(len(commentsofpost)+1)]
+    
+    if post in user.like_posts:
+        list_like_of_user[0]=True
+    
+    for i in range(1,len(commentsofpost)+1):
+        if commentsofpost[i].id in user_like_comments_id:
+            list_like_of_user[i]=True
+    
+    return list_like_of_user    
 
 @csrf.exempt
 @bp.route("/like", methods=["POST"])
@@ -250,23 +273,32 @@ def like():
         post_id = int(form["post_id"])
         comment_id = int(form["comment_id"])
         user_id = int(form["user_id"])
-        print(post_id, comment_id, user_id)
+        # print(post_id, comment_id, user_id)
         # print(type(post_id), type(comment_id), type(user_id))
 
         current_user = User.query.get(session["user_id"])
+        post = Post.query.get(post_id)
+        # commentsofpost= post.comments
+        # like_list=[]
         if comment_id == -1:
             # current_user=User.query.get(session['user_id'])
-            post = Post.query.get(post_id)
+            
             current_user.like_posts.append(post)
-            print("点赞成功")
+            # db.session.add(current_user)
+            db.session.commit()
+            
+            # print("点赞成功")
             # 点赞的是post本身，更新数据库
             # pass
         else:
             # 点赞的是post下的评论，评论id为comment_id，更新数据库
             comment = Comment.query.get(comment_id)
             current_user.like_comments.append(comment)
+            db.session.commit()
             # pass/
     return "202"
+
+
 
 
 @csrf.exempt
