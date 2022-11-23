@@ -8,6 +8,8 @@ import os
 from models import Category, Photo, Post, User, Comment
 from sqlalchemy import or_, and_
 import random
+from app import csrf
+from flask_dropzone import random_filename
 
 # from
 bp = Blueprint("posts", __name__)
@@ -59,7 +61,7 @@ def detail(post_id):
     related1 = {"title": "Guide for beginner", "num_comments": 20}
     related2 = {"title": "Online Help", "num_comments": 30}
     related_topics = [related1, related2]
-    
+
     recom1 = {"title": "Guide for art", "num_comments": 210}
     recom2 = {"title": "Guide for music", "num_comments": 230}
     recommendations = [recom1, recom2]
@@ -69,11 +71,10 @@ def detail(post_id):
     report_form = ReportForm()
     post = Post.query.get(post_id)
     post_user = post.user
-    user_id= session["user_id"]
-    
-    list_like_of_user= get_list_of_like(post_id,user_id)
-    
-    
+    user_id = session["user_id"]
+
+    list_like_of_user = get_list_of_like(post_id, user_id)
+
     return render_template(
         "posts/detail-tmp-extend.html",
         User=User,
@@ -87,12 +88,10 @@ def detail(post_id):
         report_form=report_form,
         related_topics=related_topics,
         recommendations=recommendations,
-        likes=list_like_of_user
+        likes=list_like_of_user,
     )
 
 
-from app import csrf
-from flask_dropzone import random_filename
 
 
 @csrf.exempt
@@ -247,24 +246,26 @@ def search():
 
     return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)
 
-def get_list_of_like(post_id,user_id):
-    post=Post.query.get(post_id)
-    commentsofpost=post.comments
-    user= User.query.get(user_id)
-    user_like_comments_id=set(user.like_comments)
-    # for comment in user.like_comments:
-    #     user_like_comments_id.add(comment.id)
-        
-    list_like_of_user=[0 for _ in range(len(commentsofpost)+1)]
-    
+
+def get_list_of_like(post_id, user_id):
+    post = Post.query.get(post_id)
+    commentsofpost = post.comments
+    user = User.query.get(user_id)
+    user_like_comments_id = set()
+    for comment in user.like_comments:
+        user_like_comments_id.add(comment.id)
+
+    list_like_of_user = [0 for _ in range(len(commentsofpost) + 1)]
+
     if post in user.like_posts:
-        list_like_of_user[0]=1
-    
-    for i in range(1,len(commentsofpost)+1):
-        if commentsofpost[i-1].id in user_like_comments_id:
-            list_like_of_user[i]=1
-    
-    return list_like_of_user    
+        list_like_of_user[0] = 1
+
+    for i in range(1, len(commentsofpost) + 1):
+        if commentsofpost[i - 1].id in user_like_comments_id:
+            list_like_of_user[i] = 1
+
+    return list_like_of_user
+
 
 @csrf.exempt
 @bp.route("/like", methods=["POST"])
@@ -283,11 +284,12 @@ def like():
         # like_list=[]
         if comment_id == -1:
             # current_user=User.query.get(session['user_id'])
-            
+
             current_user.like_posts.append(post)
+            post.num_likes += 1
             # db.session.add(current_user)
             db.session.commit()
-            
+
             # print("点赞成功")
             # 点赞的是post本身，更新数据库
             # pass
@@ -295,11 +297,10 @@ def like():
             # 点赞的是post下的评论，评论id为comment_id，更新数据库
             comment = Comment.query.get(comment_id)
             current_user.like_comments.append(comment)
+            comment.num_likes += 1
             db.session.commit()
             # pass/
     return "202"
-
-
 
 
 @csrf.exempt
@@ -317,12 +318,18 @@ def unlike():
             # 取消赞的是post本身，更新数据库
             post = Post.query.get(post_id)
             current_user.like_posts.remove(post)
+            post.num_likes -= 1
+            db.session.commit()
             print("移除成功")
         else:
             # 取消赞的是post下的评论，评论id为comment_id，更新数据库
             # pass
             #
             comment = Comment.query.get(comment_id)
-            current_user.like_comments.append(comment)
+            current_user.like_comments.remove(comment)
+
+            comment.num_likes -= 1
+
+            db.session.commit()
 
     return "202"

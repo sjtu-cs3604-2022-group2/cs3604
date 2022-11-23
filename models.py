@@ -9,6 +9,7 @@ Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查�
 from email.policy import default
 from extensions import db
 from datetime import datetime
+import random
 
 
 class Follow(db.Model):
@@ -26,19 +27,20 @@ class Email(db.Model):
     create_time = db.Column(db.DateTime, default=datetime.now)
 
 
-user_like_post_table=db.Table('user_like_post', 
-                        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
-                        db.Column('post_id',db.Integer(),db.ForeignKey('post.id'))
-                        )
+user_like_post_table = db.Table(
+    "user_like_post",
+    db.Column("user_id", db.Integer(), db.ForeignKey("user.id")),
+    db.Column("post_id", db.Integer(), db.ForeignKey("post.id")),
+)
 
 
-user_like_comment_table=db.Table('user_like_comment', 
-                        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
-                        db.Column('commment_id',db.Integer(),db.ForeignKey('comment.id'))
-                        )
+user_like_comment_table = db.Table(
+    "user_like_comment",
+    db.Column("user_id", db.Integer(), db.ForeignKey("user.id")),
+    db.Column("commment_id", db.Integer(), db.ForeignKey("comment.id")),
+)
 
 
-    
 class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -49,22 +51,26 @@ class User(db.Model):
     about = db.Column(db.Text, nullable=True)
     image = db.Column(db.String(128), nullable=True)
     posts = db.relationship("Post", backref="user", lazy="dynamic")
-    photos= db.relationship("Photo", back_populates="user", cascade="all")
+    photos = db.relationship("Photo", back_populates="user", cascade="all")
     comments = db.relationship("Comment", backref="user", lazy="dynamic")
-    like_posts= db.relationship("Post", secondary=user_like_post_table,back_populates='like_users')
-    like_comments=db.relationship('Comment', secondary=user_like_comment_table,back_populates='like_users')
-    
-    followed = db.relationship("Follow",
-                               foreign_keys=[Follow.follower_id],
-                               backref=db.backref("follower", lazy="joined"),
-                               lazy="dynamic",
-                               cascade="all, delete-orphan")
-    followers = db.relationship("Follow",
-                                foreign_keys=[Follow.followed_id],
-                                backref=db.backref("followed", lazy="joined"),
-                                lazy="dynamic",
-                                cascade="all, delete-orphan")
-    
+    like_posts = db.relationship("Post", secondary=user_like_post_table, back_populates="like_users")
+    like_comments = db.relationship("Comment", secondary=user_like_comment_table, back_populates="like_users")
+
+    followed = db.relationship(
+        "Follow",
+        foreign_keys=[Follow.follower_id],
+        backref=db.backref("follower", lazy="joined"),
+        lazy="dynamic",
+        cascade="all, delete-orphan",
+    )
+    followers = db.relationship(
+        "Follow",
+        foreign_keys=[Follow.followed_id],
+        backref=db.backref("followed", lazy="joined"),
+        lazy="dynamic",
+        cascade="all, delete-orphan",
+    )
+
     def follow(self, user):
         if not self.is_following(user):
             f = Follow(follower=self, followed=user)
@@ -76,27 +82,26 @@ class User(db.Model):
             db.session.delete(f)
 
     def is_following(self, user):
-        return self.followed.filter_by(
-            followed_id=user.id).first() is not None
+        return self.followed.filter_by(followed_id=user.id).first() is not None
 
     def is_followed_by(self, user):
-        return self.followers.filter_by(
-            follower_id=user.id).first() is not None
+        return self.followers.filter_by(follower_id=user.id).first() is not None
+
 
 class Photo(db.Model):
-    id=db.Column(db.Integer,primary_key=True)
-    description=db.Column(db.String(500))
-    filename=db.Column(db.String(64))
-    timestamp=db.Column(db.DateTime,default=datetime.utcnow)
-    user_id=db.Column(db.Integer,db.ForeignKey('user.id'))
-    user=db.relationship('User',back_populates='photos')
-    
-                        
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(500))
+    filename = db.Column(db.String(64))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user = db.relationship("User", back_populates="photos")
+
+
 class Category(db.Model):
     __tablename__ = "category"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(32), unique=True)
-    posts = db.relationship("Post", backref="category",lazy='dynamic') 
+    posts = db.relationship("Post", backref="category", lazy="dynamic")
 
     def delete(self):
         default_category = Category.query.get(1)
@@ -115,10 +120,10 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     can_comment = db.Column(db.Boolean, default=True)
 
-    num_likes = db.Column(db.Integer,default=0)
-    num_comments = db.Column(db.Integer,default=0)
-    num_views = db.Column(db.Integer,default=0)
-    like_users= db.relationship('User',secondary=user_like_post_table,back_populates='like_posts')
+    num_likes = db.Column(db.Integer, default=0)
+    num_comments = db.Column(db.Integer, default=0)
+    num_views = db.Column(db.Integer, default=0)
+    like_users = db.relationship("User", secondary=user_like_post_table, back_populates="like_posts")
 
     # 隐式属性
     # user = db.relationship('User', back_populates='posts')
@@ -137,10 +142,11 @@ class Comment(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
     post = db.relationship("Post", back_populates="comments")
+    num_likes = db.Column(db.Integer, default=random.randint(20,100))
     # 隐式属性
     # user = db.relationship('User', back_populates='comments')
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    like_users= db.relationship('User',secondary=user_like_comment_table,back_populates='like_comments')
+    like_users = db.relationship("User", secondary=user_like_comment_table, back_populates="like_comments")
 
     # add a foreign key pointing self. 在同一个模型内的一对多关系称为邻接列表关系（Adjacency List Relationship)
     replied_id = db.Column(db.Integer, db.ForeignKey("comment.id"))

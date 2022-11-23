@@ -14,6 +14,7 @@ from extensions import bootstrap, db, csrf, ckeditor, mail, moment, toolbar, mig
 from blueprints.user import bp as userbp
 from blueprints.posts import bp as postsbp
 from setting import config
+import random
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -175,7 +176,13 @@ def register_template_context(app):
         else:
             return {}
 
+def change_comments_num_likes():
+    comments=Comment.query.all()
+    for comment in comments:
+        comment.num_likes=random.randint(20,100)
+    db.session.commit()
 
 if __name__ == "__main__":
     app = create_app("development")
+    
     app.run()

@@ -1,9 +1,11 @@
 from datetime import datetime
 from collections import namedtuple
+
+# from app import change_comments_num_likes
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g
 from flask_mail import Message
 from extensions import mail, db
-from models import User, Email
+from models import User, Email, Comment
 import string, random
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import RegisterForm, LoginForm
@@ -11,8 +13,16 @@ from forms import RegisterForm, LoginForm
 bp = Blueprint("user", __name__, url_prefix="/user")
 
 
+def change_comments_num_likes():
+    comments = Comment.query.all()
+    for comment in comments:
+        comment.num_likes = random.randint(20, 100)
+    db.session.commit()
+
+
 @bp.route("/login", methods=["GET", "POST"])
 def login():
+    # change_comments_num_likes()
     form = LoginForm()
     registerform = RegisterForm()
     if form.submit1.data and form.validate():
@@ -45,9 +55,9 @@ def login():
 
 @bp.route("/follows", methods=["GET"])
 def follows():
-    Current = namedtuple('Current', ['image', 'username', 'follow', 'posts'])
+    Current = namedtuple("Current", ["image", "username", "follow", "posts"])
     try:
-        id = session['user_id']
+        id = session["user_id"]
         user = User.query.get(id)
         followers = [f.followed for f in user.followed.all()]
         current_user = Current(user.image, user.username, followers, user.posts)
@@ -58,9 +68,9 @@ def follows():
 
 @bp.route("/selfcenter")
 def selfcenter():
-    Current = namedtuple('Current', ['image', 'username', 'follow', 'posts'])
+    Current = namedtuple("Current", ["image", "username", "follow", "posts"])
     try:
-        id = session['user_id']
+        id = session["user_id"]
         user = User.query.get(id)
         followers = [f.followed for f in user.followed.all()]
         current_user = Current(user.image, user.username, followers, user.posts)
@@ -69,10 +79,14 @@ def selfcenter():
     return render_template("user/profile-tmp.html", current_user=current_user, poster_user=current_user)
 
 
-@bp.route('/chat')
+@bp.route("/chat")
 def chat():
-    chat={'url':"https://tse1-mm.cn.bing.net/th/id/OIP-C.4AJntm4bSRu9C2_h90WTfAAAAA?w=225&h=220&c=7&r=0&o=5&dpr=1.6&pid=1.7",'rightuser':{'username':'sam'},'message':[{"text":"hi"},{"text":"nihao"},{"text":"加个好友吧？"}]}
-    return render_template("user/chat.html",chat=chat)
+    chat = {
+        "url": "https://tse1-mm.cn.bing.net/th/id/OIP-C.4AJntm4bSRu9C2_h90WTfAAAAA?w=225&h=220&c=7&r=0&o=5&dpr=1.6&pid=1.7",
+        "rightuser": {"username": "sam"},
+        "message": [{"text": "hi"}, {"text": "nihao"}, {"text": "加个好友吧？"}],
+    }
+    return render_template("user/chat.html", chat=chat)
 
 
 @bp.route("/logout")

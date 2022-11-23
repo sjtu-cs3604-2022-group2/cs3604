@@ -7,10 +7,10 @@ from flask_wtf.csrf import CSRFError
 # from bluelog.blueprints.blog import blog_bp
 
 from models import Post, Category, Comment
-from extensions import bootstrap, db, csrf, ckeditor, mail, moment, toolbar, migrate
+# from extensions import bootstrap, db, csrf, ckeditor, mail, moment, toolbar, migrate
 # from bluelog.settings import config
-from blueprints.user import bp as userbp
-from blueprints.posts import bp as postsbp
+# from blueprints.user import bp as userbp
+# from blueprints.posts import bp as postsbp
 from setting import config
 import models
 from flask_wtf import FlaskForm
