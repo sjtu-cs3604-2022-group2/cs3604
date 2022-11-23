@@ -8,7 +8,7 @@ import os
 from models import Category, Photo, Post, User, Comment
 from sqlalchemy import or_, and_
 import random
-from app import csrf
+
 from flask_dropzone import random_filename
 
 # from
@@ -93,7 +93,7 @@ def detail(post_id):
 
 
 
-
+from app import csrf
 @csrf.exempt
 @bp.route("/upload", methods=["POST", "GET"])
 def upload():
