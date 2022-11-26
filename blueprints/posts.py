@@ -88,7 +88,7 @@ def detail(post_id):
     )
 
 
-@bp.route("/add_commment",methods=["POST","GET"])
+@bp.route("/add_commment", methods=["POST", "GET"])
 def add_commment():
     pass
 
@@ -102,14 +102,21 @@ def upload():
     if request.method == "POST" and "file" in request.files:
         current_user = User.query.get(session["user_id"])
         f = request.files.get("file")
+        session["photo_nums"] = session.get("photo_nums", 0) + 1
+        photo_num = session["photo_nums"]
         filename = f.filename
         upload_path = current_app.config["FILE_UPLOAD_PATH"]
         # print("filename:", filename)
         filename = random_filename(filename)
+        # photo_path = os.path.join(upload_path, filename)
+        photo_path = "=/uploads/" + filename
+        print("当前上传的文件数为：", photo_num)
+        session[f"photo_{photo_num}"] = photo_path
         f.save(os.path.join(upload_path, filename))
-        photo = Photo(filename=filename, user=current_user, photo_path=os.path.join(upload_path, filename))
+        photo = Photo(filename=filename, user=current_user, photo_path=photo_path)
         db.session.add(photo)
         db.session.commit()
+
         # redirect(url_for("posts.newpost", photo_path=os.path.join(upload_path, filename)))
     return "202"
 
@@ -125,6 +132,9 @@ def newpost():
     user_id = int(session.get("user_id"))
     current_user = User.query.get(user_id)
     new_post_form = NewPostForm()
+    if request.method == "GET":
+        # session['']
+        session["photo_nums"] = 0
     if request.method == "POST":
         # print("hello word")
         title = new_post_form.title.data
@@ -134,6 +144,13 @@ def newpost():
         new_post = Post(title=title, category_id=cat_id, body=body)
         new_post.user_id = user_id
         new_post.user = current_user
+        if session["photo_nums"] > 0:  ### 这里session的值是在upload视图里面改变的
+            for i in range(1, session["photo_nums"] + 1):
+                photo_path = session[f"photo_{i}"]
+                print("上传的图片路径为", photo_path)
+                photo = Photo.query.filter(Photo.photo_path == photo_path).first()
+                # print()
+                new_post.photos.append(photo)
         # print(photo_path)
         # if photo_path is not None:
         #     photo = Photo.query.filter(Photo.photo_path == photo_path).first()
@@ -255,10 +272,15 @@ def search():
 
     # return url_for("search_result", search_content="")
     # return srchterm
-    recommend_posts=get_recommendation_posts(user_id)
+    recommend_posts = get_recommendation_posts(user_id)
 
-    return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user
-                           ,recommend_posts=recommend_posts)
+    return render_template(
+        "posts/index-tmp-extend.html",
+        pagination=pagination,
+        index_posts=posts,
+        current_user=user,
+        recommend_posts=recommend_posts,
+    )
 
 
 def get_list_of_like(post_id, user_id):

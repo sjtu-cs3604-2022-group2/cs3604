@@ -152,9 +152,11 @@
                                 <p style="width: 95%;word-break: break-all;">
                                     {{ topic.body }}
                                 </p>
-                                {% if topic.image != '' %}
-                                <img class='topic_image' src='{{topic.image}}' width="60%">
-                                {% endif %}
+                               
+                                {% for image in topic.photos%}
+                                <img class='topic_image' src='{{image.photo_path}}' width="60%">
+                                {% endfor %}
+                            
                             </div>
 
                             <div class="tag pull-right">
