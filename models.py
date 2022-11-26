@@ -153,3 +153,14 @@ class Comment(db.Model):
 
     replies = db.relationship("Comment", back_populates="replied", cascade="all, delete-orphan")
     replied = db.relationship("Comment", back_populates="replies", remote_side=[id])
+    
+class Notifation(db.Model):
+    __tablename__="notifation"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    
+    
+    
+    
+    
