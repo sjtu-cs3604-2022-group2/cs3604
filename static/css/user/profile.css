@@ -312,8 +312,9 @@
   
   #l-col {
     width: 200px;
+
     padding-top: 6px;
-    padding-right: 50px;
+    padding-right: 20px;
   }
   
   .l-cnt {
@@ -550,9 +551,11 @@
   }
   
   #m-col {
-    width:500px;
+    max-width: 600px;
+    width:600px;
     padding: 0px 55px;
     padding-left: 100px;
+
   }
   
   .m-mrg {
@@ -614,6 +617,7 @@
     padding: 20px;
     background-color: #fff;
     box-shadow: 0px 3px 3px #ddd;
+    display: none;
   }
   
   #c-tabs-cvr {
@@ -1089,4 +1093,19 @@
   .user-profile .navbar{
     margin-bottom:4px;
 
+  }
+
+
+.post-body{
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  }
+  #show1{
+    display: block;
+  }
+  #show2{
+    display: none;
   }

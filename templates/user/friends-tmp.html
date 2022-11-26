@@ -153,8 +153,7 @@
 		{% endblock scripts %}
 		<div class="container-fluid">
 
-			<h3 class="text-center logo">关注的人</h3>
-
+			<div class="page-head"><h1>关注的人</h1></div>
 			<table id="usertable"  class = "table table-striped" style = "height:auto;width: 100%;" >
 				<thead>
 					<tr class="text-center">
@@ -164,11 +163,11 @@
 						<th></th>
 						<th>注册日期</th>
 						<th>昵称</th>
-						<th>性别</th>
+						<th>简介</th>
 
 						<th>邮箱</th>			     
 					</tr>
-				</thead>`
+				</thead>
 
 				<tbody>
 					{% for follow_user in main_user.follow %}
