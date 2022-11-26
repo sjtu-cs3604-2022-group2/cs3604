@@ -53,6 +53,8 @@ class BaseConfig(object):
     BLUELOG_UPLOAD_PATH = os.path.join(basedir, "uploads")
     BLUELOG_ALLOWED_IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "gif"]
 
+    # chat config
+    CHAT_MESSAGE_PER_PAGE = 30
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = prefix + os.path.join(basedir, "data-dev.db")

@@ -4,11 +4,12 @@ from faker import Faker
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 from extensions import db
-from models import Category, Post, Comment, User, Follow
+from models import Category, Post, Comment, User, Follow, Message
 
 
+random.seed(42)
+Faker.seed(42)
 fake = Faker()
-
 
 def fake_user(count=5):
     for _ in range(count):
@@ -91,6 +92,29 @@ def fake_comments(count=500):
         )
         db.session.add(comment)
     db.session.commit()
+
+
+def fake_message(count=20):
+    for p in Message.query.all():
+        db.session.delete(p)
+    db.session.commit()
+    for i in range(count):
+        comment = Message(
+            body=fake.sentence(),
+            timestamp=fake.date_time_this_year(),
+            author=User.query.get(1),
+        )
+        db.session.add(comment)
+    for i in range(count):
+        comment = Message(
+            body=fake.sentence(),
+            timestamp=fake.date_time_this_year(),
+            author=User.query.get(random.randint(1, User.query.count())),
+        )
+        db.session.add(comment)
+    db.session.commit()
+    return
+
 
 # --------------------------------------
 
@@ -195,4 +219,5 @@ def real_data_load(user=50, category=10, post=100):
     print(f'create user: {user}')
     real_post(post)
     print(f'create post: {post}')
+    fake_message()
     return

@@ -1,13 +1,15 @@
+import string
+import random
 from datetime import datetime
 from collections import namedtuple
 
 # from app import change_comments_num_likes
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g
 from flask_mail import Message
+from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import mail, db
 from models import User, Email, Comment
-import string, random
-from werkzeug.security import generate_password_hash, check_password_hash
 from forms import RegisterForm, LoginForm
 
 bp = Blueprint("user", __name__, url_prefix="/user")
@@ -34,6 +36,7 @@ def login():
             # g.user = record
             session["user_id"] = record.id
             # session["user"] = record
+            login_user(record, remember=False)
             return redirect(url_for("posts.index"))
         # if username=='zkn' and password=='111':
         #     flash('登陆成功')
@@ -90,8 +93,10 @@ def chat():
 
 
 @bp.route("/logout")
+@login_required
 def logout():
     session.clear()
+    logout_user()
     return redirect(url_for("user.login"))
 
     # if request.method == "GET":
