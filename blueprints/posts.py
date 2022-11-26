@@ -1,15 +1,14 @@
-# from unicodedata import category
-
-from flask import Blueprint, render_template, g, flash, request, redirect, url_for, current_app, session
-from decorators import login_request
-from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
-from extensions import db
 import os
-from models import Category, Photo, Post, User, Comment
-from sqlalchemy import or_, and_
 import random
 
+from flask import Blueprint, render_template, g, flash, request, redirect, url_for, current_app, session
+from flask_login import login_required
 from flask_dropzone import random_filename
+from sqlalchemy import or_, and_
+# from decorators import login_request
+from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
+from extensions import db
+from models import Category, Photo, Post, User, Comment
 
 # from
 bp = Blueprint("posts", __name__)
@@ -20,7 +19,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 @bp.route("/", defaults={"page": 1})
 @bp.route("/index")
 @bp.route("/page/<int:page>")
-@login_request
+@login_required
 def index(page):
     user_id = int(session.get("user_id"))
     user = User.query.get(user_id)
@@ -30,7 +29,7 @@ def index(page):
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
     posts = pagination.items
     cat_record = dict()
-    for p in user.posts:
+    for p in user.posts.all():
         cat_record[p.category_id] = cat_record.get(p.category_id, 0) + 1
 
     recommend_category = sorted(list(cat_record.keys()), key=lambda x: cat_record[x], reverse=True)[:2]

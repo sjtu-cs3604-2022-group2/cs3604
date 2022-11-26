@@ -8,11 +8,12 @@ from flask_wtf.csrf import CSRFError
 # from bluelog.blueprints.blog import blog_bp
 
 from models import Post, Category, Comment
-from extensions import bootstrap, db, csrf, ckeditor, mail, moment, toolbar, migrate, dropzone, ckeditor
+from extensions import bootstrap, db, login_manager, csrf, ckeditor, mail, moment, toolbar, migrate, socketio, dropzone, ckeditor
 
 # from bluelog.settings import config
 from blueprints.user import bp as userbp
 from blueprints.posts import bp as postsbp
+from blueprints.chat import chat_bp
 from setting import config
 import random
 
@@ -45,13 +46,14 @@ def create_app(config_name=None):
 def register_extensions(app):
     bootstrap.init_app(app)
     db.init_app(app)
-    # login_manager.init_app(app)
+    login_manager.init_app(app)
     csrf.init_app(app)
     ckeditor.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
     toolbar.init_app(app)
     migrate.init_app(app, db)
+    socketio.init_app(app)
     # ckeditor.init_app(app)
     dropzone.init_app(app)
 
@@ -60,6 +62,7 @@ def register_blueprints(app):
     app.register_blueprint(userbp, url_prefix="/user")
     # app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(postsbp)
+    app.register_blueprint(chat_bp)
 
 
 def register_shell_context(app):
