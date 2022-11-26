@@ -54,8 +54,9 @@
             <span><i class="fas fa-cog"></i></span>
           </div>
         </header>
-        <main class="msger-chat">
-        {% for message in messages %}
+        <main class="messages">
+        {% include 'chat/_messages.html' %}
+        {#{% for message in messages %}
             {% if message.author_id != current_user.id %}
             <div class="msg left-msg">
                 <div
@@ -96,8 +97,8 @@
 
             {% endif %}
 
-        {% endfor %}
-          
+        {% endfor %}#}
+
         </main>
 
         <form class="msger-inputarea">
