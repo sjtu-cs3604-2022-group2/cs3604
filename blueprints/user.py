@@ -12,6 +12,8 @@ from extensions import mail, db
 from models import User, Email, Comment
 from forms import RegisterForm, LoginForm
 
+
+
 bp = Blueprint("user", __name__, url_prefix="/user")
 
 
@@ -55,6 +57,10 @@ def login():
 
     return render_template("user/login.html", form=form, registerform=registerform)
 
+
+@bp.route("/notifations", methods=["GET"])
+def notifations():
+    return render_template("user/notifations.html")
 
 @bp.route("/follows", methods=["GET"])
 def follows():
@@ -117,7 +123,7 @@ def logout():
     #         return redirect(url_for("user.login"))
     #     else:
     #         flash("注册未通过")
-    #         return redirect(url_for("user.register"))
+    #         return redirect(url_for("user.registe                                                                             r"))
 
 
 @bp.route("/captcha")

@@ -5,17 +5,17 @@ from flask import Blueprint, render_template, g, flash, request, redirect, url_f
 from flask_login import login_required
 from flask_dropzone import random_filename
 from sqlalchemy import or_, and_
+
 # from decorators import login_request
 from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
 from extensions import db
 from models import Category, Photo, Post, User, Comment
+from utils import get_recommendation_posts
 
 # from
 bp = Blueprint("posts", __name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 # upload_path = os.path.join(basedir, "uploads")
-
-
 @bp.route("/", defaults={"page": 1})
 @bp.route("/index")
 @bp.route("/page/<int:page>")
@@ -39,13 +39,6 @@ def index(page):
     ).all()
     recommend_posts = recommend_posts[:10]
     random.shuffle(recommend_posts)
-
-    # for po in Post.query.filter(
-    #     or_(
-    #     Post.category_id==recommend_category[0],
-    #     Post.category_id==recommend_category[1]
-    #     )).all():
-
     return render_template(
         "posts/index-tmp-extend.html",
         pagination=pagination,
@@ -61,9 +54,9 @@ def detail(post_id):
     related2 = {"title": "Online Help", "num_comments": 30}
     related_topics = [related1, related2]
 
-    recom1 = {"title": "Guide for art", "num_comments": 210}
-    recom2 = {"title": "Guide for music", "num_comments": 230}
-    recommendations = [recom1, recom2]
+    # recom1 = {"title": "Guide for art", "num_comments": 210}
+    # recom2 = {"title": "Guide for music", "num_comments": 230}
+    # recommendations = [recom1, recom2]
     add_reply_form = AddReplyForm()
     comment_towards_form = CommentTowardsForm()
     add_reply_pop_form = AddReplyPopForm()
@@ -73,6 +66,9 @@ def detail(post_id):
     user_id = session["user_id"]
 
     list_like_of_user = get_list_of_like(post_id, user_id)
+    recommendation_post = get_recommendation_posts(user_id)
+    body_list = post.body.split("\n\r\n")
+    # print(repr(post.body))
 
     return render_template(
         "posts/detail-tmp-extend.html",
@@ -80,19 +76,26 @@ def detail(post_id):
         current_user=User.query.get(user_id),
         post_user=post_user,
         topic=post,
+        body_list=body_list,
         post=post,
         add_reply_form=add_reply_form,
         comment_towards_form=comment_towards_form,
         add_reply_pop_form=add_reply_pop_form,
         report_form=report_form,
         related_topics=related_topics,
-        recommendations=recommendations,
+        recommend_posts=recommendation_post,
         likes=list_like_of_user,
     )
 
 
+@bp.route("/add_commment",methods=["POST","GET"])
+def add_commment():
+    pass
+
 
 from app import csrf
+
+
 @csrf.exempt
 @bp.route("/upload", methods=["POST", "GET"])
 def upload():
@@ -104,9 +107,10 @@ def upload():
         # print("filename:", filename)
         filename = random_filename(filename)
         f.save(os.path.join(upload_path, filename))
-        photo = Photo(filename=filename, user=current_user)
+        photo = Photo(filename=filename, user=current_user, photo_path=os.path.join(upload_path, filename))
         db.session.add(photo)
         db.session.commit()
+        # redirect(url_for("posts.newpost", photo_path=os.path.join(upload_path, filename)))
     return "202"
 
 
@@ -115,20 +119,29 @@ def textform():
     return "202 "
 
 
+# @bp.route("/newpost/<string:photo_path>", methods=["POST", "GET"])
 @bp.route("/newpost", methods=["POST", "GET"])
 def newpost():
     user_id = int(session.get("user_id"))
     current_user = User.query.get(user_id)
     new_post_form = NewPostForm()
     if request.method == "POST":
-        print("hello word")
+        # print("hello word")
         title = new_post_form.title.data
         cat_id = new_post_form.categories.data[0]  ### 这里允许多分类，但是目前数据库里面一篇post对应一个分类。
-        body = new_post_form.post_text.data[3:-6]  ### 去掉两边的标签
+        body = new_post_form.post_text.data  ### ，没有去掉两边的标签
         # print(title,cat_id,body)
         new_post = Post(title=title, category_id=cat_id, body=body)
         new_post.user_id = user_id
         new_post.user = current_user
+        # print(photo_path)
+        # if photo_path is not None:
+        #     photo = Photo.query.filter(Photo.photo_path == photo_path).first()
+
+        #     new_post.photos.append(photo)
+
+        # photo=current_user.photos[-1]
+
         db.session.add(new_post)
         db.session.commit()
         # return "已经成功提交"
@@ -190,7 +203,7 @@ def search():
         return redirect(request.referrer or url_for("posts.index"))
     # print(srchterm)
     category = request.args.get("search_category", "分区")
-    print(category)
+    # print(category)
     page = request.args.get("page", 1, type=int)
 
     per_page = current_app.config["POST_PER_PAGE"]
@@ -242,8 +255,10 @@ def search():
 
     # return url_for("search_result", search_content="")
     # return srchterm
+    recommend_posts=get_recommendation_posts(user_id)
 
-    return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user)
+    return render_template("posts/index-tmp-extend.html", pagination=pagination, index_posts=posts, current_user=user
+                           ,recommend_posts=recommend_posts)
 
 
 def get_list_of_like(post_id, user_id):

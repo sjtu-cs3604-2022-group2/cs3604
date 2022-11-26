@@ -1,11 +1,4 @@
-"""
-Author: zknyyds 1007736246@qq.com
-Date: 2022-11-01 16:45:43
-LastEditors: zknyyds 1007736246@qq.com
-LastEditTime: 2022-11-13 20:46:47
-FilePath: \hobbitat\models.py
-Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
-"""
+
 import random
 from datetime import datetime
 from email.policy import default
@@ -99,8 +92,16 @@ class Photo(db.Model):
     description = db.Column(db.String(500))
     filename = db.Column(db.String(64))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    photo_path= db.Column(db.String(1000))
+    
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     user = db.relationship("User", back_populates="photos")
+    
+    post_id=db.Column(db.Integer,db.ForeignKey('post.id'))
+    post= db.relationship("Post",back_populates="photos")
+    
+    
+    
 
 
 class Category(db.Model):
@@ -125,6 +126,7 @@ class Post(db.Model):
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     can_comment = db.Column(db.Boolean, default=True)
+    photos = db.relationship("Photo", back_populates="post", cascade="all")
 
     num_likes = db.Column(db.Integer, default=0)
     num_comments = db.Column(db.Integer, default=0)

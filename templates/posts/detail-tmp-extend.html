@@ -201,10 +201,6 @@
                                         <span> 添加回复</span>
                                     </button>
                                 </div>
-
-
-
-
                             </div>
                         </div>
 
@@ -325,9 +321,6 @@
                                             {{ ckeditor.config(name='text_body1' ,height=250,custom_config="" ) }}
                                             </form>
                                     </div>
-
-
-
                                 </div>
                             </div>
                         </div>
@@ -357,16 +350,36 @@
                                 <h3
                                     style="line-height: 66px;padding-left:20px;padding-top:10px;padding-bottom: 10px;margin:0">
                                     推荐话题</h3>
-                                <div class="divline"></div>
-                                <div class="blocktxt">
-                                    <ul class="recom">
-                                        {% for recom in recommendations%}
-                                        <li><a href="#">{{recom['title']}} <span
-                                                    class="badge pull-right">{{recom['num_comments']}}
-                                                    讨论</span></a></li>
+                                    <div class="divline"></div>
+                                    <div class="blocktxt">
+                                      <ul class="recom">
+                                        {% for po in recommend_posts%}
+                                        <li>
+                                          <a href="{{url_for('posts.detail',post_id=po.id)}}">
+                                            <p class='pull-left' style="
+                                            text-overflow: ellipsis;
+                                            height: 28px;
+                                            overflow: hidden;
+                                            width: 70%;
+                                            -webkit-line-clamp: 1;
+                                            line-clamp: 1;
+                                            word-break: break-all;
+                                            display: -webkit-box;
+                                            -webkit-box-orient: vertical;
+                                            /* letter-spacing: 2px; */
+                                            font-size: 13px;
+                                          "
+                                            >
+                                            {{po.title}}
+                                            </p>
+                                            <span class="badge pull-right" >{{po.num_comments}} 讨论</span> 
+                                            <!-- <div class="badge pull-right" style="width:25%;">{{po.num_comments}} 讨论</div>  -->
+                                            <div class="clearfix"></div>
+                                            </a>
+                                        </li>
                                         {% endfor %}
-                                    </ul>
-                                </div>
+                                      </ul>
+                                    </div>
 
                             </div>
 
