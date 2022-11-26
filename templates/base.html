@@ -151,9 +151,15 @@
 
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-
-
-
+    <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js')) }}
+    <script type="text/javascript">
+        var root_url = "{{ url_for('chat.home') }}";
+        var messages_url = "{{ url_for('chat.get_messages') }}";
+        var current_user_id = {{ current_user.id|default(0) }};
+        var csrf_token = "{{ csrf_token() }}";
+    </script>
+    
     {% endblock scripts %}
 </body>

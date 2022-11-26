@@ -6,10 +6,11 @@ LastEditTime: 2022-11-13 20:46:47
 FilePath: \hobbitat\models.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 """
-from email.policy import default
-from extensions import db
-from datetime import datetime
 import random
+from datetime import datetime
+from email.policy import default
+from flask_login import UserMixin, AnonymousUserMixin
+from extensions import db, login_manager
 
 
 class Follow(db.Model):
@@ -41,7 +42,7 @@ user_like_comment_table = db.Table(
 )
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(128), nullable=True, unique=True)
@@ -55,6 +56,7 @@ class User(db.Model):
     comments = db.relationship("Comment", backref="user", lazy="dynamic")
     like_posts = db.relationship("Post", secondary=user_like_post_table, back_populates="like_users")
     like_comments = db.relationship("Comment", secondary=user_like_comment_table, back_populates="like_users")
+    messages = db.relationship('Message', back_populates='author', cascade='all')
 
     followed = db.relationship(
         "Follow",
@@ -86,6 +88,10 @@ class User(db.Model):
 
     def is_followed_by(self, user):
         return self.followers.filter_by(follower_id=user.id).first() is not None
+
+    @property
+    def is_admin(self):
+        return False
 
 
 class Photo(db.Model):
@@ -153,6 +159,15 @@ class Comment(db.Model):
 
     replies = db.relationship("Comment", back_populates="replied", cascade="all, delete-orphan")
     replied = db.relationship("Comment", back_populates="replies", remote_side=[id])
+
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    body = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    author = db.relationship('User', back_populates='messages')
+
     
 class Notifation(db.Model):
     __tablename__="notifation"
