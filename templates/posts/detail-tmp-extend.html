@@ -150,7 +150,7 @@
                                 {% endfor %} {% endcomment %} #}
                                 
                                 <p style="width: 95%;word-break: break-all;">
-                                    {{ topic.body }}
+                                    {{ topic.body | safe }}
                                 </p>
                                
                                 {% for image in topic.photos%}
@@ -253,7 +253,7 @@
                             <div class="answer-description" style="margin-bottom: 20px;">
                                 
                                 <p style="width: 95%;word-break: break-all;">
-                                    {{comment.body}}
+                                    {{comment.body | safe }}
                                 </p>
                                
 

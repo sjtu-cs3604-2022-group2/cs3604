@@ -40,7 +40,7 @@ class BaseConfig(object):
     MAIL_DEFAULT_SENDER = "1007736246@qq.com"
 
     ### dropzone 的配置
-    FILE_UPLOAD_PATH = os.path.join(basedir, "uploads")
+    FILE_UPLOAD_PATH = os.path.join(basedir, "static/uploads")
     DROPZONE_ENABLE_CSRF = False
     # BLUELOG_EMAIL = os.getenv('BLUELOG_EMAIL')
     POST_PER_PAGE = 10

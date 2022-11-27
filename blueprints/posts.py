@@ -106,10 +106,10 @@ def upload():
         photo_num = session["photo_nums"]
         filename = f.filename
         upload_path = current_app.config["FILE_UPLOAD_PATH"]
+        print(upload_path)
         # print("filename:", filename)
         filename = random_filename(filename)
-        # photo_path = os.path.join(upload_path, filename)
-        photo_path = "=/uploads/" + filename
+        photo_path=url_for('static',filename='uploads/'+filename)
         print("当前上传的文件数为：", photo_num)
         session[f"photo_{photo_num}"] = photo_path
         f.save(os.path.join(upload_path, filename))
