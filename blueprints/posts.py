@@ -466,3 +466,4 @@ def notifications():
     current_user = User.query.get(session["user_id"])
     notices = current_user.notifations
     return render_template("user/notification.html", current_user=current_user, notices=notices, User=User)
+

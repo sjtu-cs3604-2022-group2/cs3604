@@ -37,15 +37,51 @@
       </td>
       <td class="object_detail">
         {%if notice.object == 0 %}
-        <a href="{{notice.link}}">{{notice.post.title}}</a>
+        <a href="{{notice.link}}">{{notice.post.title | safe}}</a>
         {%elif notice.object == 1 %}
-        <a href="{{notice.link}}">{{notice.comment.body}}</a>
+        <a href="{{notice.link}}" class="comment_body">{{notice.body |safe }}</a>
         {%endif%}
       </td>
       <td class="timestamp">{{notice.timestamp}}</td>
     </tr>
     {%endfor%}
-  </tbody>
+  </tbody>&nbsp;
 </table>
 
 {%endblock content%}
+
+{%block scripts%}
+{{super()}}
+<script>
+  $(window).on('load',function(){
+    var lst=$('.comment_body');
+    var re1=new RegExp("</p>","g");
+    var re=new RegExp("<.+?>","g");
+    var re2=new RegExp("&lt;.+?&gt;","g");
+    for(var i=0;i<lst.length;++i){
+      var element=lst[i];
+      var str=element.innerHTML;
+      var newstr=str.replace(re1,"&nbsp;&nbsp;&nbsp;");
+      newstr=newstr.replace(re,'');
+      newstr=newstr.replace(re2,'');
+      if(newstr.length>40){
+        newstr=newstr.substring(0,40);
+      }
+      element.innerHTML=newstr;
+      
+    }
+  })
+  function filter(str){
+    var re1=new RegExp("</p>","g");
+    var re=new RegExp("<.+?>","g");
+      var newstr=str.replace(re1,"&nbsp;&nbsp;&nbsp;");
+      newstr=newstr.replace(re,'');
+      if(newstr.length>40){
+        newstr=newstr.substring(0,40);
+      }
+      return newstr;
+
+
+  }
+</script>
+{%endblock scripts%}
