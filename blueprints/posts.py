@@ -311,31 +311,33 @@ def like():
         post_id = int(form["post_id"])
         comment_id = int(form["comment_id"])
         user_id = int(form["user_id"])
-        print(post_id, comment_id, user_id)
+        floor=int(form["floor"])  # 被点赞的楼层，用于生成链接
         # print(type(post_id), type(comment_id), type(user_id))
 
         current_user = User.query.get(session["user_id"])
         post = Post.query.get(post_id)
-        # commentsofpost= post.comments
-        # like_list=[]
         if comment_id == -1:
-            # current_user=User.query.get(session['user_id'])
-
             current_user.like_posts.append(post)
             post.num_likes += 1
-            # db.session.add(current_user)
+            #生成链接，形式为'/detail/11'
+            link = url_for('posts.detail',post_id=post_id)  
             db.session.commit()
 
-            # print("点赞成功")
-            # 点赞的是post本身，更新数据库
-            # pass
+            # TODO: 发起通知
+            
         else:
             # 点赞的是post下的评论，评论id为comment_id，更新数据库
             comment = Comment.query.get(comment_id)
             current_user.like_comments.append(comment)
             comment.num_likes += 1
+
+            #生成链接，形式为'/detail/11#comment3'
+            link = url_for('posts.detail',post_id=post_id)+'#comment'+str(floor)
+
             db.session.commit()
-            # pass/
+            # TODO: 发起通知
+
+
     return "202"
 
 
@@ -369,3 +371,40 @@ def unlike():
             db.session.commit()
 
     return "202"
+
+@bp.route("/comment_towards", methods=["POST"])
+def comment_towards():
+    if request.method == "POST":
+        form = request.form
+        post_id=int(form["post_id2"]) # 被回复的comment所属的帖子id，用于生成链接
+        towards = int(form["towards"])  #被回复的楼层，用于渲染页面
+        body = form["text_body2"] # 回复内容
+        user_id = int(form["user_id2"])  # 动作发起者的id
+        comment_id=int(form["comment_id"])  # 被回复的comment的id，用于寻找该comment的作者，并向其发送通知
+        new_floor=int(form["new_floor2"])
+
+        link=url_for('posts.detail',post_id=post_id)+'#comment'+str(new_floor)
+
+        print(post_id,towards,body,comment_id,link)
+
+        # TODO: 更新数据库，生成通知
+        pass
+    return redirect(url_for('posts.detail',post_id=post_id))
+
+@bp.route("/add_reply/<int:type_of_form>", methods=["POST"])
+def add_reply(type_of_form):
+    if request.method == "POST":
+        form = request.form
+        type_of_form=str(type_of_form)
+        post_id=int(form["post_id"+type_of_form]) # 被回复的帖子id，用于生成链接,寻找该post的作者，并向其发送通知
+        body = form["text_body"+type_of_form] # 回复内容
+        user_id = int(form["user_id"+type_of_form])  # 动作发起者的id
+        new_floor=int(form["new_floor"+type_of_form])  # 新增楼层，用于生成链接
+
+        link=url_for('posts.detail',post_id=post_id)+'#comment'+str(new_floor)
+
+        print(post_id,body,link)
+
+        # TODO: 更新数据库，生成通知
+        pass
+    return redirect(url_for('posts.detail',post_id=post_id))
