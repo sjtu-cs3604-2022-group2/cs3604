@@ -312,17 +312,18 @@
                                 </div>
                             </div>
                          <div class="answer-content pull-right">  
-                            {#
-                                {% if comment.towards != 1 %}
+                            
+                                {% if (comment.towards!=None and comment.towards != -1)  %}
                                 <div class="reply-to">
                                     <a href="#comment{{comment.towards}}">
                                         <span>回复 </span>
                                         <span>{{comment.towards}}楼 </span>
-                                        <span>{{post.comments[comment.towards-2].responder.username}}</span>
+                                        <span>{{User.query.get(post.comments[comment.towards-2].user_id
+                                            ).username}}</span>
                                     </a> 
                                 </div> 
                                 {% endif %}
-                            #}
+                            
 
                            {# <!--      <div class="answer-description" style="margin-bottom: 20px;">
                                     {% for paragraph in comment.body %}

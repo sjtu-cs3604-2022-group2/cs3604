@@ -1,53 +1,51 @@
-{% extends 'base.html'%}
-
-{% block head %}
+{% extends 'base.html'%} {% block head %}
 
 <title>Notifications</title>
 {{super()}}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/user/notification.css')}}">
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/user/notification.css')}}"
+/>
 
-
-{%endblock head%}
-
-{%block content%}
+{%endblock head%} {%block content%}
 
 <table class="table table-hover notice_table">
-    <caption><h1>通知</h1></caption>
-    <thead>
-      <tr>
-        <!-- <th>状态</th>
+  <caption>
+    <h1>通知</h1>
+  </caption>
+  <thead>
+    <tr>
+      <!-- <th>状态</th>
         <th>来自</th>
         <th>动作</th>
         <th>详情</th>
         <th>时间</th> -->
-      </tr>
-    </thead>
-    <tbody>
-    {%set states=["未读","已读"]%}
-    {%set actions=["点赞","评论"]%}
-    {%set objects=["帖子","回帖"]%}
-    {%for notice in notices%}
-      <tr class="state{{notice.state}}">
-        <td class="state">
-            {{states[notice.state]}}
-        </td>
-        <td class="from_user"><span>{{notice.from_user.username}}</span></td>
-        <td class="action">
-            <span>{{actions[notice.action]}}</span><span>了你的</span><sapn>{{objects[notice.object]}}</sapn>
-        </td>
-        <td class="object_detail">
-            {%if notice.object == 0 %}
-                <a href='{{notice.link}}'>{{notice.object_detail.title}}</a>
-            {%elif notice.object == 1 %}
-                <a href='{{notice.link}}'>{{notice.object_detail.body}}</a>
-            {%endif%}
-        </td>
-        <td class="timestamp">
-            {{notice.timestamp}}
-        </td>
-      </tr>
+    </tr>
+  </thead>
+  <tbody>
+    {%set states=["未读","已读"]%} {%set actions=["点赞","评论"]%} {%set
+    objects=["帖子","回帖"]%} {%for notice in notices%}
+    <tr class="state{{notice.state}}">
+      <td class="state">{{states[notice.state]}}</td>
+      <td class="from_user">
+        <span>{{User.query.get(notice.action_id).username}}</span>
+      </td>
+      <td class="action">
+        <span>{{actions[notice.action]}}</span><span>了你的</span
+        ><sapn>{{objects[notice.object]}}</sapn>
+      </td>
+      <td class="object_detail">
+        {%if notice.object == 0 %}
+        <a href="{{notice.link}}">{{notice.post.title}}</a>
+        {%elif notice.object == 1 %}
+        <a href="{{notice.link}}">{{notice.comment.body}}</a>
+        {%endif%}
+      </td>
+      <td class="timestamp">{{notice.timestamp}}</td>
+    </tr>
     {%endfor%}
-    </tbody>
-  </table>
+  </tbody>
+</table>
 
 {%endblock content%}

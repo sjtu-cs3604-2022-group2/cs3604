@@ -1,4 +1,3 @@
-
 import random
 from datetime import datetime
 from email.policy import default
@@ -49,7 +48,8 @@ class User(UserMixin, db.Model):
     comments = db.relationship("Comment", backref="user", lazy="dynamic")
     like_posts = db.relationship("Post", secondary=user_like_post_table, back_populates="like_users")
     like_comments = db.relationship("Comment", secondary=user_like_comment_table, back_populates="like_users")
-    messages = db.relationship('Message', back_populates='author', cascade='all')
+    messages = db.relationship("Message", back_populates="author", cascade="all")
+    notifations = db.relationship("Notifation", back_populates="user", cascade="all")
 
     followed = db.relationship(
         "Follow",
@@ -92,16 +92,13 @@ class Photo(db.Model):
     description = db.Column(db.String(500))
     filename = db.Column(db.String(64))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    photo_path= db.Column(db.String(1000))
-    
+    photo_path = db.Column(db.String(1000))
+
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     user = db.relationship("User", back_populates="photos")
-    
-    post_id=db.Column(db.Integer,db.ForeignKey('post.id'))
-    post= db.relationship("Post",back_populates="photos")
-    
-    
-    
+
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
+    post = db.relationship("Post", back_populates="photos")
 
 
 class Category(db.Model):
@@ -133,6 +130,8 @@ class Post(db.Model):
     num_views = db.Column(db.Integer, default=0)
     like_users = db.relationship("User", secondary=user_like_post_table, back_populates="like_posts")
 
+    notifations = db.relationship("Notifation", back_populates="post", cascade="all")
+
     # 隐式属性
     # user = db.relationship('User', back_populates='posts')
     # category = db.relationship('Category', back_ref='posts')
@@ -145,40 +144,59 @@ class Post(db.Model):
 class Comment(db.Model):
     __tablename__ = "comment"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    body = db.Column(db.Text)
+    body = db.Column(db.Text)  ### 表示的是回复的内容
     from_author = db.Column(db.Boolean, default=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
     post = db.relationship("Post", back_populates="comments")
-    num_likes = db.Column(db.Integer, default=random.randint(20,100))
+
+    num_likes = db.Column(db.Integer, default=0)
+    towards = db.Column(db.Integer,default=-1)
+    ###对应的是评论回复的几楼。如果回复的是原帖子，那么towards=-1。
+    
+    notifations=db.relation("Notifation",back_populates="comment",cascade='all')
+
     # 隐式属性
     # user = db.relationship('User', back_populates='comments')
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     like_users = db.relationship("User", secondary=user_like_comment_table, back_populates="like_comments")
+    
 
     # add a foreign key pointing self. 在同一个模型内的一对多关系称为邻接列表关系（Adjacency List Relationship)
     replied_id = db.Column(db.Integer, db.ForeignKey("comment.id"))
-
-    replies = db.relationship("Comment", back_populates="replied", cascade="all, delete-orphan")
-    replied = db.relationship("Comment", back_populates="replies", remote_side=[id])
+    replies = db.relationship("Comment", back_populates="replied", cascade="all, delete-orphan")  ### 表示回复了这条评论的那些评论
+    replied = db.relationship("Comment", back_populates="replies", remote_side=[id])  ### 表示这条评论回复了哪条评论。
 
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     body = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    author = db.relationship('User', back_populates='messages')
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    author = db.relationship("User", back_populates="messages")
 
-    
+
 class Notifation(db.Model):
-    __tablename__="notifation"
+    __tablename__ = "notifation"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    state = db.Column(db.Integer, default=0)
+    action = db.Column(db.Integer)  ## 0表示点赞，1表示评论
+    object = db.Column(db.Integer,default=0)  ### 0表示是post本身 1表示comment。
+    action_id = db.Column(db.Integer)  ### 动作发起用户的id
+    # towards=db.Column(db.Integer)  ### -1 表示帖子本身，其他的表示评论的楼层。
+    link = db.Column(db.String(100),default='#')
+
+    ## 表示这个通知要发给谁
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user = db.relationship("User", back_populates="notifations")
+
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
+    post = db.relationship("Post", back_populates="notifations")
     
     
-    
-    
+    comment_id=db.Column(db.Integer,db.ForeignKey("comment.id"))
+    comment=db.relationship("Comment",back_populates='notifations')
     
     
