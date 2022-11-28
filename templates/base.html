@@ -135,7 +135,7 @@
                   class="nav navbar-nav navbar-right"
                   style="padding: 0; margin-right: 2px"
                 >
-                  <li><a href="#">首页</a></li>
+                  <li><a href="/index">首页</a></li>
                   <li class="dropdown">
                     <a
                       href="#"
@@ -180,7 +180,7 @@
                       </li>
                     </ul>
                   </li>
-                  <li><a href="#">关注</a></li>
+                  <li><a href="{{url_for('user.follows')}}">关注</a></li>
 
                   <li class="dropdown current-user">
                     <a
@@ -220,7 +220,7 @@
                         </div>
                       </li>
                       <li>
-                        <a href="{{url_for('user.selfcenter')}}">个人中心</a>
+                        <a href="{{url_for('user.profile')}}">个人中心</a>
                       </li>
                       <li>
                         <a href="{{url_for('user.follows')}}"> 关注列表</a>

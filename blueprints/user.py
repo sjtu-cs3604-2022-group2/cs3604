@@ -58,9 +58,9 @@ def login():
     return render_template("user/login.html", form=form, registerform=registerform)
 
 
-@bp.route("/notifations", methods=["GET"])
-def notifations():
-    return render_template("user/notifations.html")
+@bp.route("/notifications", methods=["GET"])
+def notifications():
+    return render_template("user/notifications.html")
 
 @bp.route("/follows", methods=["GET"])
 def follows():
@@ -75,8 +75,8 @@ def follows():
     return render_template("user/friends-tmp.html", main_user=current_user)
 
 
-@bp.route("/selfcenter")
-def selfcenter():
+@bp.route("/profile")
+def profile():
     Current = namedtuple("Current", ["image", "username", "follow", "posts"])
     try:
         id = session["user_id"]

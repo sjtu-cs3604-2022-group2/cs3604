@@ -49,7 +49,7 @@ class User(UserMixin, db.Model):
     like_posts = db.relationship("Post", secondary=user_like_post_table, back_populates="like_users")
     like_comments = db.relationship("Comment", secondary=user_like_comment_table, back_populates="like_users")
     messages = db.relationship("Message", back_populates="author", cascade="all")
-    notifations = db.relationship("Notifation", back_populates="user", cascade="all")
+    notifications = db.relationship("Notification", back_populates="user", cascade="all")
 
     followed = db.relationship(
         "Follow",
@@ -130,7 +130,7 @@ class Post(db.Model):
     num_views = db.Column(db.Integer, default=0)
     like_users = db.relationship("User", secondary=user_like_post_table, back_populates="like_posts")
 
-    notifations = db.relationship("Notifation", back_populates="post", cascade="all")
+    notifications = db.relationship("Notification", back_populates="post", cascade="all")
 
     # 隐式属性
     # user = db.relationship('User', back_populates='posts')
@@ -154,7 +154,7 @@ class Comment(db.Model):
     towards = db.Column(db.Integer,default=-1)
     ###对应的是评论回复的几楼。如果回复的是原帖子，那么towards=-1。
     
-    notifations=db.relation("Notifation",back_populates="comment",cascade='all')
+    notifications=db.relation("Notification",back_populates="comment",cascade='all')
 
     # 隐式属性
     # user = db.relationship('User', back_populates='comments')
@@ -176,8 +176,8 @@ class Message(db.Model):
     author = db.relationship("User", back_populates="messages")
 
 
-class Notifation(db.Model):
-    __tablename__ = "notifation"
+class Notification(db.Model):
+    __tablename__ = "notification"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
@@ -190,13 +190,13 @@ class Notifation(db.Model):
 
     ## 表示这个通知要发给谁
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    user = db.relationship("User", back_populates="notifations")
+    user = db.relationship("User", back_populates="notifications")
 
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
-    post = db.relationship("Post", back_populates="notifations")
+    post = db.relationship("Post", back_populates="notifications")
     
     
     comment_id=db.Column(db.Integer,db.ForeignKey("comment.id"))
-    comment=db.relationship("Comment",back_populates='notifations')
+    comment=db.relationship("Comment",back_populates='notifications')
     
     

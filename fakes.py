@@ -127,7 +127,7 @@ def random_relation(count, active):
 
 
 def real_post(count=100):
-    with open("./data/post.json", "r", encoding="utf8") as f:
+    with open("./data/post_raw.json", "r", encoding="utf8") as f:
         posts = json.load(f)
     for p in Post.query.all():
         db.session.delete(p)

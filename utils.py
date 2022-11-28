@@ -29,10 +29,13 @@ def get_recommendation_posts(user_id):
 
     recommend_category = sorted(list(cat_record.keys()), key=lambda x: cat_record[x], reverse=True)[:2]
     print(recommend_category)
-    recommend_posts = Post.query.filter(
-        or_(Post.category_id == recommend_category[0], Post.category_id == recommend_category[1])
-    ).all()
-    recommend_posts = recommend_posts[:10]
+    if len(recommend_category) >= 2:
+        recommend_posts = Post.query.filter(
+            or_(Post.category_id == recommend_category[0], Post.category_id == recommend_category[1])
+        ).all()
+        recommend_posts = recommend_posts[:10]
+    else:
+        recommend_posts = []
     return recommend_posts
 
 

@@ -11,7 +11,7 @@ from sqlalchemy import or_, and_
 # from decorators import login_request
 from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
 from extensions import db
-from models import Category, Photo, Post, User, Comment, Notifation
+from models import Category, Photo, Post, User, Comment, Notification
 from utils import get_recommendation_posts
 
 # from
@@ -36,10 +36,13 @@ def index(page):
 
     recommend_category = sorted(list(cat_record.keys()), key=lambda x: cat_record[x], reverse=True)[:2]
     print(recommend_category)
-    recommend_posts = Post.query.filter(
-        or_(Post.category_id == recommend_category[0], Post.category_id == recommend_category[1])
-    ).all()
-    recommend_posts = recommend_posts[:10]
+    if len(recommend_category) >= 2:
+        recommend_posts = Post.query.filter(
+            or_(Post.category_id == recommend_category[0], Post.category_id == recommend_category[1])
+        ).all()
+        recommend_posts = recommend_posts[:10]
+    else:
+        recommend_posts = []
     random.shuffle(recommend_posts)
     return render_template(
         "posts/index-tmp-extend.html",
@@ -320,11 +323,11 @@ def like():
             db.session.commit()
             # 生成链接，形式为'/detail/11'
             link = url_for("posts.detail", post_id=post_id)
-            notifation = Notifation(
+            notification = Notification(
                 body=post.body, action=0, object=0, action_id=current_user.id, link=link, user_id=post.user_id
             )
 
-            db.session.add(notifation)
+            db.session.add(notification)
 
             db.session.commit()
             print("添加点赞post通知")
@@ -341,7 +344,7 @@ def like():
             # 生成链接，形式为'/detail/11#comment3'
             link = url_for("posts.detail", post_id=post_id) + "#comment" + str(floor)
 
-            notifation = Notifation(
+            notification = Notification(
                 body=comment.body,
                 action=0,
                 object=1,
@@ -351,7 +354,7 @@ def like():
                 comment_id=comment_id,
             )
 
-            db.session.add(notifation)
+            db.session.add(notification)
 
             db.session.commit()
             print("添加点赞comment通知")
@@ -414,10 +417,10 @@ def comment_towards():
         comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id)
         db.session.add(comment)
 
-        notifation = Notifation(
+        notification = Notification(
             body=body, state=0, action=1, object=1, link=link, action_id=action_id, user_id=user_id, post_id=post_id
         )
-        db.session.add(notifation)
+        db.session.add(notification)
 
         db.session.commit()
         # print(post_id,towards,body,comment_id,link)
@@ -447,11 +450,11 @@ def add_reply(type_of_form):
 
         link = url_for("posts.detail", post_id=post_id) + "#comment" + str(new_floor)
 
-        notifation = Notifation(
+        notification = Notification(
             body=body, state=0, action=1, object=0, link=link, user_id=user_id, action_id=action_id, post_id=post_id
         )
 
-        db.session.add(notifation)
+        db.session.add(notification)
         db.session.commit()
 
         # print(post_id, body, link)
@@ -464,6 +467,6 @@ def add_reply(type_of_form):
 @bp.route("/notifications")
 def notifications():
     current_user = User.query.get(session["user_id"])
-    notices = current_user.notifations
+    notices = current_user.notifications
     return render_template("user/notification.html", current_user=current_user, notices=notices, User=User)
 
