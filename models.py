@@ -9,7 +9,7 @@ class Follow(db.Model):
     __tablename__ = "follows"
     follower_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)  # 记录关注的时间
+    timestamp = db.Column(db.DateTime, default=datetime.now)  # 记录关注的时间
 
 
 class Email(db.Model):
@@ -91,7 +91,7 @@ class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(500))
     filename = db.Column(db.String(64))
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=datetime.now)
     photo_path = db.Column(db.String(1000))
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
@@ -171,7 +171,7 @@ class Comment(db.Model):
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     body = db.Column(db.Text, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     author = db.relationship("User", back_populates="messages")
 
@@ -180,7 +180,7 @@ class Notification(db.Model):
     __tablename__ = "notification"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     body = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     state = db.Column(db.Integer, default=0)
     action = db.Column(db.Integer)  ## 0表示点赞，1表示评论
     object = db.Column(db.Integer,default=0)  ### 0表示是post本身 1表示comment。
