@@ -1,3 +1,5 @@
+import re
+
 from models import User, Post
 from sqlalchemy import or_
 
@@ -60,3 +62,15 @@ def get_recommendation_users(user_id):
             if len(recommend_user) == 10:
                 break
     return recommend_user
+
+def filter_body_content(str):
+    reg_p=re.compile(r"</p>")
+    reg_tag=re.compile(r"<.+?>")
+    str=reg_p.sub('   ',str)
+    str=reg_tag.sub('',str)
+    if(len(str)>40):
+        str=str[:40]
+        if(str[-1]!=' '):
+            str+='...'
+    str=str.replace('   ','&nbsp;&nbsp;&nbsp;')
+    return str

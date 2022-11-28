@@ -12,7 +12,7 @@ from sqlalchemy import or_, and_
 from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
 from extensions import db
 from models import Category, Photo, Post, User, Comment, Notification
-from utils import get_recommendation_posts
+from utils import get_recommendation_posts, filter_body_content
 
 # from
 bp = Blueprint("posts", __name__)
@@ -323,8 +323,10 @@ def like():
             db.session.commit()
             # 生成链接，形式为'/detail/11'
             link = url_for("posts.detail", post_id=post_id)
+
+            text=filter_body_content(post.title)
             notification = Notification(
-                body=post.body, action=0, object=0, action_id=current_user.id, link=link, user_id=post.user_id
+                body=text, action=0, object=0, action_id=current_user.id, link=link, user_id=post.user_id
             )
 
             db.session.add(notification)
@@ -337,6 +339,7 @@ def like():
         else:
             # 点赞的是post下的评论，评论id为comment_id，更新数据库
             comment = Comment.query.get(comment_id)
+            
             current_user.like_comments.append(comment)
             comment.num_likes += 1
 
@@ -344,8 +347,10 @@ def like():
             # 生成链接，形式为'/detail/11#comment3'
             link = url_for("posts.detail", post_id=post_id) + "#comment" + str(floor)
 
+            text=filter_body_content(comment.body)
+            print(text)
             notification = Notification(
-                body=comment.body,
+                body=text,
                 action=0,
                 object=1,
                 action_id=current_user.id,
@@ -417,8 +422,10 @@ def comment_towards():
         comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id)
         db.session.add(comment)
 
+        text=filter_body_content(body)
+
         notification = Notification(
-            body=body, state=0, action=1, object=1, link=link, action_id=action_id, user_id=user_id, post_id=post_id
+            body=text, state=0, action=1, object=1, link=link, action_id=action_id, user_id=user_id, post_id=post_id
         )
         db.session.add(notification)
 
@@ -450,8 +457,10 @@ def add_reply(type_of_form):
 
         link = url_for("posts.detail", post_id=post_id) + "#comment" + str(new_floor)
 
+
+        text=filter_body_content(Post.query.get(post_id).title)
         notification = Notification(
-            body=body, state=0, action=1, object=0, link=link, user_id=user_id, action_id=action_id, post_id=post_id
+            body=text, state=0, action=1, object=0, link=link, user_id=user_id, action_id=action_id, post_id=post_id
         )
 
         db.session.add(notification)
