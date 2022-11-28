@@ -589,14 +589,14 @@
                 user_id:{{current_user.id}},
                 floor:comment_floor
             };
-        console.log(obj);
+        console.log(dic);
         var span=obj.lastElementChild;
         console.log(span.innerHTML);
         var str=(span.innerHTML).substring(1);
         var newstate=!a;
         console.log(a);
         console.log(newstate);
-        var newfunc=Function("like(this,"+newstate+","+i+");return false;");
+        var newfunc=Function("like(this,"+newstate+","+i+","+comment_floor+");return false;");
         console.log(newfunc);
         obj.onclick=newfunc;
 
