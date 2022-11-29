@@ -1,7 +1,8 @@
 from flask import render_template, redirect, url_for, request, Blueprint, current_app, abort
 from flask_login import current_user, login_required
 from flask_socketio import emit
-
+import sys
+sys.path.append('c:\\PROJECTS\\new\\cs3604')
 from extensions import socketio, db
 # from forms import ProfileForm
 from models import Message, User

@@ -1,5 +1,5 @@
 {%block head %}
-    <link rel="stylesheet"  href="{{ url_for('static',filename='css/user/chat.css')}}">
+    <link rel="stylesheet"  href="{{ url_for('static',filename='css/user/chat-2.css')}}">
     <meta charset="utf-8">
     <meta name="referrer" content="no-referrer" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -54,7 +54,7 @@
             <span><i class="fas fa-cog"></i></span>
           </div>
         </header>
-        <main class="messages">
+        <main class="messages msger-chat">
         {% include 'chat/_messages.html' %}
         {#{% for message in messages %}
             {% if message.author_id != current_user.id %}
