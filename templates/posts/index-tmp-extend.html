@@ -47,8 +47,9 @@ render_pagination %} {% block head %}
                   </a>
                 </h3>
 
-                <p
+                <div
                   style="
+                    margin-top:10px;
                     text-overflow: ellipsis;
                     height: 38px;
                     overflow: hidden;
@@ -62,8 +63,8 @@ render_pagination %} {% block head %}
                     font-size: 13px;
                   "
                 >
-                  {{index_posts[i].body}}
-                </p>
+                  {{index_posts[i].body | safe }}
+              </div>
 
                 <div class="tag">
                   <div class="category{{(index_posts[i].category).id}}">

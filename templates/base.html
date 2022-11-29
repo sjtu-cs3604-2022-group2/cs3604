@@ -1,165 +1,269 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     {% block head %}
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <meta name="referrer" content="no-referrer" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon"  href="#"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" href="#" />
 
-
-    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.font.im/css?family=Kalam" rel="stylesheet">
     <link
-        href='https://fonts.googlefonts.cn/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
-        rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
-    <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_3724642_dw14pio9i6b.css">
+      href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.font.im/css?family=Kalam" rel="stylesheet" />
+    <link
+      href="https://fonts.googlefonts.cn/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://at.alicdn.com/t/c/font_3724642_dw14pio9i6b.css"
+    />
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.min.css')}}">
-    {# <link href="https://unpkg.com/@wangeditor/editor@latest/dist/css/style.css" rel="stylesheet">#}
-    {% endblock head %}
-</head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/base.min.css')}}"
+    />
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    {#
+    <link
+      href="https://unpkg.com/@wangeditor/editor@latest/dist/css/style.css"
+      rel="stylesheet"
+    />
+    #} {% endblock head %}
+  </head>
 
-<body >
+  <body>
     <div class="container-fluid">
-    {% block nav %}
-    <div class="container head" style="height:auto; width: 100%;;margin-left:0;">
+      {% block nav %}
+      <div
+        class="container head"
+        style="height: auto; width: 100%; margin-left: 0"
+      >
         <div class="row">
-            <nav class="navbar-default navbar ">
-                <div class="headwrap">
-                    <div class="navbar-header">
-                        <a class="navbar-brand" href="#">
-                            <div class="logo">
-                                Hobbitat
-                            </div>
-                        </a>
-                        <div class="slogan">
-                            校园兴趣爱好分享社区
-                        </div>
-                        <div class="navbar-search ">
-                            <form class="navbar-form" role="search" method='get' action="{{url_for('posts.search')}}">
-                                <div class="input-group add-on">
-                                    <input id="search_category" name="search_category" type='text' value='帖子标题' style="display: none;">
-                                    <input class="form-control form-control222" placeholder="搜索"
-                                        name="search_content" id="srch-term" type="text">
-                                    
-                                        <div class="input-group-btn">
-                                            <button type="button" class="btn btn-default 
-                                            dropdown-toggle" data-toggle="dropdown" style="outline:none;border-radius:0px;color:gray;">
-                                                <span class="search-in-area">帖子标题</span>
-                                                <span class="caret"></span>
-                                            </button>
-                                            <ul class="dropdown-menu pull-right" style="min-width:100px;outline:none;">
-                                                <li>
-                                                    <a href="#" onclick="shows($(this).text())">帖子标题</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#" onclick="shows($(this).text())">帖子内容</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#" onclick="shows($(this).text())">分区</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-default btn-default2913" type="submit"
-                                            style="width:100%;height: 100%;text-align: center;">
-                                            <i class="glyphicon glyphicon-search" style="margin: auto;"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
+          <nav class="navbar-default navbar">
+            <div class="headwrap">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="#">
+                  <div class="logo">Hobbitat</div>
+                </a>
+                <div class="slogan">校园兴趣爱好分享社区</div>
+                <div class="navbar-search">
+                  <form
+                    class="navbar-form"
+                    role="search"
+                    method="get"
+                    action="{{url_for('posts.search')}}"
+                  >
+                    <div class="input-group add-on">
+                      <input
+                        id="search_category"
+                        name="search_category"
+                        type="text"
+                        value="帖子标题"
+                        style="display: none"
+                      />
+                      <input
+                        class="form-control form-control222"
+                        placeholder="搜索"
+                        name="search_content"
+                        id="srch-term"
+                        type="text"
+                      />
 
-                        </div>
-                    </div>
-
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1"
-                        style="padding:15px 0px 5px 0px;">
-                        <!-- <ul class="nav navbar-nav"> </ul> -->
-                        <ul class="nav navbar-nav navbar-right" style="padding:0;margin-right:2px;">
-                            <li><a href="#">首页</a></li>
-                            <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                                    role="button" aria-haspopup="true" aria-expanded="false">分区<span
-                                        class="caret"></span></a>
-                                <ul class="dropdown-menu animated zoomIn">
-                                    <li><a href="{{url_for('posts.music')}}">音乐</a></li>
-                                    <li><a href="{{url_for('posts.anime')}}">动画</a></li>
-                                    <li><a href="#">绘画</a></li>
-                                    <li><a href="{{url_for('posts.sports')}}">运动</a></li>
-                                    <li><a href="{{url_for('posts.games')}}">游戏</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#">关注</a></li>
-
-                            <li class="dropdown current-user">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                    aria-haspopup="true" aria-expanded="false"
-                                    style="padding-top:0;padding-bottom:0;-webkit-transform: translate(0,-9px);transform: translate(0,-9px);">
-
-                                    <img class="current-user-photo" src={{current_user.image}} alt="个人中心">
-                                    <span class="caret"
-                                        style="-webkit-transform: translate(0,11px);transform: translate(0,11px);"></span>
-                                </a>
-
-
-                                <ul class="dropdown-menu animated zoomIn">
-                                    <li>
-                                        <div>
-                                            用户名：
-                                            <br>
-                                            {{current_user.username}}
-                                        </div>
-                                    </li>
-                                    <li><a href="{{url_for('user.selfcenter')}}">个人中心</a></li>
-                                    <li><a href="{{url_for('user.follows')}}"> 关注列表</a></li>
-                                    <li><a href="#"> 通知 </a></li>
-                                    <li><a href="#"> 历史 </a></li>
-                                    <li><a href="#"> 设置 </a></li>
-                                    <li><a href="#">帮助</a></li>
-                                    <li><a href="{{url_for('user.logout')}}">注销</a></li>
-                                    <li><a href="#"> 联系我们 </a></li>
-
-                                </ul>
-                            </li>
-
+                      <div class="input-group-btn">
+                        <button
+                          type="button"
+                          class="btn btn-default dropdown-toggle"
+                          data-toggle="dropdown"
+                          style="outline: none; border-radius: 0px; color: gray"
+                        >
+                          <span class="search-in-area">帖子标题</span>
+                          <span class="caret"></span>
+                        </button>
+                        <ul
+                          class="dropdown-menu pull-right"
+                          style="min-width: 100px; outline: none"
+                        >
+                          <li>
+                            <a href="#" onclick="shows($(this).text())"
+                              >帖子标题</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" onclick="shows($(this).text())"
+                              >帖子内容</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" onclick="shows($(this).text())">分区</a>
+                          </li>
                         </ul>
+                      </div>
+                      <div class="input-group-btn">
+                        <button
+                          class="btn btn-default btn-default2913"
+                          type="submit"
+                          style="width: 100%; height: 100%; text-align: center"
+                        >
+                          <i
+                            class="glyphicon glyphicon-search"
+                            style="margin: auto"
+                          ></i>
+                        </button>
+                      </div>
                     </div>
+                  </form>
                 </div>
-            </nav>
-           
+              </div>
+
+              <!-- Collect the nav links, forms, and other content for toggling -->
+              <div
+                class="collapse navbar-collapse"
+                id="bs-example-navbar-collapse-1"
+                style="padding: 15px 0px 5px 0px"
+              >
+                <!-- <ul class="nav navbar-nav"> </ul> -->
+                <ul
+                  class="nav navbar-nav navbar-right"
+                  style="padding: 0; margin-right: 2px"
+                >
+                  <li><a href="/index">首页</a></li>
+                  <li class="dropdown">
+                    <a
+                      href="#"
+                      class="dropdown-toggle"
+                      data-toggle="dropdown"
+                      role="button"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      >分区<span class="caret"></span
+                    ></a>
+                    <ul class="dropdown-menu animated zoomIn">
+                      <li>
+                        <a
+                          href="{{url_for('posts.search',search_content='动画')}}"
+                          >动画</a
+                        >
+                      </li>
+                      <li>
+                        <a
+                          href="{{url_for('posts.search',search_content='小说')}}"
+                          >小说</a
+                        >
+                      </li>
+                      <li>
+                        <a
+                          href="{{url_for('posts.search',search_content='游戏')}}"
+                          >游戏</a
+                        >
+                      </li>
+                      <li>
+                        <a
+                          href="{{url_for('posts.search',search_content='音乐')}}"
+                          >音乐</a
+                        >
+                      </li>
+
+                      <li>
+                        <a
+                          href="{{url_for('posts.search',search_content='体育')}}"
+                          >体育</a
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                  <li><a href="{{url_for('user.follows')}}">关注</a></li>
+
+                  <li class="dropdown current-user">
+                    <a
+                      href="#"
+                      class="dropdown-toggle"
+                      data-toggle="dropdown"
+                      role="button"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      style="
+                        padding-top: 0;
+                        padding-bottom: 0;
+                        -webkit-transform: translate(0, -9px);
+                        transform: translate(0, -9px);
+                      "
+                    >
+                      <img
+                        class="current-user-photo"
+                        src="{{current_user.image}}"
+                        alt="个人中心"
+                      />
+                      <span
+                        class="caret"
+                        style="
+                          -webkit-transform: translate(0, 11px);
+                          transform: translate(0, 11px);
+                        "
+                      ></span>
+                    </a>
+
+                    <ul class="dropdown-menu animated zoomIn">
+                      <li>
+                        <div>
+                          用户名：
+                          <br />
+                          {{current_user.username}}
+                        </div>
+                      </li>
+                      <li>
+                        <a href="{{url_for('user.profile')}}">个人中心</a>
+                      </li>
+                      <li>
+                        <a href="{{url_for('user.follows')}}"> 关注列表</a>
+                      </li>
+                      <li>
+                        <a href="{{url_for('posts.notifications')}}"> 通知 </a>
+                      </li>
+                      <li><a href="#"> 历史 </a></li>
+                      <li><a href="#"> 设置 </a></li>
+                      <li><a href="#">帮助</a></li>
+                      <li><a href="{{url_for('user.logout')}}">注销</a></li>
+                      <li><a href="#"> 联系我们 </a></li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
         </div>
+      </div>
+      {% endblock nav%} {% block content %} {% endblock content%}
     </div>
-    {% endblock nav%}
-
-    {% block content %}
-    {% endblock content%}
-    
-    </div>
-    {% block other_content %}
-    {% endblock other_content%}
-
-    {% block scripts %}
+    {% block other_content %} {% endblock other_content%} {% block scripts %}
     <script>
-        function shows(a) {
-            $('.search-in-area').text(a);
-            $('#search_category').val(a);
-        }
+      function shows(a) {
+        $(".search-in-area").text(a);
+        $("#search_category").val(a);
+      }
     </script>
 
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    {{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js')) }}
+    {{ moment.include_moment(local_js=url_for('static',
+    filename='js/moment-with-locales.min.js')) }}
     <script type="text/javascript">
-        var root_url = "{{ url_for('chat.home') }}";
-        var messages_url = "{{ url_for('chat.get_messages') }}";
-        var current_user_id = {{ current_user.id|default(0) }};
-        var csrf_token = "{{ csrf_token() }}";
+      var root_url = "{{ url_for('chat.home') }}";
+      var messages_url = "{{ url_for('chat.get_messages') }}";
+      var current_user_id = {{ current_user.id|default(0) }};
+      var csrf_token = "{{ csrf_token() }}";
     </script>
-    
+
     {% endblock scripts %}
-</body>
+  </body>
+</html>

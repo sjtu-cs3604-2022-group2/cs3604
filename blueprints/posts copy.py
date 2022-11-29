@@ -13,8 +13,6 @@ from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm,
 from extensions import db
 from models import Category, Photo, Post, User, Comment, Notification
 from utils import get_recommendation_posts, filter_body_content
-from abstract_factory import AbstractAction
-from consts import LIKE,COMMENT,UNREAD,READ,OBJECT_POST,OBJECT_REPLY
 
 # from
 bp = Blueprint("posts", __name__)
@@ -60,6 +58,10 @@ def detail(post_id):
     related1 = {"title": "Guide for beginner", "num_comments": 20}
     related2 = {"title": "Online Help", "num_comments": 30}
     related_topics = [related1, related2]
+
+    # recom1 = {"title": "Guide for art", "num_comments": 210}
+    # recom2 = {"title": "Guide for music", "num_comments": 230}
+    # recommendations = [recom1, recom2]
     add_reply_form = AddReplyForm()
     comment_towards_form = CommentTowardsForm()
     add_reply_pop_form = AddReplyPopForm()
@@ -310,26 +312,59 @@ def like():
         comment_id = int(form["comment_id"])
         user_id = int(form["user_id"])
         floor = int(form["floor"])  # 被点赞的楼层，用于生成链接
+        # print(type(post_id), type(comment_id), type(user_id))
+        print("点赞成功", post_id, comment_id, user_id)
         current_user = User.query.get(session["user_id"])
         post = Post.query.get(post_id)
-
-        action_like=AbstractAction(post_id=post_id,
-                                    cur_user_id=current_user.id,
-                                    floor=floor,reply_id=comment_id).set_action(LIKE)
-
         if comment_id == -1:
-            
-            complete_action=action_like.to_a_post()
+            current_user.like_posts.append(post)
+            post.num_likes += 1
+
+            db.session.commit()
+            # 生成链接，形式为'/detail/11'
+            link = url_for("posts.detail", post_id=post_id)
+
+            text=filter_body_content(post.title)
+            notification = Notification(
+                body=text, action=0, object=0, action_id=current_user.id, link=link, user_id=post.user_id
+            )
+
+            db.session.add(notification)
+
+            db.session.commit()
             print("添加点赞post通知")
 
+            # TODO: 发起通知(已完成)
+
         else:
-
-            complete_action=action_like.to_a_reply()
-            print("添加点赞comment通知")
-
-    complete_action.update_likes()
+            # 点赞的是post下的评论，评论id为comment_id，更新数据库
+            comment = Comment.query.get(comment_id)
             
-    complete_action.send_notification()
+            current_user.like_comments.append(comment)
+            comment.num_likes += 1
+
+            db.session.commit()
+            # 生成链接，形式为'/detail/11#comment3'
+            link = url_for("posts.detail", post_id=post_id) + "#comment" + str(floor)
+
+            text=filter_body_content(comment.body)
+            print(text)
+            notification = Notification(
+                body=text,
+                action=0,
+                object=1,
+                action_id=current_user.id,
+                link=link,
+                user_id=comment.user_id,
+                comment_id=comment_id,
+            )
+
+            db.session.add(notification)
+
+            db.session.commit()
+            print("添加点赞comment通知")
+            # TODO: 发起通知(已完成)
+
     return "202"
 
 
@@ -375,7 +410,8 @@ def comment_towards():
         action_id = int(form["user_id2"])  # 动作发起者的id
         comment_id = int(form["comment_id"])  # 被回复的comment的id，用于寻找该comment的作者，并向其发送通知
         new_floor = int(form["new_floor2"])
-
+        # commment=Comment(body=body,)
+        link = url_for("posts.detail", post_id=post_id) + "#comment" + str(new_floor)
         user_id = Comment.query.get(comment_id).user_id
 
         if action_id == user_id:
@@ -383,19 +419,21 @@ def comment_towards():
         else:
             from_author = False
 
+        comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id)
+        db.session.add(comment)
 
-        comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id )
+        text=filter_body_content(body)
 
-        action_comment=AbstractAction(post_id=post_id,
-                                    cur_user_id=user_id,
-                                    floor=new_floor,reply_id=comment_id,
-                                    comment_body=body).set_action(COMMENT)
+        notification = Notification(
+            body=text, state=0, action=1, object=1, link=link, action_id=action_id, user_id=user_id, post_id=post_id
+        )
+        db.session.add(notification)
 
-        complete_action=action_comment.to_a_reply()
+        db.session.commit()
+        # print(post_id,towards,body,comment_id,link)
 
-        complete_action.update_comments(comment)
-        complete_action.send_notification()
-
+        # TODO: 更新数据库，生成通知
+        # pass
     return redirect(url_for("posts.detail", post_id=post_id))
 
 
@@ -414,19 +452,24 @@ def add_reply(type_of_form):
             from_author = True
         else:
             from_author = False
-        
         comment = Comment(body=body, from_author=from_author, post_id=post_id, towards=-1, user_id=action_id)
+        db.session.add(comment)
 
-        action_comment=AbstractAction(post_id=post_id,
-                                    cur_user_id=user_id,
-                                    floor=new_floor,reply_id=-1,
-                                    comment_body=body).set_action(COMMENT)
-
-        complete_action=action_comment.to_a_post()
-        complete_action.update_comments(comment)
-        complete_action.send_notification()
+        link = url_for("posts.detail", post_id=post_id) + "#comment" + str(new_floor)
 
 
+        text=filter_body_content(Post.query.get(post_id).title)
+        notification = Notification(
+            body=text, state=0, action=1, object=0, link=link, user_id=user_id, action_id=action_id, post_id=post_id
+        )
+
+        db.session.add(notification)
+        db.session.commit()
+
+        # print(post_id, body, link)
+
+        # TODO: 更新数据库，生成通知
+        # pass
     return redirect(url_for("posts.detail", post_id=post_id))
 
 

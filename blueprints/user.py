@@ -12,6 +12,8 @@ from extensions import mail, db
 from models import User, Email, Comment
 from forms import RegisterForm, LoginForm
 
+
+
 bp = Blueprint("user", __name__, url_prefix="/user")
 
 
@@ -56,6 +58,10 @@ def login():
     return render_template("user/login.html", form=form, registerform=registerform)
 
 
+@bp.route("/notifications", methods=["GET"])
+def notifications():
+    return render_template("user/notifications.html")
+
 @bp.route("/follows", methods=["GET"])
 def follows():
     Current = namedtuple("Current", ["image", "username", "follow", "posts"])
@@ -69,8 +75,8 @@ def follows():
     return render_template("user/friends-tmp.html", main_user=current_user)
 
 
-@bp.route("/selfcenter")
-def selfcenter():
+@bp.route("/profile")
+def profile():
     Current = namedtuple("Current", ["image", "username", "follow", "posts"])
     try:
         id = session["user_id"]
@@ -117,7 +123,7 @@ def logout():
     #         return redirect(url_for("user.login"))
     #     else:
     #         flash("注册未通过")
-    #         return redirect(url_for("user.register"))
+    #         return redirect(url_for("user.registe                                                                             r"))
 
 
 @bp.route("/captcha")

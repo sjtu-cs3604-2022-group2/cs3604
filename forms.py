@@ -4,7 +4,7 @@ from wtforms.validators import length, email, EqualTo
 from models import Email, User
 from wtforms.validators import DataRequired, Length
 from flask_ckeditor import CKEditorField
-from wtforms import SubmitField, StringField, RadioField, SelectMultipleField
+from wtforms import SubmitField, StringField, RadioField, SelectMultipleField,IntegerField
 from flask_ckeditor import CKEditor
 
 
@@ -59,23 +59,36 @@ class QuestionForm(wtforms.Form):
 
 class AddReplyForm(FlaskForm):
     # title= StringField('Title', validators=[DataRequired() ,Length(1, 50)])
+    user_id1=IntegerField(label="user_id1")
+    post_id1=IntegerField(label="post_id1")
     text_body1 = CKEditorField(label="text_body1", validators=[DataRequired()])
+    new_floor1=IntegerField(label="new_floor1")
     submit1 = SubmitField(label="提交")
 
 
 class CommentTowardsForm(FlaskForm):
-    towards = StringField(label="towards")
+    towards = IntegerField(label="towards")  # 这里是被评论的楼层
+    comment_id=IntegerField(label="comment_id")  # 这里是被评论的comment的id
+    post_id2=IntegerField(label="post_id2")
+    user_id2=IntegerField(label="user_id2")
     text_body2 = CKEditorField(label="text_body2", validators=[DataRequired()])
+    new_floor2=IntegerField(label="new_floor2")
     submit2 = SubmitField(label="提交")
 
 
 class AddReplyPopForm(FlaskForm):
+    user_id3=IntegerField(label="user_id3")
+    post_id3=IntegerField(label="post_id3")
     text_body3 = CKEditorField(label="text_body3", validators=[DataRequired()])
+    new_floor3=IntegerField(label="new_floor3")
     submit3 = SubmitField(label="提交")
 
 
 class ReportForm(FlaskForm):
-    towards = StringField(label="towards")
+    report_post_id=IntegerField(label='report_post_id')
+    report_floor = IntegerField(label="report_floor") #被举报的楼层。一楼(原post)的floor=-1
+    report_comment_id=IntegerField(label="report_comment_id") #被举报的comment的id。如果被举报的是原post，值为-1
+    report_user_id=IntegerField(label="report_user_id") #举报者
     reason = RadioField(
         label="Report_reason",
         validators=[DataRequired("请选择理由")],

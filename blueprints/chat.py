@@ -6,12 +6,12 @@ from extensions import socketio, db
 # from forms import ProfileForm
 from models import Message, User
 
-chat_bp = Blueprint('chat', __name__)
+chat_bp = Blueprint("chat", __name__, url_prefix="/chat")
 
 online_users = []
 
 
-@socketio.on('new message', namespace='/home')
+@socketio.on('new message')
 def new_message(message_body):
     html_message = message_body
     message = Message(author=current_user._get_current_object(), body=html_message)
@@ -59,7 +59,7 @@ def disconnect():
     emit('user count', {'count': len(online_users)}, broadcast=True)
 
 
-@chat_bp.route('/home')
+@chat_bp.route('/')
 def home():
     amount = current_app.config['CHAT_MESSAGE_PER_PAGE']
     messages = Message.query.order_by(Message.timestamp.asc())[-amount:]
@@ -76,7 +76,7 @@ def anonymous():
 def get_messages():
     page = request.args.get('page', 1, type=int)
     pagination = Message.query.order_by(Message.timestamp.desc()).paginate(
-        page, per_page=current_app.config['CHAT_MESSAGE_PER_PAGE'])
+            page, per_page=current_app.config['CHAT_MESSAGE_PER_PAGE'], error_out=False)
     messages = pagination.items
     return render_template('chat/_messages.html', messages=messages[::-1], current_user=current_user)
 
