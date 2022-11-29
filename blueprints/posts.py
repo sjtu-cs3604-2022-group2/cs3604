@@ -14,7 +14,7 @@ from extensions import db
 from models import Category, Photo, Post, User, Comment, Notification
 from utils import get_recommendation_posts, filter_body_content
 from abstract_factory import AbstractAction
-from consts import LIKE,COMMENT,UNREAD,READ,OBJECT_POST,OBJECT_REPLY
+from actiontype import *
 
 # from
 bp = Blueprint("posts", __name__)
@@ -315,7 +315,7 @@ def like():
 
         action_like=AbstractAction(post_id=post_id,
                                     cur_user_id=current_user.id,
-                                    floor=floor,reply_id=comment_id).set_action(LIKE)
+                                    floor=floor,reply_id=comment_id).set_action(OptionType.LIKE)
 
         if comment_id == -1:
             
@@ -389,7 +389,7 @@ def comment_towards():
         action_comment=AbstractAction(post_id=post_id,
                                     cur_user_id=user_id,
                                     floor=new_floor,reply_id=comment_id,
-                                    comment_body=body).set_action(COMMENT)
+                                    comment_body=body).set_action(OptionType.COMMENT)
 
         complete_action=action_comment.to_a_reply()
 
@@ -420,7 +420,7 @@ def add_reply(type_of_form):
         action_comment=AbstractAction(post_id=post_id,
                                     cur_user_id=user_id,
                                     floor=new_floor,reply_id=-1,
-                                    comment_body=body).set_action(COMMENT)
+                                    comment_body=body).set_action(OptionType.COMMENT)
 
         complete_action=action_comment.to_a_post()
         complete_action.update_comments(comment)
