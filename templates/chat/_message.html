@@ -8,6 +8,7 @@
         </div>
         <div class="msg-text">{{message.body}}</div>
     </div>
+    
 </div>
 {% else %}
 <div class="msg right-msg">
@@ -18,6 +19,13 @@
             <div class="msg-info-time">{{message.timestamp}}</div>
         </div>
         <div class="msg-text">{{message.body}}</div>
+        <div class="bt-table">
+            
+            <button  class="hover-btn outline delete-button" >删除</button>
+            <button  class="hover-btn outline quote-button" >引用</button>
+        </div>
     </div>
+
+
 </div>
 {% endif %}

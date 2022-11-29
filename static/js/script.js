@@ -77,11 +77,11 @@ $(document).ready(function () {
     }
 
     // submit message
-    $('#message-textarea').on('keydown', new_message.bind(this));
+     $('#message-textarea').on('keydown', new_message.bind(this));
 
     // submit snippet
     $('#snippet-button').on('click', function () {
-        var $snippet_textarea = $('#snippet-textarea');
+        var $snippet_textarea = $('#message-textarea');
         var message = $snippet_textarea.val();
         if (message.trim() !== '') {
             socket.emit('new message', message);
@@ -107,9 +107,9 @@ $(document).ready(function () {
     });
 
     // quote message
-    $('.messages').on('click', '.quote-button', function () {
+    $('.right-msg').on('click', '.quote-button', function () {
         var $textarea = $('#message-textarea');
-        var message = $(this).parent().parent().parent().find('.message-body').text();
+        var message = $(this).parent().parent().find('.msg-text').text();
         $textarea.val('> ' + message + '\n\n');
         $textarea.val($textarea.val()).focus()
     });
@@ -177,6 +177,7 @@ $(document).ready(function () {
     }
 
     function init() {
+        scrollToBottom();
         // desktop notification
         document.addEventListener('DOMContentLoaded', function () {
             if (!Notification) {
@@ -194,12 +195,13 @@ $(document).ready(function () {
         });
 
         activateSemantics();
-        scrollToBottom();
+        
     }
 
     // delete message
-    $('.messages').on('click', '.delete-button', function () {
+    $('.right-msg').on('click', '.delete-button', function () {
         var $this = $(this);
+        $this.parent().parent().parent().remove();
         $.ajax({
             type: 'DELETE',
             url: $this.data('href'),
@@ -230,3 +232,7 @@ $(document).ready(function () {
     init();
 
 });
+function scrollToBottom() {
+    var $messages = $('.messages');
+    $messages.scrollTop($messages[0].scrollHeight);
+};
