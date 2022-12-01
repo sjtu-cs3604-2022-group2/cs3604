@@ -131,7 +131,7 @@ def get_captcha():
     address = request.args.get("email")  ### 通过get方法获得的邮箱地址
     chars = string.ascii_letters + string.digits
     captcha = "".join(random.sample(chars, 4))  ##随机生成的验证码
-    message = Message(subject="发送验证码", recipients=[address], body=f"【康宁问答】你的注册验证码是，{captcha}")
+    message = Message(subject="发送验证码", recipients=[address], body=f"【Hobbitat】你的注册验证码是，{captcha}")
     record = Email.query.filter_by(email=address).first()
 
     if record:
