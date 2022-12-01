@@ -9,6 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/login-style.css')}}">
 	<link href="https://fonts.font.im/css?family=Kalam|Nunito" rel="stylesheet">
 	<title>Log in</title>
+
 </head>
 
 <body>
@@ -28,7 +29,19 @@
 	</div>
 
 	{% for message in get_flashed_messages() %}
-                    <div class="form-group">
+                    <div class="flash form-group"style='position: fixed;
+					top:30%;
+					left:25%;
+					background-color: #d5e1e7;
+					height:10%;
+					/* line-height:50%; */
+					padding-top:5%;
+					width:50%;
+					text-align:center;
+					border-radius:10px;
+					/* border:solid #333 1px; */
+					z-index:200;
+					font-size:20px;'>
                         <div class="text-danger">
                             {{ message}}
                         </div>
@@ -129,6 +142,9 @@
 		$(window).on('load',function(){
 			$('input:not(.notclear)').val('');
 		})
+	</script>
+	<script>
+      $('.flash').fadeOut(1000);
 	</script>
 </body>
 

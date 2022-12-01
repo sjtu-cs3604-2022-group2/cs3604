@@ -32,3 +32,4 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 login_manager.login_view = "user.login"
+login_manager.login_message = "请先登录后再访问该页面"
