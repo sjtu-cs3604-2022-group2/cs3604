@@ -30,7 +30,7 @@ user_like_post_table = db.Table(
 user_like_comment_table = db.Table(
     "user_like_comment",
     db.Column("user_id", db.Integer(), db.ForeignKey("user.id")),
-    db.Column("commment_id", db.Integer(), db.ForeignKey("comment.id")),
+    db.Column("comment_id", db.Integer(), db.ForeignKey("comment.id")),
 )
 
 
@@ -174,6 +174,7 @@ class Message(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     author = db.relationship("User", back_populates="messages")
+    to_id = db.Column(db.Integer)
 
 
 class Notification(db.Model):

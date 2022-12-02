@@ -2,8 +2,6 @@ import string
 import random
 from datetime import datetime
 from collections import namedtuple
-
-# from app import change_comments_num_likes
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g
 from flask_mail import Message
 from flask_login import login_user, logout_user, login_required, current_user
@@ -11,7 +9,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import mail, db
 from models import User, Email, Comment
 from forms import RegisterForm, LoginForm
-
 
 
 bp = Blueprint("user", __name__, url_prefix="/user")
@@ -88,14 +85,14 @@ def profile():
     return render_template("user/profile-tmp.html", current_user=current_user, poster_user=current_user)
 
 
-@bp.route("/chat")
-def chat():
-    chat = {
-        "url": "https://tse1-mm.cn.bing.net/th/id/OIP-C.4AJntm4bSRu9C2_h90WTfAAAAA?w=225&h=220&c=7&r=0&o=5&dpr=1.6&pid=1.7",
-        "rightuser": {"username": "sam"},
-        "message": [{"text": "hi"}, {"text": "nihao"}, {"text": "加个好友吧？"}],
-    }
-    return render_template("user/chat.html", chat=chat)
+# @bp.route("/chat")
+# def chat():
+#     chat = {
+#         "url": "https://tse1-mm.cn.bing.net/th/id/OIP-C.4AJntm4bSRu9C2_h90WTfAAAAA?w=225&h=220&c=7&r=0&o=5&dpr=1.6&pid=1.7",
+#         "rightuser": {"username": "sam"},
+#         "message": [{"text": "hi"}, {"text": "nihao"}, {"text": "加个好友吧？"}],
+#     }
+#     return render_template("user/chat.html", chat=chat)
 
 
 @bp.route("/logout")
@@ -145,5 +142,3 @@ def get_captcha():
 
     mail.send(message)
     return "success"
-
-    # return 'success'

@@ -1,14 +1,9 @@
 import os
 import random
-
-# from turtle import towards
-
 from flask import Blueprint, render_template, g, flash, request, redirect, url_for, current_app, session
 from flask_login import login_required
 from flask_dropzone import random_filename
 from sqlalchemy import or_, and_
-
-# from decorators import login_request
 from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
 from extensions import db
 from models import Category, Photo, Post, User, Comment, Notification
@@ -16,10 +11,11 @@ from utils import get_recommendation_posts, filter_body_content
 from abstract_factory import AbstractAction
 from actiontype import *
 
-# from
+
 bp = Blueprint("posts", __name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
-# upload_path = os.path.join(basedir, "uploads")
+
+
 @bp.route("/", defaults={"page": 1})
 @bp.route("/index")
 @bp.route("/page/<int:page>")
@@ -27,9 +23,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 def index(page):
     user_id = int(session.get("user_id"))
     user = User.query.get(user_id)
-    # print(page)
     per_page = current_app.config["POST_PER_PAGE"]
-    # print(per_page)
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
     posts = pagination.items
     cat_record = dict()

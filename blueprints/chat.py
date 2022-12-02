@@ -1,11 +1,13 @@
-from flask import render_template, redirect, url_for, request, Blueprint, current_app, abort
+from flask import render_template, redirect, url_for, request, Blueprint, current_app, abort, session
 from flask_login import current_user, login_required
 from flask_socketio import emit
-import sys
-sys.path.append('c:\\PROJECTS\\new\\cs3604')
+from sqlalchemy import or_, and_
+# import sys
+# sys.path.append('c:\\PROJECTS\\new\\cs3604')
 from extensions import socketio, db
 # from forms import ProfileForm
 from models import Message, User
+
 
 chat_bp = Blueprint("chat", __name__, url_prefix="/chat")
 
@@ -14,8 +16,9 @@ online_users = []
 
 @socketio.on('new message')
 def new_message(message_body):
+    uid = session.get('room', 0)
     html_message = message_body
-    message = Message(author=current_user._get_current_object(), body=html_message)
+    message = Message(author=current_user._get_current_object(), body=html_message, to_id=uid)
     db.session.add(message)
     db.session.commit()
     emit('new message',
@@ -60,10 +63,19 @@ def disconnect():
     emit('user count', {'count': len(online_users)}, broadcast=True)
 
 
-@chat_bp.route('/')
-def home():
+@chat_bp.route('/', defaults={"uid": 1})
+@chat_bp.route('/<int:uid>')
+def home(uid):
     amount = current_app.config['CHAT_MESSAGE_PER_PAGE']
-    messages = Message.query.order_by(Message.timestamp.asc())[-amount:]
+    session['room'] = uid
+    print(f'\nnew room: {uid}')
+    print('session now', session)
+    messages = Message.query.filter(
+        or_(
+            and_(Message.author_id==current_user.id, Message.to_id==uid),
+            and_(Message.author_id==uid, Message.to_id==current_user.id)
+        )
+    ).order_by(Message.timestamp.asc())[-amount:]
     user_amount = User.query.count()
     return render_template('chat/home.html', messages=messages, user_amount=user_amount, current_user=current_user)
 
@@ -76,8 +88,15 @@ def anonymous():
 @chat_bp.route('/messages')
 def get_messages():
     page = request.args.get('page', 1, type=int)
-    pagination = Message.query.order_by(Message.timestamp.desc()).paginate(
-            page, per_page=current_app.config['CHAT_MESSAGE_PER_PAGE'], error_out=False)
+    uid = session.get('room', 0)
+    pagination = Message.query.filter(
+        or_(
+            and_(Message.author_id==current_user.id, Message.to_id==uid),
+            and_(Message.author_id==uid, Message.to_id==current_user.id)
+        )
+    ).order_by(Message.timestamp.desc()).paginate(
+        page, per_page=current_app.config['CHAT_MESSAGE_PER_PAGE'], error_out=False
+    )
     messages = pagination.items
     return render_template('chat/_messages.html', messages=messages[::-1], current_user=current_user)
 

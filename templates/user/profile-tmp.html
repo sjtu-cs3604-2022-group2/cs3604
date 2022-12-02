@@ -352,7 +352,7 @@
           <div id="cts">
             {% for follow_user in poster_user.follow %}
             <div class="on-ct active">
-              <a href="#"><img src={{follow_user.image}}></a>
+              <a href={{ "/chat/%d" | format(follow_user.id)}}><img src={{follow_user.image}}></a>
             </div>
             {% endfor %}
             

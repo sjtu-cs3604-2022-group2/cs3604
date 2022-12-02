@@ -40,7 +40,7 @@ def init_categories(count=10):
             db.session.rollback()
 
 
-def init_user(count=50):
+def init_user(count=20):
     print(f'create {count} Users')
     with open("./data/user.json", "r", encoding="utf8") as f:
         users = json.load(f)
@@ -71,7 +71,7 @@ def init_user(count=50):
     db.session.commit()
 
 
-def init_post(count=100):
+def init_post(count=150):
     print(f'create {count} Posts')
     with open("./data/post_raw.json", "r", encoding="utf8") as f:
         posts = json.load(f)
@@ -106,25 +106,24 @@ def init_post(count=100):
     db.session.commit()
     
 
-def init_message(count=30):
+def init_message():
+    num_users = User.query.count()
+    count = num_users*(num_users-1)//2
     print(f'create {count} Messages')
     for p in Message.query.all():
         db.session.delete(p)
     db.session.commit()
-    for i in range(count):
-        comment = Message(
-            body=fake.sentence(),
-            timestamp=fake.date_time_this_year(),
-            author=User.query.get(1),
-        )
-        db.session.add(comment)
-    for i in range(count):
-        comment = Message(
-            body=fake.sentence(),
-            timestamp=fake.date_time_this_year(),
-            author=User.query.get(random.randint(1, User.query.count())),
-        )
-        db.session.add(comment)
+    for i in range(num_users):
+        for j in range(num_users):
+            if i == j:
+                continue
+            comment = Message(
+                body=f"From {i+1} to {j+1}:"+fake.sentence(),
+                timestamp=fake.date_time_this_year(),
+                author=User.query.get(i+1),
+                to_id=j+1
+            )
+            db.session.add(comment)
     db.session.commit()
 
 

@@ -1,21 +1,15 @@
-import click, os
+import os
+import click
+import random
 from flask import Flask, render_template, request, g
-
-# from flask_login import current_user
 from flask_sqlalchemy import get_debug_queries
 from flask_wtf.csrf import CSRFError
-
-# from bluelog.blueprints.blog import blog_bp
-
 from models import Post, Category, Comment
 from extensions import bootstrap, db, login_manager, csrf, ckeditor, mail, moment, toolbar, migrate, socketio, dropzone, ckeditor
-
-# from bluelog.settings import config
 from blueprints.user import bp as userbp
 from blueprints.posts import bp as postsbp
 from blueprints.chat import chat_bp
 from setting import config
-import random
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
