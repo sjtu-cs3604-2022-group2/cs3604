@@ -1,6 +1,6 @@
 import random
 from datetime import datetime
-from email.policy import default
+from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
 from extensions import db, login_manager
 
@@ -51,9 +51,6 @@ class User(UserMixin, db.Model):
     messages = db.relationship("Message", back_populates="author", cascade="all")
     notifications = db.relationship("Notification", back_populates="user", cascade="all")
     
-    
-    
-
     # 本用户关注的其他用户
     followed = db.relationship(
         "Follow",
@@ -90,15 +87,8 @@ class User(UserMixin, db.Model):
 
     @property
     def is_admin(self):
-        # admin_list=[1,2,3]
-        
-        admin_num=[1]
-        if self.id in admin_num:
-            return True        
-        return False
-    
+       return self.username in current_app.config['ADMIN_NAME']
 
-# class Admin()
 
 class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -157,7 +147,7 @@ class Post(db.Model):
 class Comment(db.Model):
     __tablename__ = "comment"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    body = db.Column(db.Text)  ### 表示的是回复的内容
+    body = db.Column(db.Text)  # 表示的是回复的内容
     from_author = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
@@ -165,7 +155,7 @@ class Comment(db.Model):
 
     num_likes = db.Column(db.Integer, default=0)
     towards = db.Column(db.Integer, default=-1)
-    ###对应的是评论回复的几楼。如果回复的是原帖子，那么towards=-1。
+    # 对应的是评论回复的几楼。如果回复的是原帖子，那么towards=-1。
 
     notifications = db.relation("Notification", back_populates="comment", cascade="all")
 
@@ -176,8 +166,8 @@ class Comment(db.Model):
 
     # add a foreign key pointing self. 在同一个模型内的一对多关系称为邻接列表关系（Adjacency List Relationship)
     replied_id = db.Column(db.Integer, db.ForeignKey("comment.id"))
-    replies = db.relationship("Comment", back_populates="replied", cascade="all, delete-orphan")  ### 表示回复了这条评论的那些评论
-    replied = db.relationship("Comment", back_populates="replies", remote_side=[id])  ### 表示这条评论回复了哪条评论。
+    replies = db.relationship("Comment", back_populates="replied", cascade="all, delete-orphan")  # 表示回复了这条评论的那些评论
+    replied = db.relationship("Comment", back_populates="replies", remote_side=[id])  # 表示这条评论回复了哪条评论。
 
 
 class Message(db.Model):
@@ -195,13 +185,13 @@ class Notification(db.Model):
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     state = db.Column(db.Integer, default=0)
-    action = db.Column(db.Integer)  ## 0表示点赞，1表示评论
-    object = db.Column(db.Integer, default=0)  ### 0表示是post本身 1表示comment。
-    action_id = db.Column(db.Integer)  ### 动作发起用户的id
+    action = db.Column(db.Integer)  # 0表示点赞，1表示评论
+    object = db.Column(db.Integer, default=0)  # 0表示是post本身 1表示comment。
+    action_id = db.Column(db.Integer)  # 动作发起用户的id
     # towards=db.Column(db.Integer)  ### -1 表示帖子本身，其他的表示评论的楼层。
     link = db.Column(db.String(100), default="#")
 
-    ## 表示这个通知要发给谁
+    # 表示这个通知要发给谁
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     user = db.relationship("User", back_populates="notifications")
 
