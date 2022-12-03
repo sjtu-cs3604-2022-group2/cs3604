@@ -231,55 +231,78 @@
           <div class="tb">
             <div class="td">
               <div class="tb" id="p-tabs-m">
-
-
-                <div class="td" ><i class="material-icons"></i></div>
                 <div class="td active" value="显示" onclick="show1()" id="nav1-1"><i class="material-icons">av_timer</i><span>动态</span></div>
-                <div class="td" value="隐藏" onclick="show2()" id="btn2"><i class="material-icons">people</i><span>关注</span></div>
-                <div class="td" value="隐藏" onclick="show()"  id="btn1"><i class="material-icons">archive</i><span>资料</span></div>
+                <div class="td"><a href = "./follows"><i class="material-icons">people</i><span>关注的人</span></a></div>
+                <div class="td" ><i class="material-icons"></i></div>
                 <div class="td"><i class="material-icons"></i></div>
-
+                <div class="td" value="隐藏" onclick="show()"  id="btn1"><i class="material-icons">archive</i><span>资料</span></div>
               </div>
             </div>
             <div class="td" id="p-tab-m"><i class="material-icons">keyboard_arrow_down</i></div>
           </div>
         </div>
       <div id = "show1" >
-
-        
-        {% for post in poster_user.posts %}
-
+        <div class="m-mrg" id="composer">
+          <div id="c-tabs-cvr">
+            <div class="tb" id="c-tabs">
+              <div class="td active"><i class="material-icons">subject</i><span>写 动态</span></div>
+              <div class="td"><i class="material-icons">camera_enhance</i><span>照片</span></div>
+              <div class="td"><i class="material-icons">videocam</i><span>录像</span></div>
+              <div class="td"><i class="material-icons">event</i><span>文档</span></div>
+            </div>
+          </div>
+          <div id="c-c-main">
+            <div class="tb">
+              <div class="td" id="p-c-i"><img
+                  src={{poster_user.image}} alt="Profile pic">
+                </div>
+              <div class="td" id="c-inp">
+                <input type="text" placeholder="记录一下想分享的内容吧！">
+              </div>
+            </div>
+            <div id="insert_emoji"><i class="material-icons">insert_emoticon</i></div>
+          </div>
+        </div>
+        <div>
           <div class="post">
             <div class="tb">
               <a href="#" class="td p-p-pic"><img
                   src={{poster_user.username}} ></a>
               <div class="td p-r-hdr">
                 <div class="p-u-info">
-                  <a href="#">{{poster_user.username}}</a>分享了一段经历关于 <a href="#">{{post.category}}</a>
+                  <a href="#">{{poster_user.username}}</a>分享了一段经历关于 <a href="#">{{poster_user.posts[0].category}}</a>
                 </div>
                 <div class="p-dt">
                   <i class="material-icons">calendar_today</i>
-                  <span>{{post.timestamp}}</span>
+                  <span>{{poster_user.posts[0].timestamp}}</span>
                 </div>
                 <div class="post-body">
-                  {{post.body| safe }}
+                  {{poster_user.posts[0].body| safe }}
                 </div>
               </div>
               <div class="td p-opt"><i class="material-icons">keyboard_arrow_down</i></div>
             </div>
+
+            <a href="#" class="p-cnt-v">
+              <img
+                src="{{poster_user.posts[0].image}}?"
+                 style="margin: auto;width:400px; height:380px">
+            </a>
+
             <div>
               <div class="p-acts">
-                <div class="p-act like"><i class="material-icons">thumb_up_alt</i><span>{{post.num_likes}}</span></div>
+                <div class="p-act like"><i class="material-icons">thumb_up_alt</i><span>{{poster_user.posts[0].num_likes}}</span></div>
 
               </div>
             </div>
           </div>
 
 
-          <div class="gap-post">
 
-            </div>
-        {% endfor %}
+
+
+          
+        </div>
         <div id="loading"><i class="material-icons">autorenew</i></div>
         </div> 
 
@@ -323,110 +346,11 @@
                 <p>Converge</p>
               </a>
             </li>
+            
           </ul>
-        </div>
-
-        <div id = "show3">
-
-
-
-          <div class="container-fluid">
-
-      
-            <table id="usertable"  class = "table table-striped" style = "height:auto;width: 100%;" >
-              <thead>
-                <tr class="text-center">
-      
-                  <th ><center>ID</center></th>
-                  <th ><center>头像</center></th>
-                  <th></th>
-                  <th ><center>年龄</center></th>
-                  <th ><center>昵称</center></th>
-                  <th ><center>性别</center></th>
-      
-                  <th ><center>邮箱</center></th>			     
-                </tr>
-              </thead>`
-      
-              <tbody>
-                <tr>
-                  <td align="center">7</td> 
-                  <td align="center"><img class = 'avatar'  
-                    src = 'https://ts1.cn.mm.bing.net/th?id=OIP-C.JPaFw0vH2f6Qy44aUfZ4jgAAAA&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2'
-                     alt = ''></td>
-                  <td align="center"><div class='btn-group dropright'>
-                    <button type='button' class='btn btn-primary btn-sm transactionButton' 
-                    data-toggle='dropdown'>取消关注</button>
-                  </div></td> 
-                  <td align="center">20</td>
-                  <td align="center">小明</td>
-                  <td align="center">男</td>
-      
-                  <td align="center">111@sjtu.edu.cn</td>
-                </tr>
-                <tr>
-                  <td align="center">7</td> 
-                  <td align="center"><img class = 'avatar'  
-                    src = 'https://ts1.cn.mm.bing.net/th?id=OIP-C.JPaFw0vH2f6Qy44aUfZ4jgAAAA&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2'
-                     alt = ''></td>
-                  <td align="center"><div class='btn-group dropright'>
-                    <button type='button' class='btn btn-primary btn-sm transactionButton' 
-                    data-toggle='dropdown'>取消关注</button>
-                  </div></td> 
-                  <td align="center">20</td>
-                  <td align="center">小明</td>
-                  <td align="center">男</td>
-      
-                  <td align="center">111@sjtu.edu.cn</td>
-                </tr>
-                <tr>
-                  <td align="center">7</td> 
-                  <td align="center"><img class = 'avatar'  
-                    src = 'https://ts1.cn.mm.bing.net/th?id=OIP-C.JPaFw0vH2f6Qy44aUfZ4jgAAAA&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2'
-                     alt = ''></td>
-                  <td align="center"><div class='btn-group dropright'>
-                    <button type='button' class='btn btn-primary btn-sm transactionButton' 
-                    data-toggle='dropdown'>取消关注</button>
-                  </div></td> 
-                  <td align="center">20</td>
-                  <td align="center">小明</td>
-                  <td align="center">男</td>
-      
-                  <td align="center">111@sjtu.edu.cn</td>
-                </tr>
-                <tr>
-                  <td align="center">7</td> 
-                  <td align="center"><img class = 'avatar'  
-                    src = 'https://ts1.cn.mm.bing.net/th?id=OIP-C.JPaFw0vH2f6Qy44aUfZ4jgAAAA&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2'
-                     alt = ''></td>
-                  <td align="center"><div class='btn-group dropright'>
-                    <button type='button' class='btn btn-primary btn-sm transactionButton' 
-                    data-toggle='dropdown'>取消关注</button>
-                  </div></td> 
-                  <td align="center">20</td>
-                  <td align="center">小明</td>
-                  <td align="center">男</td>
-      
-                  <td align="center">111@sjtu.edu.cn</td>
-                </tr>
-              
-              </tbody>
-            </table>
-          </div>
-
 
 
         </div>
-
-
-
-
-
-
-
-
-
-
       </div>
       <div class="td" id="r-col">
         <div id="chat-bar">
@@ -454,6 +378,3 @@
 </body>
 
 </html>
-
-
-
