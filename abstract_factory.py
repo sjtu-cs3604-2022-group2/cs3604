@@ -61,7 +61,7 @@ class ObjectPost():
         self.cur_user_id = cur_user_id
         self.floor = floor
         self.reply_id = reply_id
-        self.comment_body = comment_body
+        self.comment_body = filter_body_content(comment_body)
 
     def get_post_info(self):
         post_link = url_for("posts.detail", post_id=self.post_id)

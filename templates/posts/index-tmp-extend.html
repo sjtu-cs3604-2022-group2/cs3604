@@ -126,6 +126,65 @@ render_pagination %} {% block head %}
             </a>
           </div>
 
+          <div class="sidebarblock recommendations user-recommendation">
+            <h3
+              style="
+                line-height: 66px;
+                padding-left: 20px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                margin: 0;
+              "
+            >
+              推荐关注
+            </h3>
+
+
+            
+            <div class="divline"></div>
+            <div class="blocktxt">
+              <ul class="recom recom-user">
+                {% for recom_user in recommend_users%}
+                <li>
+                  <div class="recom_user_img pull-left" style="
+                  padding-top:2px;
+                  padding-bottom:2px;
+                  height:28px;
+                  width:24px;
+                  overflow: hidden;
+                  ">
+                     <img src="{{recom_user.image}} " style="width:24px;"> 
+                    
+                  </div>
+
+                  <a href="#"> {# 个人主页的链接？ #}
+                    <p class='pull-left' style="
+                    text-overflow: ellipsis;
+                    height: 28px;
+                    overflow: hidden;
+                    width: 50%;
+                    -webkit-line-clamp: 1;
+                    line-clamp: 1;
+                    word-break: break-all;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    /* letter-spacing: 2px; */
+                    font-size: 13px;
+                    padding-top:2px;
+                    padding-left: 6px;
+                  "
+                    >
+                    {{recom_user.username}}
+                    </p>
+                    <span class="badge pull-right" >{{recom_user.followers.count()}} 关注</span> 
+                    <div class="clearfix"></div>
+                    </a>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+
           <div class="sidebarblock recommendations">
             <h3
               style="
