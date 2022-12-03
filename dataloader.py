@@ -20,7 +20,7 @@ def random_relation(count, active):
     return positive
 
 
-def init_categories(count=10):
+def init_categories(count=5):
     print(f'create {count} Categories')
     for c in Category.query.all():
         db.session.delete(c)
@@ -47,13 +47,18 @@ def init_user(count=20):
     for u in User.query.all():
         db.session.delete(u)
     db.session.commit()
-    user=User(username='test', password='123')
+    user=User(
+        username='test', 
+        password='123', 
+        about='this is me',
+        image='https://i1.hdslb.com/bfs/face/e47ac0d2a743fe169dd1fbbc96b2482edd96f550.jpg'
+    )
     db.session.add(user)
     for i in range(count):
         raw = users[i]
         user = User(
             username=raw["name"],
-            password=fake.pystr(),
+            password="123",
             email=fake.email(),
             join_time=fake.date_time_this_year(),
             about=raw["sign"],

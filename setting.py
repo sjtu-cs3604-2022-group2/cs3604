@@ -16,6 +16,8 @@ class BaseConfig(object):
     SECRET_KEY = os.getenv("SECRET_KEY", "dev key")
 
     DEBUG_TB_INTERCEPT_REDIRECTS = False
+    
+    ADMIN_NAME = ['test']
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True
