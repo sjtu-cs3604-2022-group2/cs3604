@@ -17,7 +17,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 @bp.route("/", defaults={"page": 1})
-@bp.route("/index")
+@bp.route("/index", defaults={"page": 1})
 @bp.route("/page/<int:page>")
 @login_required
 def index(page):
@@ -307,22 +307,22 @@ def like():
         current_user = User.query.get(session["user_id"])
         post = Post.query.get(post_id)
 
-        action_like=AbstractAction(post_id=post_id,
-                                    cur_user_id=current_user.id,
-                                    floor=floor,reply_id=comment_id).set_action(OptionType.LIKE)
+        action_like = AbstractAction(
+            post_id=post_id, cur_user_id=current_user.id, floor=floor, reply_id=comment_id
+        ).set_action(OptionType.LIKE)
 
         if comment_id == -1:
-            
-            complete_action=action_like.to_a_post()
+
+            complete_action = action_like.to_a_post()
             print("添加点赞post通知")
 
         else:
 
-            complete_action=action_like.to_a_reply()
+            complete_action = action_like.to_a_reply()
             print("添加点赞comment通知")
 
     complete_action.update_likes()
-            
+
     complete_action.send_notification()
     return "202"
 
@@ -377,15 +377,13 @@ def comment_towards():
         else:
             from_author = False
 
+        comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id)
 
-        comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id )
+        action_comment = AbstractAction(
+            post_id=post_id, cur_user_id=user_id, floor=new_floor, reply_id=comment_id, comment_body=body
+        ).set_action(OptionType.COMMENT)
 
-        action_comment=AbstractAction(post_id=post_id,
-                                    cur_user_id=user_id,
-                                    floor=new_floor,reply_id=comment_id,
-                                    comment_body=body).set_action(OptionType.COMMENT)
-
-        complete_action=action_comment.to_a_reply()
+        complete_action = action_comment.to_a_reply()
 
         complete_action.update_comments(comment)
         complete_action.send_notification()
@@ -408,18 +406,16 @@ def add_reply(type_of_form):
             from_author = True
         else:
             from_author = False
-        
+
         comment = Comment(body=body, from_author=from_author, post_id=post_id, towards=-1, user_id=action_id)
 
-        action_comment=AbstractAction(post_id=post_id,
-                                    cur_user_id=user_id,
-                                    floor=new_floor,reply_id=-1,
-                                    comment_body=body).set_action(OptionType.COMMENT)
+        action_comment = AbstractAction(
+            post_id=post_id, cur_user_id=user_id, floor=new_floor, reply_id=-1, comment_body=body
+        ).set_action(OptionType.COMMENT)
 
-        complete_action=action_comment.to_a_post()
+        complete_action = action_comment.to_a_post()
         complete_action.update_comments(comment)
         complete_action.send_notification()
-
 
     return redirect(url_for("posts.detail", post_id=post_id))
 
@@ -429,4 +425,3 @@ def notifications():
     current_user = User.query.get(session["user_id"])
     notices = current_user.notifications
     return render_template("user/notification.html", current_user=current_user, notices=notices, User=User)
-

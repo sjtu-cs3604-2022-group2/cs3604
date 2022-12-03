@@ -50,7 +50,11 @@ class User(UserMixin, db.Model):
     like_comments = db.relationship("Comment", secondary=user_like_comment_table, back_populates="like_users")
     messages = db.relationship("Message", back_populates="author", cascade="all")
     notifications = db.relationship("Notification", back_populates="user", cascade="all")
+    
+    
+    
 
+    # 本用户关注的其他用户
     followed = db.relationship(
         "Follow",
         foreign_keys=[Follow.follower_id],
@@ -58,6 +62,8 @@ class User(UserMixin, db.Model):
         lazy="dynamic",
         cascade="all, delete-orphan",
     )
+
+    # 有哪些用户关注了本用户
     followers = db.relationship(
         "Follow",
         foreign_keys=[Follow.followed_id],
@@ -84,8 +90,15 @@ class User(UserMixin, db.Model):
 
     @property
     def is_admin(self):
+        # admin_list=[1,2,3]
+        
+        admin_num=[1]
+        if self.id in admin_num:
+            return True        
         return False
+    
 
+# class Admin()
 
 class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -151,16 +164,15 @@ class Comment(db.Model):
     post = db.relationship("Post", back_populates="comments")
 
     num_likes = db.Column(db.Integer, default=0)
-    towards = db.Column(db.Integer,default=-1)
+    towards = db.Column(db.Integer, default=-1)
     ###对应的是评论回复的几楼。如果回复的是原帖子，那么towards=-1。
-    
-    notifications=db.relation("Notification",back_populates="comment",cascade='all')
+
+    notifications = db.relation("Notification", back_populates="comment", cascade="all")
 
     # 隐式属性
     # user = db.relationship('User', back_populates='comments')
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     like_users = db.relationship("User", secondary=user_like_comment_table, back_populates="like_comments")
-    
 
     # add a foreign key pointing self. 在同一个模型内的一对多关系称为邻接列表关系（Adjacency List Relationship)
     replied_id = db.Column(db.Integer, db.ForeignKey("comment.id"))
@@ -184,10 +196,10 @@ class Notification(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     state = db.Column(db.Integer, default=0)
     action = db.Column(db.Integer)  ## 0表示点赞，1表示评论
-    object = db.Column(db.Integer,default=0)  ### 0表示是post本身 1表示comment。
+    object = db.Column(db.Integer, default=0)  ### 0表示是post本身 1表示comment。
     action_id = db.Column(db.Integer)  ### 动作发起用户的id
     # towards=db.Column(db.Integer)  ### -1 表示帖子本身，其他的表示评论的楼层。
-    link = db.Column(db.String(100),default='#')
+    link = db.Column(db.String(100), default="#")
 
     ## 表示这个通知要发给谁
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
@@ -195,9 +207,6 @@ class Notification(db.Model):
 
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
     post = db.relationship("Post", back_populates="notifications")
-    
-    
-    comment_id=db.Column(db.Integer,db.ForeignKey("comment.id"))
-    comment=db.relationship("Comment",back_populates='notifications')
-    
-    
+
+    comment_id = db.Column(db.Integer, db.ForeignKey("comment.id"))
+    comment = db.relationship("Comment", back_populates="notifications")
