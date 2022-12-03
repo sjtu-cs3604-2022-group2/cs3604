@@ -10,6 +10,7 @@ from models import Category, Photo, Post, User, Comment, Notification
 from utils import get_recommendation_posts, filter_body_content
 from abstract_factory import AbstractAction
 from actiontype import *
+from datetime import datetime
 
 
 bp = Blueprint("posts", __name__)
@@ -134,6 +135,7 @@ def newpost():
         body = new_post_form.post_text.data  ### ，没有去掉两边的标签
         # print(title,cat_id,body)
         new_post = Post(title=title, category_id=cat_id, body=body)
+        # new_post.timestamp = datetime.strptime(new_post.timestamp, "%Y-%m-%d %H:%M")
         new_post.user_id = user_id
         new_post.user = current_user
         if session["photo_nums"] > 0:  ### 这里session的值是在upload视图里面改变的
@@ -152,7 +154,14 @@ def newpost():
         # photo=current_user.photos[-1]
 
         db.session.add(new_post)
+        # new_post.timestamp = datetime.strptime(new_post.timestamp, "%Y-%m-%d %H:%M")
+
         db.session.commit()
+
+        # new_post.timestamp = datetime.strptime(new_post.timestamp, "%Y-%m-%d %H:%M")
+        # print(new_post.timestamp.strftime("%y-%m-%d %I:%M:%S %p"))
+        # db.session.commit()
+
         # return "已经成功提交"
         return redirect(url_for("posts.index"))
 
@@ -378,6 +387,8 @@ def comment_towards():
             from_author = False
 
         comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id)
+
+        comment.timestamp = datetime.strptime(comment.timestamp, "%Y-%m-%d %H:%M")
 
         action_comment = AbstractAction(
             post_id=post_id, cur_user_id=user_id, floor=new_floor, reply_id=comment_id, comment_body=body

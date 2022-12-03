@@ -347,7 +347,7 @@
                                 <div class="footer pull-right">
 
                                     <div class="post-stamps pull-left">
-                                        <i class="iconfont icon-time" aria-hidden="true"> {{comment.timestamp}}</i>
+                                        <i class="iconfont icon-time" aria-hidden="true"> {{comment.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</i>
                                         <span> &nbsp;{{i+2}}楼</span>
                                         <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
                                             data-placement="bottom" onclick="report();"
