@@ -46,13 +46,13 @@ $(document).ready(function () {
         }
     }
 
-    $('.messages').scroll(load_messages);
+    $('.messages').off().scroll(load_messages);
 
     socket.on('user count', function (data) {
         $('#user-count').html(data.count);
     });
 
-    socket.on('new message', function (data) {
+    socket.off('new message').on('new message', function (data) {
         message_count++;
         if (!document.hasFocus()) {
             document.title = '(' + message_count + ') ' + 'CatChat';
@@ -199,13 +199,11 @@ $(document).ready(function () {
     }
 
     // delete message
-    $('.right-msg').on('click', '.delete-button', function () {
+    $('.right-msg').off('click', '.delete-button').on('click', '.delete-button', function () {
         var $this = $(this);
-        console.log($this.children(":first").attr('href'));
-        $this.parent().parent().parent().remove();
         $.ajax({
             type: 'DELETE',
-            url: $this.children(":first").attr('href'),
+            url: $this.parent().children(":first").val(),
             success: function () {
                 $this.parent().parent().parent().remove();
             },

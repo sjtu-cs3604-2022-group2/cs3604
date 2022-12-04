@@ -21,8 +21,8 @@
         </div>
         <div class="msg-text">{{message.body}}</div>
         <div class="bt-table">
-            
-            <button  class="hover-btn outline delete-button" ><a href="message/delete/{{message.id}}"></a>删除</button>
+            <input type='text' name="link{{message.id}}" value="message/delete/{{message.id}}" style="display: none;">
+            <button  class="hover-btn outline delete-button" >删除</button>
             <button  class="hover-btn outline quote-button" >引用</button>
         </div>
     </div>
