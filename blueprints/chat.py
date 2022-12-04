@@ -22,12 +22,12 @@ def new_message(message_body):
     db.session.add(message)
     db.session.commit()
     emit('new message',
-         {'message_html': render_template('chat/_message.html', message=message),
-          'message_body': html_message,
-          'image': current_user.image,
-          'username': current_user.username,
-          'user_id': current_user.id},
-         broadcast=True)
+        {'message_html': render_template('chat/_message.html', message=message),
+        'message_body': html_message,
+        'image': current_user.image,
+        'username': current_user.username,
+        'user_id': current_user.id},
+        broadcast=True)
 
 
 @socketio.on('new message', namespace='/anonymous')
@@ -123,9 +123,10 @@ def get_messages():
 
 @chat_bp.route('/message/delete/<message_id>', methods=['DELETE'])
 def delete_message(message_id):
-    message = Message.query.get_or_404(message_id)
-    if current_user != message.author and not current_user.is_admin:
-        abort(403)
-    db.session.delete(message)
-    db.session.commit()
+    if(request.method=='DELETE'):
+        message = Message.query.get_or_404(message_id)
+        if current_user != message.author and not current_user.is_admin:
+            abort(403)
+        db.session.delete(message)
+        db.session.commit()
     return '', 204
