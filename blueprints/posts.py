@@ -7,7 +7,7 @@ from sqlalchemy import or_, and_
 from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
 from extensions import db
 from models import Category, Photo, Post, User, Comment, Notification
-from utils import get_recommendation_posts, filter_body_content
+from utils import *
 from abstract_factory import AbstractAction
 from actiontype import *
 from datetime import datetime
@@ -27,26 +27,35 @@ def index(page):
     per_page = current_app.config["POST_PER_PAGE"]
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
     posts = pagination.items
-    cat_record = dict()
-    for p in user.posts.all():
-        cat_record[p.category_id] = cat_record.get(p.category_id, 0) + 1
+    # cat_record = dict()
+    # CF_get_recommendation_users()
+    # compute_user_similar()
+    # for p in user.posts.all():
+    #     cat_record[p.category_id] = cat_record.get(p.category_id, 0) + 1
 
-    recommend_category = sorted(list(cat_record.keys()), key=lambda x: cat_record[x], reverse=True)[:2]
-    print(recommend_category)
-    if len(recommend_category) >= 2:
-        recommend_posts = Post.query.filter(
-            or_(Post.category_id == recommend_category[0], Post.category_id == recommend_category[1])
-        ).all()
-        recommend_posts = recommend_posts[:10]
-    else:
-        recommend_posts = []
-    random.shuffle(recommend_posts)
+    # recommend_category = sorted(list(cat_record.keys()), key=lambda x: cat_record[x], reverse=True)[:2]
+    # print(recommend_category)
+    # if len(recommend_category) >= 2:
+    #     recommend_posts = Post.query.filter(
+    #         or_(Post.category_id == recommend_category[0], Post.category_id == recommend_category[1])
+    #     ).all()
+    #     recommend_posts = recommend_posts[:10]
+    # else:
+    #     recommend_posts = []
+    # random.shuffle(recommend_posts)
+    recommend_posts_id = CF_get_recommendation_posts(user_id)
+    recommend_posts = [Post.query.get(post_id) for post_id in recommend_posts_id]
+
+    recommend_users_id = CF_get_recommendation_users(user_id)
+    recommend_users = [User.query.get(user_id) for user_id in recommend_users_id]
+
     return render_template(
         "posts/index-tmp-extend.html",
         pagination=pagination,
         index_posts=posts,
         current_user=user,
         recommend_posts=recommend_posts,
+        recommend_users=recommend_users,
     )
 
 
