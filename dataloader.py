@@ -29,7 +29,7 @@ def init_categories(count=5):
     db.session.add(category)
     for i in range(count):
         if i <= 4:
-            names = ["动画", "小说", "游戏", "音乐", "体育"]
+            names = ["动画", "小说", "游戏", "音乐", "电影"]
             category = Category(name=names[i])
         else:
             category = Category(name=fake.word())
@@ -40,7 +40,7 @@ def init_categories(count=5):
             db.session.rollback()
 
 
-def init_user(count=100):
+def init_user(count=30):
     print(f"create {count} Users")
     with open("./data/user.json", "r", encoding="utf8") as f:
         users = json.load(f)
@@ -76,9 +76,9 @@ def init_user(count=100):
     db.session.commit()
 
 
-def init_post(count=150):
+def init_post(count=180):
     print(f"create {count} Posts")
-    with open("./data/post_raw.json", "r", encoding="utf8") as f:
+    with open("./data/data.json", "r", encoding="utf8") as f:
         posts = json.load(f)
     for p in Post.query.all():
         db.session.delete(p)
@@ -135,13 +135,14 @@ def init_message():
 def init_likes():
     print("初始化用户点赞")
     for post in Post.query.all():
-        num_like = random.randint(20, 70)
+        num_like = random.randint(5, 30)
         users = User.query.all()
         random.shuffle(users)
         like_users = users[:num_like]
         post.like_users = like_users
         post.num_likes = num_like
     db.session.commit()
+
 
 if __name__ == "__main__":
     app = create_app("development")
@@ -153,7 +154,6 @@ if __name__ == "__main__":
     init_user()
     init_post()
     init_message()
-
     init_likes()  # 初始化点赞数据
     # init photo
     # init likes
