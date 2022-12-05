@@ -33,7 +33,6 @@ render_pagination %} {% block head %}
                     <a href="#">
                       <span>{{(index_posts[i].user).username}}</span>
                     </a>
-                   
                   </div>
                 </div>
               </div>
@@ -49,7 +48,7 @@ render_pagination %} {% block head %}
 
                 <div
                   style="
-                    margin-top:10px;
+                    margin-top: 10px;
                     text-overflow: ellipsis;
                     height: 38px;
                     overflow: hidden;
@@ -64,11 +63,13 @@ render_pagination %} {% block head %}
                   "
                 >
                   {{index_posts[i].body | safe }}
-              </div>
+                </div>
 
                 <div class="tag">
                   <div class="category{{(index_posts[i].category).id}}">
-                    <a href="{{url_for('posts.search',search_content=index_posts[i].category.name,search_category='分区')}}">
+                    <a
+                      href="{{url_for('posts.search',search_content=index_posts[i].category.name,search_category='分区')}}"
+                    >
                       <span class="tag-icon"></span>
                       <span>{{(index_posts[i].category).name}}</span>
                     </a>
@@ -96,14 +97,15 @@ render_pagination %} {% block head %}
               </div>
               <div class="latest">
                 <i class="iconfont icon-time"></i>
-                <span>{{index_posts[i].timestamp}}</span>
+                <span
+                  >{{index_posts[i].timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</span
+                >
               </div>
             </div>
 
             <div class="clearfix"></div>
           </div>
-          {% endfor %} 
-          {% else %} "暂无结果" {% endif %}
+          {% endfor %} {% else %} "暂无结果" {% endif %}
         </div>
 
         {# Siderbars #}
@@ -124,6 +126,65 @@ render_pagination %} {% block head %}
             </a>
           </div>
 
+          <div class="sidebarblock recommendations user-recommendation">
+            <h3
+              style="
+                line-height: 66px;
+                padding-left: 20px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                margin: 0;
+              "
+            >
+              推荐关注
+            </h3>
+
+
+            
+            <div class="divline"></div>
+            <div class="blocktxt">
+              <ul class="recom recom-user">
+                {% for recom_user in recommend_users%}
+                <li>
+                  <div class="recom_user_img pull-left" style="
+                  padding-top:2px;
+                  padding-bottom:2px;
+                  height:28px;
+                  width:24px;
+                  overflow: hidden;
+                  ">
+                     <img src="{{recom_user.image}} " style="width:24px;"> 
+                    
+                  </div>
+
+                  <a href="#"> {# 个人主页的链接？ #}
+                    <p class='pull-left' style="
+                    text-overflow: ellipsis;
+                    height: 28px;
+                    overflow: hidden;
+                    width: 50%;
+                    -webkit-line-clamp: 1;
+                    line-clamp: 1;
+                    word-break: break-all;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    /* letter-spacing: 2px; */
+                    font-size: 13px;
+                    padding-top:2px;
+                    padding-left: 6px;
+                  "
+                    >
+                    {{recom_user.username}}
+                    </p>
+                    <span class="badge pull-right" >{{recom_user.followers.count()}} 关注</span> 
+                    <div class="clearfix"></div>
+                    </a>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+
           <div class="sidebarblock recommendations">
             <h3
               style="
@@ -137,34 +198,36 @@ render_pagination %} {% block head %}
               推荐话题
             </h3>
 
-
-            
             <div class="divline"></div>
             <div class="blocktxt">
               <ul class="recom">
                 {% for po in recommend_posts%}
                 <li>
                   <a href="{{url_for('posts.detail',post_id=po.id)}}">
-                    <p class='pull-left' style="
-                    text-overflow: ellipsis;
-                    height: 28px;
-                    overflow: hidden;
-                    width: 70%;
-                    -webkit-line-clamp: 1;
-                    line-clamp: 1;
-                    word-break: break-all;
-                    display: -webkit-box;
-                    -webkit-box-orient: vertical;
-                    /* letter-spacing: 2px; */
-                    font-size: 13px;
-                  "
+                    <p
+                      class="pull-left"
+                      style="
+                        text-overflow: ellipsis;
+                        height: 28px;
+                        overflow: hidden;
+                        width: 70%;
+                        -webkit-line-clamp: 1;
+                        line-clamp: 1;
+                        word-break: break-all;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
+                        /* letter-spacing: 2px; */
+                        font-size: 13px;
+                      "
                     >
-                    {{po.title}}
+                      {{po.title}}
                     </p>
-                    <span class="badge pull-right" >{{po.num_comments}} 讨论</span> 
+                    <span class="badge pull-right"
+                      >{{po.num_comments}} 讨论</span
+                    >
                     <!-- <div class="badge pull-right" style="width:25%;">{{po.num_comments}} 讨论</div>  -->
                     <div class="clearfix"></div>
-                    </a>
+                  </a>
                 </li>
                 {% endfor %}
               </ul>

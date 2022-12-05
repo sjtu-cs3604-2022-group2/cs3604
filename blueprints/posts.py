@@ -7,9 +7,10 @@ from sqlalchemy import or_, and_
 from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
 from extensions import db
 from models import Category, Photo, Post, User, Comment, Notification
-from utils import get_recommendation_posts, filter_body_content
+from utils import *
 from abstract_factory import AbstractAction
 from actiontype import *
+from datetime import datetime
 
 
 bp = Blueprint("posts", __name__)
@@ -17,7 +18,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 @bp.route("/", defaults={"page": 1})
-@bp.route("/index")
+@bp.route("/index", defaults={"page": 1})
 @bp.route("/page/<int:page>")
 @login_required
 def index(page):
@@ -26,26 +27,35 @@ def index(page):
     per_page = current_app.config["POST_PER_PAGE"]
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
     posts = pagination.items
-    cat_record = dict()
-    for p in user.posts.all():
-        cat_record[p.category_id] = cat_record.get(p.category_id, 0) + 1
+    # cat_record = dict()
+    # CF_get_recommendation_users()
+    # compute_user_similar()
+    # for p in user.posts.all():
+    #     cat_record[p.category_id] = cat_record.get(p.category_id, 0) + 1
 
-    recommend_category = sorted(list(cat_record.keys()), key=lambda x: cat_record[x], reverse=True)[:2]
-    print(recommend_category)
-    if len(recommend_category) >= 2:
-        recommend_posts = Post.query.filter(
-            or_(Post.category_id == recommend_category[0], Post.category_id == recommend_category[1])
-        ).all()
-        recommend_posts = recommend_posts[:10]
-    else:
-        recommend_posts = []
-    random.shuffle(recommend_posts)
+    # recommend_category = sorted(list(cat_record.keys()), key=lambda x: cat_record[x], reverse=True)[:2]
+    # print(recommend_category)
+    # if len(recommend_category) >= 2:
+    #     recommend_posts = Post.query.filter(
+    #         or_(Post.category_id == recommend_category[0], Post.category_id == recommend_category[1])
+    #     ).all()
+    #     recommend_posts = recommend_posts[:10]
+    # else:
+    #     recommend_posts = []
+    # random.shuffle(recommend_posts)
+    recommend_posts_id = CF_get_recommendation_posts(user_id)
+    recommend_posts = [Post.query.get(post_id) for post_id in recommend_posts_id]
+
+    recommend_users_id = CF_get_recommendation_users(user_id)
+    recommend_users = [User.query.get(user_id) for user_id in recommend_users_id]
+
     return render_template(
         "posts/index-tmp-extend.html",
         pagination=pagination,
         index_posts=posts,
         current_user=user,
         recommend_posts=recommend_posts,
+        recommend_users=recommend_users,
     )
 
 
@@ -68,7 +78,8 @@ def detail(post_id):
     # print(repr(post.body))
 
     return render_template(
-        "posts/detail-tmp-extend.html",
+       # "posts/detail-tmp-extend.html",
+       "posts/admin-detail.html",
         User=User,
         current_user=User.query.get(user_id),
         post_user=post_user,
@@ -134,6 +145,7 @@ def newpost():
         body = new_post_form.post_text.data  ### ，没有去掉两边的标签
         # print(title,cat_id,body)
         new_post = Post(title=title, category_id=cat_id, body=body)
+        # new_post.timestamp = datetime.strptime(new_post.timestamp, "%Y-%m-%d %H:%M")
         new_post.user_id = user_id
         new_post.user = current_user
         if session["photo_nums"] > 0:  ### 这里session的值是在upload视图里面改变的
@@ -152,7 +164,14 @@ def newpost():
         # photo=current_user.photos[-1]
 
         db.session.add(new_post)
+        # new_post.timestamp = datetime.strptime(new_post.timestamp, "%Y-%m-%d %H:%M")
+
         db.session.commit()
+
+        # new_post.timestamp = datetime.strptime(new_post.timestamp, "%Y-%m-%d %H:%M")
+        # print(new_post.timestamp.strftime("%y-%m-%d %I:%M:%S %p"))
+        # db.session.commit()
+
         # return "已经成功提交"
         return redirect(url_for("posts.index"))
 
@@ -307,22 +326,22 @@ def like():
         current_user = User.query.get(session["user_id"])
         post = Post.query.get(post_id)
 
-        action_like=AbstractAction(post_id=post_id,
-                                    cur_user_id=current_user.id,
-                                    floor=floor,reply_id=comment_id).set_action(OptionType.LIKE)
+        action_like = AbstractAction(
+            post_id=post_id, cur_user_id=current_user.id, floor=floor, reply_id=comment_id
+        ).set_action(OptionType.LIKE)
 
         if comment_id == -1:
-            
-            complete_action=action_like.to_a_post()
+
+            complete_action = action_like.to_a_post()
             print("添加点赞post通知")
 
         else:
 
-            complete_action=action_like.to_a_reply()
+            complete_action = action_like.to_a_reply()
             print("添加点赞comment通知")
 
     complete_action.update_likes()
-            
+
     complete_action.send_notification()
     return "202"
 
@@ -377,15 +396,15 @@ def comment_towards():
         else:
             from_author = False
 
+        comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id)
 
-        comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id )
+        comment.timestamp = datetime.strptime(comment.timestamp, "%Y-%m-%d %H:%M")
 
-        action_comment=AbstractAction(post_id=post_id,
-                                    cur_user_id=user_id,
-                                    floor=new_floor,reply_id=comment_id,
-                                    comment_body=body).set_action(OptionType.COMMENT)
+        action_comment = AbstractAction(
+            post_id=post_id, cur_user_id=user_id, floor=new_floor, reply_id=comment_id, comment_body=body
+        ).set_action(OptionType.COMMENT)
 
-        complete_action=action_comment.to_a_reply()
+        complete_action = action_comment.to_a_reply()
 
         complete_action.update_comments(comment)
         complete_action.send_notification()
@@ -408,18 +427,16 @@ def add_reply(type_of_form):
             from_author = True
         else:
             from_author = False
-        
+
         comment = Comment(body=body, from_author=from_author, post_id=post_id, towards=-1, user_id=action_id)
 
-        action_comment=AbstractAction(post_id=post_id,
-                                    cur_user_id=user_id,
-                                    floor=new_floor,reply_id=-1,
-                                    comment_body=body).set_action(OptionType.COMMENT)
+        action_comment = AbstractAction(
+            post_id=post_id, cur_user_id=user_id, floor=new_floor, reply_id=-1, comment_body=body
+        ).set_action(OptionType.COMMENT)
 
-        complete_action=action_comment.to_a_post()
+        complete_action = action_comment.to_a_post()
         complete_action.update_comments(comment)
         complete_action.send_notification()
-
 
     return redirect(url_for("posts.detail", post_id=post_id))
 
@@ -429,4 +446,36 @@ def notifications():
     current_user = User.query.get(session["user_id"])
     notices = current_user.notifications
     return render_template("user/notification.html", current_user=current_user, notices=notices, User=User)
+
+
+@bp.route('/report',methods=['POST'])
+def report():
+    if request.method=='POST':
+        form=request.form
+        post_id=form['report_post_id']
+        floor=form['report_floor']  # -1 if post is reported
+        comment_id=form['report_comment_id'] #-1 if post is reported
+        user_id=form['report_user_id']
+        reason=form['reason']
+        other_reason=form['other_reason']  # empty if '其他' is not selected
+        print(post_id,floor,comment_id,user_id,reason,other_reason)
+
+
+    return redirect(url_for("posts.detail", post_id=post_id))
+
+@csrf.exempt
+@bp.route('/admin_delete',methods=['POST'])
+def admin_delete():
+    if request.method=='POST':
+        form=request.form
+        post_id=form['delete_post_id']
+        floor=form['delete_floor']  # -1 if post is deleted
+        comment_id=form['delete_comment_id'] #-1 if post is deleted
+        admin_id=form['delete_admin_id']
+        reason=form['delete_reason']
+        
+        print(post_id,floor,comment_id,admin_id,reason)
+
+
+    return redirect(url_for("posts.detail", post_id=post_id))
 

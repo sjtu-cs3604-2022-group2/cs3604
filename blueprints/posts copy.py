@@ -93,7 +93,7 @@ def detail(post_id):
     )
 
 
-from app import csrf
+from app import csrf  
 
 
 @csrf.exempt

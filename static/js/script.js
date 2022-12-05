@@ -46,13 +46,13 @@ $(document).ready(function () {
         }
     }
 
-    $('.messages').scroll(load_messages);
+    $('.messages').off().scroll(load_messages);
 
     socket.on('user count', function (data) {
         $('#user-count').html(data.count);
     });
 
-    socket.on('new message', function (data) {
+    socket.off('new message').on('new message', function (data) {
         message_count++;
         if (!document.hasFocus()) {
             document.title = '(' + message_count + ') ' + 'CatChat';
@@ -135,7 +135,7 @@ $(document).ready(function () {
 
     function activateSemantics() {
         $('.ui.dropdown').dropdown();
-        $('.ui.checkbox').checkbox();
+        //$('.ui.checkbox').checkbox();
 
         $('.message .close').on('click', function () {
             $(this).closest('.message').transition('fade');
@@ -153,27 +153,27 @@ $(document).ready(function () {
             $('.ui.modal.snippet').modal({blurring: true}).modal('show');
         });
 
-        $('.pop-card').popup({
-            inline: true,
-            on: 'hover',
-            hoverable: true,
-            html: popupLoading,
-            delay: {
-                show: 200,
-                hide: 200
-            },
-            onShow: function () {
-                var popup = this;
-                popup.html(popupLoading);
-                $.get({
-                    url: $(popup).prev().data('href')
-                }).done(function (data) {
-                    popup.html(data);
-                }).fail(function () {
-                    popup.html('Failed to load profile.');
-                });
-            }
-        });
+        // $('.pop-card').popup({
+        //     inline: true,
+        //     on: 'hover',
+        //     hoverable: true,
+        //     html: popupLoading,
+        //     delay: {
+        //         show: 200,
+        //         hide: 200
+        //     },
+        //     onShow: function () {
+        //         var popup = this;
+        //         popup.html(popupLoading);
+        //         $.get({
+        //             url: $(popup).prev().data('href')
+        //         }).done(function (data) {
+        //             popup.html(data);
+        //         }).fail(function () {
+        //             popup.html('Failed to load profile.');
+        //         });
+        //     }
+        // });
     }
 
     function init() {
@@ -199,12 +199,11 @@ $(document).ready(function () {
     }
 
     // delete message
-    $('.right-msg').on('click', '.delete-button', function () {
+    $('.right-msg').off('click', '.delete-button').on('click', '.delete-button', function () {
         var $this = $(this);
-        $this.parent().parent().parent().remove();
         $.ajax({
             type: 'DELETE',
-            url: $this.data('href'),
+            url: $this.parent().children(":first").val(),
             success: function () {
                 $this.parent().parent().parent().remove();
             },

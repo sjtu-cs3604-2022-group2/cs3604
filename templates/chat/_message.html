@@ -12,6 +12,7 @@
 </div>
 {% else %}
 <div class="msg right-msg">
+    
     <div class="msg-img" style="background-image: url({{message.author.image}})"></div>
     <div class="msg-bubble">
         <div class="msg-info">
@@ -20,7 +21,7 @@
         </div>
         <div class="msg-text">{{message.body}}</div>
         <div class="bt-table">
-            
+            <input type='text' name="link{{message.id}}" value="message/delete/{{message.id}}" style="display: none;">
             <button  class="hover-btn outline delete-button" >删除</button>
             <button  class="hover-btn outline quote-button" >引用</button>
         </div>

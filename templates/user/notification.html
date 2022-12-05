@@ -46,7 +46,7 @@
         #}
         <div><a href='{{notice.link}}'>{{notice.body |safe }}</a></div>
       </td>
-      <td class="timestamp">{{notice.timestamp}}</td>
+      <td class="timestamp">{{notice.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</td>
     </tr>
     {%endfor%}
   </tbody>&nbsp;
