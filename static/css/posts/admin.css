@@ -47,6 +47,7 @@
   left: 35%;
   width: 30%;
   height: 40%;
+  min-height: 350px;
   border: 2px solid #3b3e41;
   background-color: white;
   z-index: 9999;

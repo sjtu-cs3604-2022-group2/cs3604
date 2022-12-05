@@ -78,7 +78,8 @@ def detail(post_id):
     # print(repr(post.body))
 
     return render_template(
-        "posts/detail-tmp-extend.html",
+       # "posts/detail-tmp-extend.html",
+       "posts/admin-detail.html",
         User=User,
         current_user=User.query.get(user_id),
         post_user=post_user,
@@ -456,7 +457,25 @@ def report():
         comment_id=form['report_comment_id'] #-1 if post is reported
         user_id=form['report_user_id']
         reason=form['reason']
-        other_reason=form['other_reason']  # empty if 'other reasons' is not selected
+        other_reason=form['other_reason']  # empty if '其他' is not selected
         print(post_id,floor,comment_id,user_id,reason,other_reason)
+
+
+    return redirect(url_for("posts.detail", post_id=post_id))
+
+@csrf.exempt
+@bp.route('/admin_delete',methods=['POST'])
+def admin_delete():
+    if request.method=='POST':
+        form=request.form
+        post_id=form['delete_post_id']
+        floor=form['delete_floor']  # -1 if post is deleted
+        comment_id=form['delete_comment_id'] #-1 if post is deleted
+        admin_id=form['delete_admin_id']
+        reason=form['delete_reason']
+        
+        print(post_id,floor,comment_id,admin_id,reason)
+
+
     return redirect(url_for("posts.detail", post_id=post_id))
 

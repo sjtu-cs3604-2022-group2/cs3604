@@ -195,7 +195,7 @@
         </p>
 
         <div>
-            <form name="form" id="delete-form"  >
+            <form name="form" id="delete-form"  method="post" action="{{url_for('posts.admin_delete')}}">
                 <input style="display:none" class="notclear" id="delete_post_id" name="delete_post_id" value={{post.id}}>
                 <input style="display:none" class="notclear" id="delete_admin_id" name="delete_admin_id" value={{current_user.id}}>
                 <input style="display:none"  name="delete_comment_id" id="delete_comment_id">
