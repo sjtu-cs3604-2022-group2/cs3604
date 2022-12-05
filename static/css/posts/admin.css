@@ -1,0 +1,95 @@
+.admin-detail .topic-content .topic-header {
+  width: 70%;
+  float: left;
+}
+
+.admin-detail .topic-content .admin-delete-post {
+  float: right;
+  margin-top: 15px;
+  color: #d56363db;
+}
+
+.admin-detail .topic-content .admin-delete-post .btn {
+  background-color: white;
+  font-size: 18px;
+  padding: 3px 6px;
+}
+
+.admin-detail .topic-content .admin-delete-post .btn:hover, .admin-detail .topic-content .admin-delete-post .btn:focus, .admin-detail .topic-content .admin-delete-post .btn:active {
+  border: solid 2px #eb797976;
+  color: #d56363db;
+  outline: none;
+  font-weight: 300;
+}
+
+.admin-detail .topic-content .topic-description {
+  margin-top: 17px;
+}
+
+.black_overlay {
+  display: none;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  background-color: #222;
+  z-index: 1001;
+  -moz-opacity: 0.8;
+  opacity: .80;
+  filter: alpha(opacity=78);
+}
+
+.admin-detail .pop_win {
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 35%;
+  width: 30%;
+  height: 40%;
+  border: 2px solid #3b3e41;
+  background-color: white;
+  z-index: 9999;
+  overflow: auto;
+  border-radius: 25px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  overflow-y: hidden;
+  text-align: center;
+}
+
+.admin-detail .pop_win p {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.admin-detail .pop_win #delete-form textarea {
+  margin-bottom: 20px;
+  overflow-y: hidden;
+  outline: none;
+}
+
+.pop_win #delete-form #submit-btn {
+  color: white;
+  background-color: #e95656db;
+  border-color: #e95656db;
+  outline: none;
+}
+
+.admin-detail .delete-comment .btn{
+  color: #d56363db;
+  background-color: white;
+  padding:3px 6px;
+  font-size: 10px;
+  margin-right:3%;
+
+}
+
+.admin-detail .answer-content{
+  padding-top:0px;
+}
+.admin-detail .wrapper, .detail .wrapper{
+  margin-top:10px;
+}

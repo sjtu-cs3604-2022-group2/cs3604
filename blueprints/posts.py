@@ -445,3 +445,18 @@ def notifications():
     current_user = User.query.get(session["user_id"])
     notices = current_user.notifications
     return render_template("user/notification.html", current_user=current_user, notices=notices, User=User)
+
+
+@bp.route('/report',methods=['POST'])
+def report():
+    if request.method=='POST':
+        form=request.form
+        post_id=form['report_post_id']
+        floor=form['report_floor']  # -1 if post is reported
+        comment_id=form['report_comment_id'] #-1 if post is reported
+        user_id=form['report_user_id']
+        reason=form['reason']
+        other_reason=form['other_reason']  # empty if 'other reasons' is not selected
+        print(post_id,floor,comment_id,user_id,reason,other_reason)
+    return redirect(url_for("posts.detail", post_id=post_id))
+
