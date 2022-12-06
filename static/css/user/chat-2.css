@@ -29,12 +29,12 @@ body {
 }
 
 .msger {
-
+  
   flex-flow: column wrap;
   justify-content: space-between;
   width: 100%;
   max-width: 867px;
-  margin: 0 10px;
+  margin: 0 auto;
   height: calc(80% - 50px);
   border: var(--border);
   border-radius: 5px;

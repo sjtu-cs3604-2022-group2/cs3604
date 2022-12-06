@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/mybootstrap.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/change-infor.css')}}">
   <link href="https://fonts.font.im/css?family=Kalam" rel="stylesheet">
   <link
     href='https://fonts.googlefonts.cn/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
@@ -14,10 +15,10 @@
   <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/card.css')}}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/profile.css')}}">
-    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script  type="text/javascript" src="{{ url_for('static',filename='js/user/profile.js')}}"></script>
-
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js" defer></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js" defer></script>
+  <script  type="text/javascript" src="{{ url_for('static',filename='js/user/profile.js')}}" defer> </script>
+  <script  type="text/javascript" src="{{ url_for('static',filename='js/user/change-infor.js')}}" defer></script>
   {%endblock head %}
   {% extends 'base.html' %}
   {% block content %}
@@ -33,7 +34,7 @@
     </div>
     <div id="profile-d">
       <div id="profile-pic">
-        <img src={{poster_user.image}} >
+        <img src={{current_user.image}} >
       </div>
       <div id="u-name">{{poster_user.username}}</div>
       <div class="tb" id="m-btns">
@@ -52,18 +53,18 @@
           <div class="cnt-label">
             <i class="l-i" id="l-i-i"></i>
             <span>关于我</span>
-            <form class="msger-inputarea">
+            <form class="msger-inputarea" id="edit1">
               <input type="text" id="message-textarea" class="msger-input" placeholder="Enter your message...">
-              <button type="submit" class="msger-send-btn" id="snippet-button">Send</button>
+              <button type="button" class="msger-send-btn" id="snippet-button">修改</button>
             </form>
             
             
             
-            <div class="lb-action"><i class="material-icons">edit</i></div>
+            <div class="aaatete lb-action"><i class="material-icons">edit</i></div>
 
           </div>
           <div id="i-box">
-            {{poster_user.about}}
+            <p  id="i-box-about">{{poster_user.about}}</p>
             <div id="u-loc"><i class="material-icons">location_on</i><a href="#">Shanghai</a>, <a href="#">China</a>
             </div>
           </div>
@@ -164,7 +165,7 @@
           <div class="post">
             <div class="tb">
               <a href="#" class="td p-p-pic"><img
-                  src={{poster_user.username}} ></a>
+                  src={{poster_user.image}} ></a>
               <div class="td p-r-hdr">
                 <div class="p-u-info">
                   <a href="#">{{poster_user.username}}</a>分享了一段经历关于 <a href="#">< {{post.category.name}} ></a>
@@ -177,7 +178,7 @@
                   {{post.body| safe }}
                 </div>
               </div>
-              <div class="td p-opt"><i class="material-icons">keyboard_arrow_down</i></div>
+              <div class="hsbtn td p-opt"><i class="material-icons">keyboard_arrow_down</i></div>
             </div>
             <div>
               <div class="p-acts">
@@ -192,6 +193,7 @@
 
             </div>
         {% endfor %}
+
         <div id="loading"><i class="material-icons">autorenew</i></div>
         </div> 
 
