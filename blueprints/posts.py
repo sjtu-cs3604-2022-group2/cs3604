@@ -71,29 +71,51 @@ def detail(post_id):
     post = Post.query.get(post_id)
     post_user = post.user
     user_id = session["user_id"]
+    current_user = User.query.get(user_id)
+    if post.valid == 0:
+        return render_template("errors/404.html")
 
     list_like_of_user = get_list_of_like(post_id, user_id)
     recommendation_post = get_recommendation_posts(user_id)
     body_list = post.body.split("\n\r\n")
     # print(repr(post.body))
+    if current_user.is_admin:
 
-    return render_template(
-       # "posts/detail-tmp-extend.html",
-       "posts/admin-detail.html",
-        User=User,
-        current_user=User.query.get(user_id),
-        post_user=post_user,
-        topic=post,
-        body_list=body_list,
-        post=post,
-        add_reply_form=add_reply_form,
-        comment_towards_form=comment_towards_form,
-        add_reply_pop_form=add_reply_pop_form,
-        report_form=report_form,
-        related_topics=related_topics,
-        recommend_posts=recommendation_post,
-        likes=list_like_of_user,
-    )
+        return render_template(
+            # "posts/detail-tmp-extend.html",
+            "posts/admin-detail.html",
+            User=User,
+            current_user=current_user,
+            post_user=post_user,
+            topic=post,
+            body_list=body_list,
+            post=post,
+            add_reply_form=add_reply_form,
+            comment_towards_form=comment_towards_form,
+            add_reply_pop_form=add_reply_pop_form,
+            report_form=report_form,
+            related_topics=related_topics,
+            recommend_posts=recommendation_post,
+            likes=list_like_of_user,
+        )
+    else:
+        return render_template(
+            # "posts/detail-tmp-extend.html",
+            "posts/detail-tmp-extend.html",
+            User=User,
+            current_user=current_user,
+            post_user=post_user,
+            topic=post,
+            body_list=body_list,
+            post=post,
+            add_reply_form=add_reply_form,
+            comment_towards_form=comment_towards_form,
+            add_reply_pop_form=add_reply_pop_form,
+            report_form=report_form,
+            related_topics=related_topics,
+            recommend_posts=recommendation_post,
+            likes=list_like_of_user,
+        )
 
 
 from app import csrf
@@ -398,7 +420,7 @@ def comment_towards():
 
         comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id)
 
-        comment.timestamp = datetime.strptime(comment.timestamp, "%Y-%m-%d %H:%M")
+        # comment.timestamp = datetime.strptime(comment.timestamp, "%Y-%m-%d %H:%M")
 
         action_comment = AbstractAction(
             post_id=post_id, cur_user_id=user_id, floor=new_floor, reply_id=comment_id, comment_body=body
@@ -448,34 +470,53 @@ def notifications():
     return render_template("user/notification.html", current_user=current_user, notices=notices, User=User)
 
 
-@bp.route('/report',methods=['POST'])
+@bp.route("/report", methods=["POST"])
 def report():
-    if request.method=='POST':
-        form=request.form
-        post_id=form['report_post_id']
-        floor=form['report_floor']  # -1 if post is reported
-        comment_id=form['report_comment_id'] #-1 if post is reported
-        user_id=form['report_user_id']
-        reason=form['reason']
-        other_reason=form['other_reason']  # empty if '其他' is not selected
-        print(post_id,floor,comment_id,user_id,reason,other_reason)
-
+    if request.method == "POST":
+        form = request.form
+        post_id = form["report_post_id"]
+        floor = form["report_floor"]  # -1 if post is reported
+        comment_id = form["report_comment_id"]  # -1 if post is reported
+        user_id = form["report_user_id"]
+        reason = form["reason"]
+        other_reason = form["other_reason"]  # empty if '其他' is not selected
+        print(post_id, floor, comment_id, user_id, reason, other_reason)
 
     return redirect(url_for("posts.detail", post_id=post_id))
+
 
 @csrf.exempt
-@bp.route('/admin_delete',methods=['POST'])
+@bp.route("/admin_delete", methods=["POST"])
 def admin_delete():
-    if request.method=='POST':
-        form=request.form
-        post_id=form['delete_post_id']
-        floor=form['delete_floor']  # -1 if post is deleted
-        comment_id=form['delete_comment_id'] #-1 if post is deleted
-        admin_id=form['delete_admin_id']
-        reason=form['delete_reason']
-        
-        print(post_id,floor,comment_id,admin_id,reason)
+    if request.method == "POST":
+        form = request.form
+        post_id = int(form["delete_post_id"])
+        floor = int(form["delete_floor"])  # -1 if post is deleted
+        comment_id = int(form["delete_comment_id"])  # -1 if post is deleted
+        admin_id = int(form["delete_admin_id"])
+        reason = form["delete_reason"]
 
+        print(post_id, floor, comment_id, admin_id, reason)
+        # if floor.isdigit():
+        #     floor = int(floor)
+        if comment_id == -1:
+            post = Post.query.get(post_id)
+            post.valid = 0
+            for c in post.comments:
+                c.valid = 0
+        elif comment_id != -1:
+
+            comment_1 = Comment.query.get(comment_id)
+            association_comments = Comment.query.filter(
+                and_(
+                    Comment.post_id == post_id,
+                    Comment.towards == floor,
+                )
+            ).all()
+            comment_1.valid = 0
+            for comment in association_comments:
+                comment.valid = 0
+
+        db.session.commit()
 
     return redirect(url_for("posts.detail", post_id=post_id))
-

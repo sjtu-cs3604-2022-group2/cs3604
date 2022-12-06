@@ -127,6 +127,7 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     can_comment = db.Column(db.Boolean, default=True)
     photos = db.relationship("Photo", back_populates="post", cascade="all")
+    valid=db.Column(db.Integer,default=1) ## 判断帖子是否被删
 
     num_likes = db.Column(db.Integer, default=0)
     num_comments = db.Column(db.Integer, default=0)
@@ -156,6 +157,7 @@ class Comment(db.Model):
     num_likes = db.Column(db.Integer, default=0)
     towards = db.Column(db.Integer, default=-1)
     # 对应的是评论回复的几楼。如果回复的是原帖子，那么towards=-1。
+    valid = db.Column(db.Integer,default=1) ### 表示这个帖子是否被删除，被删除置0
 
     notifications = db.relation("Notification", back_populates="comment", cascade="all")
 
