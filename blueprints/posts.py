@@ -8,7 +8,7 @@ from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm,
 from extensions import db
 from models import Category, Photo, Post, User, Comment, Notification
 from utils import *
-from abstract_factory import AbstractAction
+from abstraction import *
 from actiontype import *
 from datetime import datetime
 
@@ -71,29 +71,51 @@ def detail(post_id):
     post = Post.query.get(post_id)
     post_user = post.user
     user_id = session["user_id"]
+    current_user = User.query.get(user_id)
+    if post.valid == 0:
+        return render_template("errors/404.html")
 
     list_like_of_user = get_list_of_like(post_id, user_id)
     recommendation_post = get_recommendation_posts(user_id)
     body_list = post.body.split("\n\r\n")
     # print(repr(post.body))
+    if current_user.is_admin:
 
-    return render_template(
-       # "posts/detail-tmp-extend.html",
-       "posts/admin-detail.html",
-        User=User,
-        current_user=User.query.get(user_id),
-        post_user=post_user,
-        topic=post,
-        body_list=body_list,
-        post=post,
-        add_reply_form=add_reply_form,
-        comment_towards_form=comment_towards_form,
-        add_reply_pop_form=add_reply_pop_form,
-        report_form=report_form,
-        related_topics=related_topics,
-        recommend_posts=recommendation_post,
-        likes=list_like_of_user,
-    )
+        return render_template(
+            # "posts/detail-tmp-extend.html",
+            "posts/admin-detail.html",
+            User=User,
+            current_user=current_user,
+            post_user=post_user,
+            topic=post,
+            body_list=body_list,
+            post=post,
+            add_reply_form=add_reply_form,
+            comment_towards_form=comment_towards_form,
+            add_reply_pop_form=add_reply_pop_form,
+            report_form=report_form,
+            related_topics=related_topics,
+            recommend_posts=recommendation_post,
+            likes=list_like_of_user,
+        )
+    else:
+        return render_template(
+            # "posts/detail-tmp-extend.html",
+            "posts/detail-tmp-extend.html",
+            User=User,
+            current_user=current_user,
+            post_user=post_user,
+            topic=post,
+            body_list=body_list,
+            post=post,
+            add_reply_form=add_reply_form,
+            comment_towards_form=comment_towards_form,
+            add_reply_pop_form=add_reply_pop_form,
+            report_form=report_form,
+            related_topics=related_topics,
+            recommend_posts=recommendation_post,
+            likes=list_like_of_user,
+        )
 
 
 from app import csrf
@@ -325,24 +347,22 @@ def like():
         floor = int(form["floor"])  # 被点赞的楼层，用于生成链接
         current_user = User.query.get(session["user_id"])
         post = Post.query.get(post_id)
-
-        action_like = AbstractAction(
-            post_id=post_id, cur_user_id=current_user.id, floor=floor, reply_id=comment_id
-        ).set_action(OptionType.LIKE)
+        
 
         if comment_id == -1:
-
-            complete_action = action_like.to_a_post()
-            print("添加点赞post通知")
+            obj=ObjectPost(post)
 
         else:
+            reply=Comment.query.get(comment_id)
+            obj=ObjectReply(reply,floor)
 
-            complete_action = action_like.to_a_reply()
-            print("添加点赞comment通知")
+        action_like=ActionLike(user_id)
+        action_like.set_object(obj)
 
-    complete_action.update_likes()
+        action_like.update_database()
 
-    complete_action.send_notification()
+        action_like.send_notification()
+
     return "202"
 
 
@@ -354,26 +374,22 @@ def unlike():
         post_id = int(form["post_id"])
         comment_id = int(form["comment_id"])
         user_id = int(form["user_id"])
-        print(post_id, comment_id, user_id)
+        floor = int(form["floor"])
         current_user = User.query.get(session["user_id"])
 
         if comment_id == -1:
-            # 取消赞的是post本身，更新数据库
+            # 取消赞的是post本身
             post = Post.query.get(post_id)
-            current_user.like_posts.remove(post)
-            post.num_likes -= 1
-            db.session.commit()
-            print("移除成功")
+            obj=ObjectPost(post)
+
         else:
-            # 取消赞的是post下的评论，评论id为comment_id，更新数据库
-            # pass
-            #
-            comment = Comment.query.get(comment_id)
-            current_user.like_comments.remove(comment)
+            # 取消赞的是post下的评论
+            reply=Comment.query.get(comment_id)
+            obj=ObjectReply(reply,floor)
 
-            comment.num_likes -= 1
-
-            db.session.commit()
+        action_unlike=ActionUnlike(user_id)
+        action_unlike.set_object(obj)
+        action_unlike.update_database()   
 
     return "202"
 
@@ -398,16 +414,16 @@ def comment_towards():
 
         comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id)
 
-        comment.timestamp = datetime.strptime(comment.timestamp, "%Y-%m-%d %H:%M")
+        action_comment=ActionComment(action_id,comment,new_floor)
 
-        action_comment = AbstractAction(
-            post_id=post_id, cur_user_id=user_id, floor=new_floor, reply_id=comment_id, comment_body=body
-        ).set_action(OptionType.COMMENT)
+        reply=Comment.query.get(comment_id)
+        obj=ObjectReply(reply)
 
-        complete_action = action_comment.to_a_reply()
+        action_comment.set_object(obj)
 
-        complete_action.update_comments(comment)
-        complete_action.send_notification()
+        action_comment.update_database()
+
+        action_comment.send_notification()
 
     return redirect(url_for("posts.detail", post_id=post_id))
 
@@ -430,13 +446,15 @@ def add_reply(type_of_form):
 
         comment = Comment(body=body, from_author=from_author, post_id=post_id, towards=-1, user_id=action_id)
 
-        action_comment = AbstractAction(
-            post_id=post_id, cur_user_id=user_id, floor=new_floor, reply_id=-1, comment_body=body
-        ).set_action(OptionType.COMMENT)
+        action_comment=ActionComment(action_id,comment,new_floor)
 
-        complete_action = action_comment.to_a_post()
-        complete_action.update_comments(comment)
-        complete_action.send_notification()
+        post=Post.query.get(post_id)
+        obj=ObjectPost(post)
+        action_comment.set_object(obj)
+
+        action_comment.update_database()
+
+        action_comment.send_notification()
 
     return redirect(url_for("posts.detail", post_id=post_id))
 
@@ -448,34 +466,53 @@ def notifications():
     return render_template("user/notification.html", current_user=current_user, notices=notices, User=User)
 
 
-@bp.route('/report',methods=['POST'])
+@bp.route("/report", methods=["POST"])
 def report():
-    if request.method=='POST':
-        form=request.form
-        post_id=form['report_post_id']
-        floor=form['report_floor']  # -1 if post is reported
-        comment_id=form['report_comment_id'] #-1 if post is reported
-        user_id=form['report_user_id']
-        reason=form['reason']
-        other_reason=form['other_reason']  # empty if '其他' is not selected
-        print(post_id,floor,comment_id,user_id,reason,other_reason)
-
+    if request.method == "POST":
+        form = request.form
+        post_id = form["report_post_id"]
+        floor = form["report_floor"]  # -1 if post is reported
+        comment_id = form["report_comment_id"]  # -1 if post is reported
+        user_id = form["report_user_id"]
+        reason = form["reason"]
+        other_reason = form["other_reason"]  # empty if '其他' is not selected
+        print(post_id, floor, comment_id, user_id, reason, other_reason)
 
     return redirect(url_for("posts.detail", post_id=post_id))
+
 
 @csrf.exempt
-@bp.route('/admin_delete',methods=['POST'])
+@bp.route("/admin_delete", methods=["POST"])
 def admin_delete():
-    if request.method=='POST':
-        form=request.form
-        post_id=form['delete_post_id']
-        floor=form['delete_floor']  # -1 if post is deleted
-        comment_id=form['delete_comment_id'] #-1 if post is deleted
-        admin_id=form['delete_admin_id']
-        reason=form['delete_reason']
-        
-        print(post_id,floor,comment_id,admin_id,reason)
+    if request.method == "POST":
+        form = request.form
+        post_id = int(form["delete_post_id"])
+        floor = int(form["delete_floor"])  # -1 if post is deleted
+        comment_id = int(form["delete_comment_id"])  # -1 if post is deleted
+        admin_id = int(form["delete_admin_id"])
+        reason = form["delete_reason"]
 
+        print(post_id, floor, comment_id, admin_id, reason)
+        # if floor.isdigit():
+        #     floor = int(floor)
+        if comment_id == -1:
+            post = Post.query.get(post_id)
+            post.valid = 0
+            for c in post.comments:
+                c.valid = 0
+        elif comment_id != -1:
+
+            comment_1 = Comment.query.get(comment_id)
+            association_comments = Comment.query.filter(
+                and_(
+                    Comment.post_id == post_id,
+                    Comment.towards == floor,
+                )
+            ).all()
+            comment_1.valid = 0
+            for comment in association_comments:
+                comment.valid = 0
+
+        db.session.commit()
 
     return redirect(url_for("posts.detail", post_id=post_id))
-

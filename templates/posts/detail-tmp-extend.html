@@ -331,10 +331,16 @@
                             #}    
 
                             <div class="answer-description" style="margin-bottom: 20px;">
-                                
+                                {%if (comment.valid)%}
                                 <p style="width: 95%;word-break: break-all;">
                                     {{comment.body | safe }}
                                 </p>
+                                {% else %}
+                                <p style="width: 95%;word-break: break-all;">
+                                    本评论已被删除
+                                </p>
+                                {%endif %}
+
                                
 
                             </div>
