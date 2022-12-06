@@ -8,7 +8,7 @@ from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm,
 from extensions import db
 from models import Category, Photo, Post, User, Comment, Notification
 from utils import *
-from abstract_factory import AbstractAction
+from abstraction import *
 from actiontype import *
 from datetime import datetime
 
@@ -347,24 +347,22 @@ def like():
         floor = int(form["floor"])  # 被点赞的楼层，用于生成链接
         current_user = User.query.get(session["user_id"])
         post = Post.query.get(post_id)
-
-        action_like = AbstractAction(
-            post_id=post_id, cur_user_id=current_user.id, floor=floor, reply_id=comment_id
-        ).set_action(OptionType.LIKE)
+        
 
         if comment_id == -1:
-
-            complete_action = action_like.to_a_post()
-            print("添加点赞post通知")
+            obj=ObjectPost(post)
 
         else:
+            reply=Comment.query.get(comment_id)
+            obj=ObjectReply(reply,floor)
 
-            complete_action = action_like.to_a_reply()
-            print("添加点赞comment通知")
+        action_like=ActionLike(user_id)
+        action_like.set_object(obj)
 
-    complete_action.update_likes()
+        action_like.update_database()
 
-    complete_action.send_notification()
+        action_like.send_notification()
+
     return "202"
 
 
@@ -376,26 +374,22 @@ def unlike():
         post_id = int(form["post_id"])
         comment_id = int(form["comment_id"])
         user_id = int(form["user_id"])
-        print(post_id, comment_id, user_id)
+        floor = int(form["floor"])
         current_user = User.query.get(session["user_id"])
 
         if comment_id == -1:
-            # 取消赞的是post本身，更新数据库
+            # 取消赞的是post本身
             post = Post.query.get(post_id)
-            current_user.like_posts.remove(post)
-            post.num_likes -= 1
-            db.session.commit()
-            print("移除成功")
+            obj=ObjectPost(post)
+
         else:
-            # 取消赞的是post下的评论，评论id为comment_id，更新数据库
-            # pass
-            #
-            comment = Comment.query.get(comment_id)
-            current_user.like_comments.remove(comment)
+            # 取消赞的是post下的评论
+            reply=Comment.query.get(comment_id)
+            obj=ObjectReply(reply,floor)
 
-            comment.num_likes -= 1
-
-            db.session.commit()
+        action_unlike=ActionUnlike(user_id)
+        action_unlike.set_object(obj)
+        action_unlike.update_database()   
 
     return "202"
 
@@ -420,16 +414,16 @@ def comment_towards():
 
         comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id)
 
-        # comment.timestamp = datetime.strptime(comment.timestamp, "%Y-%m-%d %H:%M")
+        action_comment=ActionComment(action_id,comment,new_floor)
 
-        action_comment = AbstractAction(
-            post_id=post_id, cur_user_id=user_id, floor=new_floor, reply_id=comment_id, comment_body=body
-        ).set_action(OptionType.COMMENT)
+        reply=Comment.query.get(comment_id)
+        obj=ObjectReply(reply)
 
-        complete_action = action_comment.to_a_reply()
+        action_comment.set_object(obj)
 
-        complete_action.update_comments(comment)
-        complete_action.send_notification()
+        action_comment.update_database()
+
+        action_comment.send_notification()
 
     return redirect(url_for("posts.detail", post_id=post_id))
 
@@ -452,13 +446,15 @@ def add_reply(type_of_form):
 
         comment = Comment(body=body, from_author=from_author, post_id=post_id, towards=-1, user_id=action_id)
 
-        action_comment = AbstractAction(
-            post_id=post_id, cur_user_id=user_id, floor=new_floor, reply_id=-1, comment_body=body
-        ).set_action(OptionType.COMMENT)
+        action_comment=ActionComment(action_id,comment,new_floor)
 
-        complete_action = action_comment.to_a_post()
-        complete_action.update_comments(comment)
-        complete_action.send_notification()
+        post=Post.query.get(post_id)
+        obj=ObjectPost(post)
+        action_comment.set_object(obj)
+
+        action_comment.update_database()
+
+        action_comment.send_notification()
 
     return redirect(url_for("posts.detail", post_id=post_id))
 
