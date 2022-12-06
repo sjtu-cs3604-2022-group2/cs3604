@@ -312,7 +312,7 @@
   
   #l-col {
     width: 200px;
-
+    max-width:200px;
     padding-top: 6px;
     padding-right: 20px;
   }
@@ -1104,13 +1104,13 @@
   -webkit-box-orient: vertical;
   }
   #show1{
-    display: none;
+    display: block;
   }
   #show2{
     display: none;
   }
   #show3{
-    display: block;
+    display:none;
   }
   .gap-post{
     color: #e9ebee;
