@@ -1,13 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
+
+  {%block head %}
   <meta charset="UTF-8">
   <title>Hobbitat Profile</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
-  <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/mybootstrap.css')}}">
   <link href="https://fonts.font.im/css?family=Kalam" rel="stylesheet">
   <link
     href='https://fonts.googlefonts.cn/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
@@ -15,109 +14,17 @@
   <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/card.css')}}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/profile.css')}}">
-  <script  type="text/javascript" src="{{ url_for('static',filename='js/user/profile.js')}}"></script>
-  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
   <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script  type="text/javascript" src="{{ url_for('static',filename='js/user/profile.js')}}"></script>
 
-</head>
-
+  {%endblock head %}
+  {% extends 'base.html' %}
+  {% block content %}
 <body style="margin:0;">
   <main>
 
-  <header>
-    <div class="container-fluid detail user-profile">
-      <div class="container head" style="height:auto; width: 100%;;margin-left:0;">
-        <div class="row">
-          <nav class="navbar-default navbar ">
-            <div class="headwrap">
-              <!-- <div class="container"> -->
-              <!-- Brand and toggle get grouped for better mobile display -->
-              <div class="navbar-header">
-                <a class="navbar-brand" href="#">
-                  <!-- <img src="../imgs_icons/Hobbitat_cut.png" alt="Logo"> -->
-                  <div class="logo">
-                    Hobbitat
-                  </div>
-                </a>
-                <div class="slogan">
-                  校园兴趣爱好分享社区
-                </div>
-                <div class="navbar-search ">
-                  <form class="navbar-form" role="search">
-                    <div class="input-group add-on">
-                      <input class="form-control form-control222" placeholder="Search" name="srch-term" id="srch-term"
-                        type="text">
-                      <div class="input-group-btn">
-                        <button class="btn btn-default btn-default2913" type="submit"
-                          style="width:100%;height: 100%;text-align: center;">
-                          <i class="glyphicon glyphicon-search" style="margin: auto;"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </form>
 
-                </div>
-              </div>
-
-              <!-- Collect the nav links, forms, and other content for toggling -->
-              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding:15px 0px 5px 0px;">
-                <!-- <ul class="nav navbar-nav"> </ul> -->
-                <ul class="nav navbar-nav navbar-right" style="padding:0;margin-right:2px;">
-                  <li><a href="#">首页</a></li>
-                  <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                      aria-expanded="false">分区<span class="caret"></span></a>
-                    <ul class="dropdown-menu animated zoomIn">
-                      <li><a href="#">Music</a></li>
-                      <li><a href="#">Art</a></li>
-                      <li><a href="#">Sports</a></li>
-                      <li><a href="#">Game</a></li>
-                    </ul>
-                  </li>
-                  <li><a href="#">关注</a></li>
-
-                  <li class="dropdown current-user">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                      aria-expanded="false"
-                      style="padding-top:0;padding-bottom:0;-webkit-transform: translate(0,-9px);transform: translate(0,-9px);">
-
-                      <img class="current-user-photo" src="../../static/image/imgs_icons/girlphoto.svg" alt="个人中心">
-                      <span class="caret"
-                        style="-webkit-transform: translate(48px,-21px);transform: translate(48px,-21px);"></span>
-                    </a>
-
-
-                    <ul class="dropdown-menu animated zoomIn">
-                      <li>
-                        <div>
-                          用户名：
-                          <br>
-                          Alex
-                        </div>
-                      </li>
-                      <li><a href="#">个人中心</a></li>
-                      <li><a href="#"> 关注列表</a></li>
-                      <li><a href="#"> 通知 </a></li>
-                      <li><a href="#"> 历史 </a></li>
-                      <li><a href="#"> 设置 </a></li>
-                      <li><a href="#">帮助</a></li>
-                      <li><a href="#"> 联系我们 </a></li>
-
-                    </ul>
-                  </li>
-
-                </ul>
-              </div>
-              <!-- /.navbar-collapse -->
-              <!-- </div> -->
-              <!-- /.container-fluid -->
-            </div>
-          </nav>
-          <!-- <div style="display:block;width:100%;min-height:65px;"></div> -->
-        </div>
-      </div>
-    </div>
-  </header>
   <div id="profile-upper">
     <div id="profile-banner-image">
       <img
@@ -131,10 +38,7 @@
       <div id="u-name">{{poster_user.username}}</div>
       <div class="tb" id="m-btns">
         <div class="td">
-          <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href = "/user/chat"><span>聊天</span></a></div>
-        </div>
-        <div class="td">
-          <div class="m-btn"><i class="material-icons">lock</i><span>隐私</span></div>
+          <div class="m-btn" style="width:100px;"><i class="material-icons">lock</i><span>隐私</span></div>
         </div>
       </div>
       <div id="edit-profile"><i class="material-icons">camera_alt</i></div>
@@ -148,7 +52,15 @@
           <div class="cnt-label">
             <i class="l-i" id="l-i-i"></i>
             <span>关于我</span>
+            <form class="msger-inputarea">
+              <input type="text" id="message-textarea" class="msger-input" placeholder="Enter your message...">
+              <button type="submit" class="msger-send-btn" id="snippet-button">Send</button>
+            </form>
+            
+            
+            
             <div class="lb-action"><i class="material-icons">edit</i></div>
+
           </div>
           <div id="i-box">
             {{poster_user.about}}
@@ -339,77 +251,34 @@
       
                   <th ><center>ID</center></th>
                   <th ><center>头像</center></th>
-                  <th></th>
-                  <th ><center>年龄</center></th>
                   <th ><center>昵称</center></th>
-                  <th ><center>性别</center></th>
+
+
+                  <th ><center>签名</center></th>
+                  <th></th> 
       
-                  <th ><center>邮箱</center></th>			     
+                  <th></th>     
                 </tr>
               </thead>`
       
               <tbody>
+                {% for follow_user in current_user.follow %}
                 <tr>
-                  <td align="center">7</td> 
+                  <td align="center">{{follow_user.id}}</td> 
                   <td align="center"><img class = 'avatar'  
-                    src = 'https://ts1.cn.mm.bing.net/th?id=OIP-C.JPaFw0vH2f6Qy44aUfZ4jgAAAA&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2'
+                    src = "{{follow_user.image}}"
                      alt = ''></td>
+                  <td align="center">{{follow_user.username}}</td>
+                  <td align="center"  class="line-limit-length">{{follow_user.about}}</td>
+                  <td align="center"><a href={{ "/chat/%d" | format(follow_user.id)}}><div class ="testbtn">
+                    私聊
+                  </div></a></td>
                   <td align="center"><div class='btn-group dropright'>
                     <button type='button' class='btn btn-primary btn-sm transactionButton' 
                     data-toggle='dropdown'>取消关注</button>
                   </div></td> 
-                  <td align="center">20</td>
-                  <td align="center">小明</td>
-                  <td align="center">男</td>
-      
-                  <td align="center">111@sjtu.edu.cn</td>
                 </tr>
-                <tr>
-                  <td align="center">7</td> 
-                  <td align="center"><img class = 'avatar'  
-                    src = 'https://ts1.cn.mm.bing.net/th?id=OIP-C.JPaFw0vH2f6Qy44aUfZ4jgAAAA&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2'
-                     alt = ''></td>
-                  <td align="center"><div class='btn-group dropright'>
-                    <button type='button' class='btn btn-primary btn-sm transactionButton' 
-                    data-toggle='dropdown'>取消关注</button>
-                  </div></td> 
-                  <td align="center">20</td>
-                  <td align="center">小明</td>
-                  <td align="center">男</td>
-      
-                  <td align="center">111@sjtu.edu.cn</td>
-                </tr>
-                <tr>
-                  <td align="center">7</td> 
-                  <td align="center"><img class = 'avatar'  
-                    src = 'https://ts1.cn.mm.bing.net/th?id=OIP-C.JPaFw0vH2f6Qy44aUfZ4jgAAAA&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2'
-                     alt = ''></td>
-                  <td align="center"><div class='btn-group dropright'>
-                    <button type='button' class='btn btn-primary btn-sm transactionButton' 
-                    data-toggle='dropdown'>取消关注</button>
-                  </div></td> 
-                  <td align="center">20</td>
-                  <td align="center">小明</td>
-                  <td align="center">男</td>
-      
-                  <td align="center">111@sjtu.edu.cn</td>
-                </tr>
-                <tr>
-                  <td align="center">7</td> 
-                  <td align="center"><img class = 'avatar'  
-                    src = 'https://ts1.cn.mm.bing.net/th?id=OIP-C.JPaFw0vH2f6Qy44aUfZ4jgAAAA&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2'
-                     alt = ''></td>
-                  <td align="center"><div class='btn-group dropright'>
-                    <button type='button' class='btn btn-primary btn-sm transactionButton' 
-                    data-toggle='dropdown'>取消关注</button>
-                  </div></td> 
-                  <td align="center">20</td>
-                  <td align="center">小明</td>
-                  <td align="center">男</td>
-      
-                  <td align="center">111@sjtu.edu.cn</td>
-                </tr>
-
+                {% endfor %}
               </tbody>
             </table>
           </div>
@@ -447,13 +316,12 @@
   </div>
   <!-- <div id="device-bar-2"><i class="fab fa-apple"></i></div> -->
   </main>
-
-  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <!-- <script type="text/javascript" src="profile.js"></script> -->
 </body>
+{% endblock %}
+  <!-- <script type="text/javascript" src="profile.js"></script> -->
 
-</html>
+
+
 
 
 
