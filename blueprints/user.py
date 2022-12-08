@@ -8,7 +8,8 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import mail, db
 from models import User, Email, Comment
-from forms import RegisterForm, LoginForm
+from forms import RegisterForm, LoginForm, ProfileForm
+from app import csrf, dropzone
 
 
 bp = Blueprint("user", __name__, url_prefix="/user")
@@ -61,29 +62,51 @@ def notifications():
 
 @bp.route("/follows", methods=["GET"])
 def follows():
-    Current = namedtuple("Current", ["image", "username", "follow", "posts"])
+    Current = namedtuple("Current", ["image", "username", "follow", "posts", "id"])
     try:
         id = session["user_id"]
         user = User.query.get(id)
         followers = [f.followed for f in user.followed.all()]
-        current_user = Current(user.image, user.username, followers, user.posts)
+        current_user = Current(user.image, user.username, followers, user.posts, id)
     except:
         return redirect(url_for("user.login"))
     return render_template("user/friends-tmp.html", main_user=current_user)
 
 
-@bp.route("/profile")
-def profile():
-    Current = namedtuple("Current", ["image", "username", "follow", "posts"])
+@bp.route("/profile/<int:uid>")
+def profile(uid):
+    Current = namedtuple("Current", ["image", "username", "follow", "posts", "id"])
+    profile_form = ProfileForm()
     try:
         id = session["user_id"]
         user = User.query.get(id)
+        if uid == 0:
+            uid = id
+        visit_user = User.query.get(uid)
         followers = [f.followed for f in user.followed.all()]
-        current_user = Current(user.image, user.username, followers, user.posts)
+        visit_followers = [f.followed for f in visit_user.followed.all()]
+        current = Current(user.image, user.username, followers, user.posts, id)
+        poster = Current(visit_user.image, visit_user.username, visit_followers, visit_user.posts, uid)
     except:
         return redirect(url_for("user.login"))
-    return render_template("user/profile-tmp.html", current_user=current_user, poster_user=current_user)
+    return render_template("user/profile-tmp.html", 
+                           current_user=current,
+                           poster_user=poster,
+                           profile_form=profile_form)
 
+
+@csrf.exempt
+@bp.route("/profile_upload", methods=["POST"])
+def profile_upload():
+    form = request.form
+    user_id = int(form.get("user_id"))
+    new_name = form.get('username')
+    about = form.get('about')
+    user = User.query.get(user_id)
+    user.username = new_name
+    user.about = about
+    db.session.commit()
+    return redirect(url_for("user.profile", uid=user_id))
 
 # @bp.route("/chat")
 # def chat():

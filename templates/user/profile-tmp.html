@@ -35,7 +35,7 @@
     </div>
     <div id="profile-d">
       <div id="profile-pic">
-        <img src={{current_user.image}} >
+        <img src={{poster_user.image}} >
       </div>
       <div id="u-name">{{poster_user.username}}</div>
       <div class="tb" id="m-btns">
@@ -323,7 +323,7 @@
               </thead>`
       
               <tbody>
-                {% for follow_user in current_user.follow %}
+                {% for follow_user in poster_user.follow %}
                 <tr>
                   <td align="center">{{follow_user.id}}</td> 
                   <td align="center"><img class = 'avatar'  

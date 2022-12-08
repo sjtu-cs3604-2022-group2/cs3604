@@ -4,7 +4,7 @@ from wtforms.validators import length, email, EqualTo
 from models import Email, User
 from wtforms.validators import DataRequired, Length
 from flask_ckeditor import CKEditorField
-from wtforms import SubmitField, StringField, RadioField, SelectMultipleField,IntegerField
+from wtforms import SubmitField, StringField, RadioField, SelectMultipleField, IntegerField
 from flask_ckeditor import CKEditor
 
 
@@ -106,3 +106,12 @@ class NewPostForm(FlaskForm):
     post_text = CKEditorField(label="post_text", validators=[DataRequired()])
     categories = SelectMultipleField("categories", choices=object_list, coerce=int)
     submit = SubmitField(label="提交")
+
+
+class ProfileForm(FlaskForm):
+    user_id = IntegerField(label="user_id")
+    username = StringField(label="username", validators=[length(1, 100)],
+                           render_kw={"placeholder": "新用户名", "class": "input"})
+    about = StringField(label="about", validators=[length(1, 100)], 
+                        render_kw={"placeholder": "个人简介", "class": "input"})
+    submit = wtforms.SubmitField(label="提交")
