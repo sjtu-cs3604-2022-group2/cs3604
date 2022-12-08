@@ -555,7 +555,7 @@
   #m-col {
     max-width: 600px;
     width:600px;
-    padding: 0px 55px;
+    padding: 13px 55px;
     padding-left: 100px;
 
   }
@@ -573,7 +573,7 @@
     margin-top: -64px;
     background-color: #fff;
     box-shadow: 0px 3px 3px #ddd;
-    z-index: 3;
+
   }
   
   #p-tabs-m .td {
@@ -1138,4 +1138,8 @@
   a.td.p-p-pic{
     width:65px;
   }
- 
+  .-blue {
+
+    color:black;
+    background: white;
+  }
