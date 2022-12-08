@@ -82,7 +82,16 @@
           <div class="pop-window" id='pop-window'>
             <div class="window-inside">
               <div id="window-header">
-                <span>我是弹窗</span>
+                <form method="post" enctype="multipart/form-data" action="{{url_for('user.profile_upload')}}" id="form">
+                  {{profile_form.csrf_token(class='notclear')}}
+                  {{profile_form.user_id(style='display:none',class='notclear',value=current_user.id)}}
+                  {{profile_form.username()}}
+                  {{profile_form.about()}}
+                  {{profile_form.submit()}}
+                </form>
+                <div>
+                  {{dropzone.create(action=url_for("user.profile_upload"), id="upload_image")}}
+                </div>
                 <div id="window-header-right" onclick="pop_window_hide()">x</div>
               </div>
             </div>
@@ -96,7 +105,8 @@
               document.getElementById('pop-window').style.display="none";
             }
           </script>
-  
+          <script src="{{url_for('static',filename='js/posts/dropzone.min.js')}}"></script>
+
         </div>
 
 

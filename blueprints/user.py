@@ -1,13 +1,15 @@
+import os
 import string
 import random
 from datetime import datetime
 from collections import namedtuple
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g, current_app
 from flask_mail import Message
 from flask_login import login_user, logout_user, login_required, current_user
+from flask_dropzone import random_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import mail, db
-from models import User, Email, Comment
+from models import User, Email, Comment, Photo
 from forms import RegisterForm, LoginForm, ProfileForm
 from app import csrf, dropzone
 
@@ -98,14 +100,26 @@ def profile(uid):
 @csrf.exempt
 @bp.route("/profile_upload", methods=["POST"])
 def profile_upload():
-    form = request.form
-    user_id = int(form.get("user_id"))
-    new_name = form.get('username')
-    about = form.get('about')
-    user = User.query.get(user_id)
-    user.username = new_name
-    user.about = about
-    db.session.commit()
+    user_id = session["user_id"]
+    if "user_id" in request.form:
+        form = request.form
+        user_id = int(form.get("user_id"))
+        new_name = form.get('username')
+        about = form.get('about')
+        user = User.query.get(user_id)
+        user.username = new_name
+        user.about = about
+        db.session.commit()
+    if "file" in request.files:
+        user = User.query.get(user_id)
+        f = request.files.get("file")
+        filename = random_filename(f.filename)
+        upload_path = os.path.join(current_app.config["FILE_UPLOAD_PATH"], filename)
+        photo_path = url_for("static", filename="uploads/"+filename)
+        f.save(upload_path)
+        user.image = photo_path
+        db.session.commit()
+        print(user.image)
     return redirect(url_for("user.profile", uid=user_id))
 
 # @bp.route("/chat")
