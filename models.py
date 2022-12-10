@@ -50,7 +50,8 @@ class User(UserMixin, db.Model):
     like_comments = db.relationship("Comment", secondary=user_like_comment_table, back_populates="like_users")
     messages = db.relationship("Message", back_populates="author", cascade="all")
     notifications = db.relationship("Notification", back_populates="user", cascade="all")
-    
+    admin_notifications = db.relationship("Admin_Notification", back_populates="user", cascade="all")
+
     # 本用户关注的其他用户
     followed = db.relationship(
         "Follow",
@@ -87,7 +88,7 @@ class User(UserMixin, db.Model):
 
     @property
     def is_admin(self):
-       return self.username in current_app.config['ADMIN_NAME']
+        return self.username in current_app.config["ADMIN_NAME"]
 
 
 class Photo(db.Model):
@@ -127,7 +128,7 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     can_comment = db.Column(db.Boolean, default=True)
     photos = db.relationship("Photo", back_populates="post", cascade="all")
-    valid=db.Column(db.Integer,default=1) ## 判断帖子是否被删
+    valid = db.Column(db.Integer, default=1)  ## 判断帖子是否被删
 
     num_likes = db.Column(db.Integer, default=0)
     num_comments = db.Column(db.Integer, default=0)
@@ -136,6 +137,7 @@ class Post(db.Model):
 
     notifications = db.relationship("Notification", back_populates="post", cascade="all")
 
+    admin_notifications = db.relationship("Admin_Notification", back_populates="post", cascade="all")
     # 隐式属性
     # user = db.relationship('User', back_populates='posts')
     # category = db.relationship('Category', back_ref='posts')
@@ -153,11 +155,12 @@ class Comment(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
     post = db.relationship("Post", back_populates="comments")
+    admin_notifications = db.relationship("Admin_Notification", back_populates="comment", cascade="all")
 
     num_likes = db.Column(db.Integer, default=0)
     towards = db.Column(db.Integer, default=-1)
     # 对应的是评论回复的几楼。如果回复的是原帖子，那么towards=-1。
-    valid = db.Column(db.Integer,default=1) ### 表示这个帖子是否被删除，被删除置0
+    valid = db.Column(db.Integer, default=1)  ### 表示这个帖子是否被删除，被删除置0
 
     notifications = db.relation("Notification", back_populates="comment", cascade="all")
 
@@ -186,13 +189,12 @@ class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
-    state = db.Column(db.Integer, default=0)
-    action = db.Column(db.Integer)  # 0表示点赞，1表示评论
+    state = db.Column(db.Integer, default=0)  # 表示已读还是未读
+    action = db.Column(db.Integer)  # 0表示点赞，1表示评论,
     object = db.Column(db.Integer, default=0)  # 0表示是post本身 1表示comment。
     action_id = db.Column(db.Integer)  # 动作发起用户的id
     # towards=db.Column(db.Integer)  ### -1 表示帖子本身，其他的表示评论的楼层。
     link = db.Column(db.String(100), default="#")
-
     # 表示这个通知要发给谁
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     user = db.relationship("User", back_populates="notifications")
@@ -202,3 +204,25 @@ class Notification(db.Model):
 
     comment_id = db.Column(db.Integer, db.ForeignKey("comment.id"))
     comment = db.relationship("Comment", back_populates="notifications")
+
+
+class Admin_Notification(db.Model):  # 表示管理员接收到的举报通知
+    __tablename__ = "admin_notification"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    reason = db.Column(db.Text) # 记录举报理由
+    timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
+    state = db.Column(db.Integer, default=0)  # 表示已读还是未读
+    object = db.Column(db.Integer, default=0)  # 0表示是举报post本身 1表示举报comment。
+    action_id = db.Column(db.Integer)  # 这个举报信息是由哪个用户发出的
+
+    # 表示这个通知要发给哪个管理员
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user = db.relationship("User", back_populates="admin_notifications")
+    
+    # 举报对应哪个post
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
+    post = db.relationship("Post", back_populates="admin_notifications")
+
+    # 举报对应哪个comment
+    comment_id = db.Column(db.Integer, db.ForeignKey("comment.id"))
+    comment = db.relationship("Comment", back_populates="admin_notifications")
