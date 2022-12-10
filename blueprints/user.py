@@ -12,7 +12,7 @@ from extensions import mail, db
 from models import User, Email, Comment, Photo
 from forms import RegisterForm, LoginForm, ProfileForm
 from app import csrf, dropzone
-
+from utils import *
 
 bp = Blueprint("user", __name__, url_prefix="/user")
 
@@ -77,6 +77,7 @@ def follows():
 
 @bp.route("/profile/<int:uid>")
 def profile(uid):
+
     Current = namedtuple("Current", ["image", "username", "follow", "posts", "id", "about"])
     profile_form = ProfileForm()
     try:
@@ -89,12 +90,18 @@ def profile(uid):
         visit_followers = [f.followed for f in visit_user.followed.all()]
         current = Current(user.image, user.username, followers, user.posts, id,user.about)
         poster = Current(visit_user.image, visit_user.username, visit_followers, visit_user.posts, uid, visit_user.about)
+        recommend_posts_id = CF_get_recommendation_posts(uid)
+        recommend_posts = [Post.query.get(post_id).category.name for post_id in recommend_posts_id][:5]
+        recommend_posts = list(set(recommend_posts))
+
     except:
         return redirect(url_for("user.login"))
     return render_template("user/profile-tmp.html", 
                            current_user=current,
                            poster_user=poster,
-                           profile_form=profile_form)
+                           profile_form=profile_form,
+                           recommend_posts=recommend_posts,
+                           length_rec = len(recommend_posts))
 
 
 @csrf.exempt
