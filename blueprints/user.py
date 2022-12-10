@@ -62,17 +62,7 @@ def login():
 def notifications():
     return render_template("user/notifications.html")
 
-@bp.route("/follows", methods=["GET"])
-def follows():
-    Current = namedtuple("Current", ["image", "username", "follow", "posts", "id"])
-    try:
-        id = session["user_id"]
-        user = User.query.get(id)
-        followers = [f.followed for f in user.followed.all()]
-        current_user = Current(user.image, user.username, followers, user.posts, id)
-    except:
-        return redirect(url_for("user.login"))
-    return render_template("user/friends-tmp.html", main_user=current_user)
+
 
 
 @bp.route("/profile/<int:uid>")

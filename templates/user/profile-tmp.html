@@ -4,6 +4,36 @@
   <meta charset="UTF-8">
   <title>Hobbitat Profile</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+  <link
+  href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<link href="https://fonts.font.im/css?family=Kalam" rel="stylesheet" />
+<link
+  href="https://fonts.googlefonts.cn/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
+  rel="stylesheet"
+  type="text/css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://at.alicdn.com/t/c/font_3724642_dw14pio9i6b.css"
+/>
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/base.min.css')}}"
+/>
+
+
+
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/mybootstrap.css')}}">
@@ -39,6 +69,18 @@
       </div>
       <div id="u-name">{{poster_user.username}}</div>
       <div class="tb" id="m-btns">
+        {% if poster_user.id != current_user.id %}
+        <div class="td">
+          <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href = {{ "/chat/%d" | format(poster_user.id)}}><span>私聊</span></a></div>
+        </div>
+        
+        <div class="td">
+          <div class="m-btn"><i class="material-icons">lock</i><span>关注</span></div>
+        </div>
+        {% endif %}
+
+
+
         <div class="td">
           <style type="text/css">
             body{
@@ -85,11 +127,12 @@
                 <form method="post" enctype="multipart/form-data" action="{{url_for('user.profile_upload')}}" id="form">
                   {{profile_form.csrf_token(class='notclear')}}
                   {{profile_form.user_id(style='display:none',class='notclear',value=current_user.id)}}
-                  <div class="username-input-area">{{profile_form.username()}}</div>
-                  <div class="about-input-area">{{profile_form.about()}}</div>
-                  <div class="avatar-input-area">{{profile_form.submit()}}</div>
+                  <div class="username-input-area"><span>请输入新的用户名:</span>{{profile_form.username()}}</div>
+                  <div class="about-input-area"><span>请输入新的简介:</span>{{profile_form.about()}}</div>
+                  {{profile_form.submit()}}
                 </form>
-                <div>
+                <div class="avatar-input-area">
+                  <span>请拖放或者选择新头像:</span>
                   {{dropzone.create(action=url_for("user.profile_upload"), id="upload_image")}}
                 </div>
                 <div id="window-header-right" onclick="pop_window_hide()">x</div>
@@ -273,12 +316,12 @@
 
         <div id = "show2">
           <ul class="card-list">
-	{% for post in poster_user.posts %}
+	       {% for post in poster_user.posts %}
             <li class="card">
               <a class="card-image" href="https://michellezauner.bandcamp.com/album/psychopomp-2" target="_blank" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-100.jpg);" data-image-full="https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-500.jpg">
-                <img src="../../static/image/imgs_icons/category{{poster_user.posts[0].category_id}}.png" alt="Psychopomp" />
+                <img src="../../static/image/imgs_icons/category{{ post.category_id }}.png" alt="Psychopomp" />
               </a>
-              <a class="card-description" href="#" target="_blank">
+              <a class="card-description" href="{{url_for('posts.detail',post_id=post.id)}}" target="_blank">
                 <p> {{post.title}}</p>
               </a>
             </li>

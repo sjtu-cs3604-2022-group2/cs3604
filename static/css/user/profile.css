@@ -1145,4 +1145,8 @@
   .about-input-area{
     width: 100%;
   }
- 
+  .navbar {
+
+    margin-bottom: 0px !important;
+
+  }
