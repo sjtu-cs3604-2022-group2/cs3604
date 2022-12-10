@@ -150,6 +150,10 @@ def upload():
 def textform():
     return "202 "
 
+@bp.route("/contributers", methods=["GET"])
+def contributers():
+    return render_template("posts/contributers.html")
+
 
 # @bp.route("/newpost/<string:photo_path>", methods=["POST", "GET"])
 @bp.route("/newpost", methods=["POST", "GET"])

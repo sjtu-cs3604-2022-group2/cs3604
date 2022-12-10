@@ -77,7 +77,7 @@ def follows():
 
 @bp.route("/profile/<int:uid>")
 def profile(uid):
-    Current = namedtuple("Current", ["image", "username", "follow", "posts", "id"])
+    Current = namedtuple("Current", ["image", "username", "follow", "posts", "id", "about"])
     profile_form = ProfileForm()
     try:
         id = session["user_id"]
@@ -87,8 +87,8 @@ def profile(uid):
         visit_user = User.query.get(uid)
         followers = [f.followed for f in user.followed.all()]
         visit_followers = [f.followed for f in visit_user.followed.all()]
-        current = Current(user.image, user.username, followers, user.posts, id)
-        poster = Current(visit_user.image, visit_user.username, visit_followers, visit_user.posts, uid)
+        current = Current(user.image, user.username, followers, user.posts, id,user.about)
+        poster = Current(visit_user.image, visit_user.username, visit_followers, visit_user.posts, uid, visit_user.about)
     except:
         return redirect(url_for("user.login"))
     return render_template("user/profile-tmp.html", 

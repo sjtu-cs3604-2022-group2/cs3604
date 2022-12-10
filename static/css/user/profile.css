@@ -1138,8 +1138,13 @@
   a.td.p-p-pic{
     width:65px;
   }
-  .-blue {
 
-    color:black;
-    background: white;
+  .username-input-area{
+    width: 100%;
+  }
+  .about-input-area{
+    width: 100%;
+  }
+  #submit{
+    
   }
