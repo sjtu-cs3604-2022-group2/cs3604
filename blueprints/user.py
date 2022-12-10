@@ -11,7 +11,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import mail, db
 from models import User, Email, Comment, Photo
 from forms import RegisterForm, LoginForm, ProfileForm
-from app import csrf, dropzone
 from utils import *
 
 bp = Blueprint("user", __name__, url_prefix="/user")
@@ -62,20 +61,10 @@ def login():
 def notifications():
     return render_template("user/notifications.html")
 
-@bp.route("/follows", methods=["GET"])
-def follows():
-    Current = namedtuple("Current", ["image", "username", "follow", "posts", "id"])
-    try:
-        id = session["user_id"]
-        user = User.query.get(id)
-        followers = [f.followed for f in user.followed.all()]
-        current_user = Current(user.image, user.username, followers, user.posts, id)
-    except:
-        return redirect(url_for("user.login"))
-    return render_template("user/friends-tmp.html", main_user=current_user)
 
 
-@bp.route("/profile/<int:uid>")
+
+@bp.route("/profile/<int:uid>",methods=["GET","POST"])
 def profile(uid):
 
     Current = namedtuple("Current", ["image", "username", "follow", "posts", "id", "about"])
@@ -101,9 +90,11 @@ def profile(uid):
                            poster_user=poster,
                            profile_form=profile_form,
                            recommend_posts=recommend_posts,
-                           length_rec = len(recommend_posts))
+                           length_rec = len(recommend_posts),
+                           )
 
 
+from app import csrf, dropzone
 @csrf.exempt
 @bp.route("/profile_upload", methods=["POST"])
 def profile_upload():

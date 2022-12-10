@@ -557,25 +557,50 @@ theme blue:6fa8dc
   font-size: 16px;
 }
 
-.detail .tag .category0 i,
-.index .tag .category0 i {
-  color: #94c47d;
+.detail .category0 .tag-icon,
+.index .category0 .tag-icon {
+  background-color: #94c47d;
 }
 
-.detail .tag .category1 i,
-.index .tag .category1 i {
-  color: #f6b26b;
+.detail .category1 .tag-icon,
+.index .category1 .tag-icon{
+  background-color: #f6b26b;
 }
 
-.detail .tag .category2 i,
-.index .tag .category2 i {
-  color: #8e7cc3;
+.detail .category2 .tag-icon,
+.index .category2 .tag-icon {
+  background-color: #8e7cc3;
 }
 
-.detail .tag .category3 i,
-.index .tag .category3 i {
-  color: #e06666;
+.detail .category3 .tag-icon,
+.index .category3 .tag-icon {
+  background-color: #e06666;
 }
+.detail .category4 .tag-icon,
+.index .category4 .tag-icon {
+  background-color: #6fa8dc;
+}
+.detail .category5 .tag-icon,
+.index .category5 .tag-icon{
+  background-color: #e07878;
+}
+.detail .category6 .tag-icon,
+.index .category6 .tag-icon {
+  background-color: #ffe600;
+}
+.detail .category7 .tag-icon,
+.index .category7 .tag-icon {
+  background-color: #b0638f;
+}
+.detail .category8 .tag-icon,
+.index .category8 .tag-icon {
+  background-color: #66e0d8;
+}
+.detail .category9 .tag-icon,
+.index .category9 .tag-icon {
+  background-color: #a3e066;
+}
+
 
 .detail .tag-icon,
 .index .tag-icon {
@@ -586,7 +611,7 @@ theme blue:6fa8dc
   transform: translate(0, -2px);
 }
 
-.detail .category0 .tag-icon,
+/* .detail .category0 .tag-icon,
 .index .category0 .tag-icon {
   background-color: #94c47d;
 }
@@ -604,7 +629,7 @@ theme blue:6fa8dc
 .detail .category3 .tag-icon,
 .index .category3 .tag-icon {
   background-color: #e06666;
-}
+} */
 
 #index-body {
   background-color: #f9fafb;
@@ -667,6 +692,8 @@ theme blue:6fa8dc
   border-radius: 11px;
 }
 
+
+
 .index .sidebarblock a:focus,
 .index .sidebarblock a:hover {
   text-decoration: none;
@@ -702,7 +729,7 @@ theme blue:6fa8dc
 } */
 
 
-.posttext p{
+.posttext .post_text_para{
   text-overflow: ellipsis;
   height: 38px;
   overflow: hidden;
@@ -732,9 +759,22 @@ theme blue:6fa8dc
   font-size: 13px;
 }
 
+.detail-side .sidebarblock .topost,
+.detail-side .sidebarblock .activities{
+  margin-top: 10px;
+  box-shadow: 0 1px 7px 0px #c9cccd;
+  margin-bottom: 20px;
+  border-radius: 11px;
+}
+
+.detail-side .sidebarblock{
+  margin-top:0px;
+  margin-bottom:20px;
+  box-shadow: 0 1px 7px 0px #c9cccd;
+}
 
 @media only screen and (min-width:1700px) {
-  .posttext p{
+  .posttext .post_text_para{
     text-overflow: ellipsis;
     height: 57px;
     overflow: hidden;
