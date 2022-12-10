@@ -25,24 +25,11 @@ def index(page):
     user_id = int(session.get("user_id"))
     user = User.query.get(user_id)
     per_page = current_app.config["POST_PER_PAGE"]
-    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
+    pagination = (
+        Post.query.filter(Post.valid == 1).order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
+    )
     posts = pagination.items
-    # cat_record = dict()
-    # CF_get_recommendation_users()
-    # compute_user_similar()
-    # for p in user.posts.all():
-    #     cat_record[p.category_id] = cat_record.get(p.category_id, 0) + 1
 
-    # recommend_category = sorted(list(cat_record.keys()), key=lambda x: cat_record[x], reverse=True)[:2]
-    # print(recommend_category)
-    # if len(recommend_category) >= 2:
-    #     recommend_posts = Post.query.filter(
-    #         or_(Post.category_id == recommend_category[0], Post.category_id == recommend_category[1])
-    #     ).all()
-    #     recommend_posts = recommend_posts[:10]
-    # else:
-    #     recommend_posts = []
-    # random.shuffle(recommend_posts)
     recommend_posts_id = CF_get_recommendation_posts(user_id)
     recommend_posts = [Post.query.get(post_id) for post_id in recommend_posts_id]
 
@@ -69,16 +56,20 @@ def detail(post_id):
     add_reply_pop_form = AddReplyPopForm()
     report_form = ReportForm()
     post = Post.query.get(post_id)
+    if not post or post.valid == 0:
+        return render_template("errors/404.html")
     post_user = post.user
     user_id = session["user_id"]
     current_user = User.query.get(user_id)
-    if post.valid == 0:
-        return render_template("errors/404.html")
+    
 
     list_like_of_user = get_list_of_like(post_id, user_id)
     recommendation_post = get_recommendation_posts(user_id)
     body_list = post.body.split("\n\r\n")
     # print(repr(post.body))
+    post.num_views+=1
+    db.session.commit()
+    print('add')
     if current_user.is_admin:
 
         return render_template(
@@ -149,6 +140,7 @@ def upload():
 @bp.route("/textform", methods=["POST"])
 def textform():
     return "202 "
+
 
 @bp.route("/contributers", methods=["GET"])
 def contributers():
@@ -287,16 +279,7 @@ def search():
         pagination = (
             Post.query.with_parent(post_category).order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
         )
-        # pagination = (
-        #     # Category.query.filter(Category.name == srchterm)
-        #     # .first()
-        #     # .posts
-        #     # .paginate(page=page, per_page=per_page)
-        #     Post.query.filter( Category.query.get(Post.category_id).first().name == srchterm)
 
-        #     .order_by(Post.timestamp.desc())
-        #     .paginate(page=page, per_page=per_page)
-        # )
         posts = pagination.items
 
     elif category == "帖子标题":
@@ -309,6 +292,12 @@ def search():
 
     # return url_for("search_result", search_content="")
     # return srchterm
+    elif category == "搜索用户":
+        search_users = User.query.filter(User.username.like("%" + srchterm + "%")).all()
+        # search_users = search_res.items
+
+        return render_template("user/users_show.html", search_users=search_users)
+
     recommend_posts = get_recommendation_posts(user_id)
 
     return render_template(
@@ -351,16 +340,15 @@ def like():
         floor = int(form["floor"])  # 被点赞的楼层，用于生成链接
         current_user = User.query.get(session["user_id"])
         post = Post.query.get(post_id)
-        
 
         if comment_id == -1:
-            obj=ObjectPost(post)
+            obj = ObjectPost(post)
 
         else:
-            reply=Comment.query.get(comment_id)
-            obj=ObjectReply(reply,floor)
+            reply = Comment.query.get(comment_id)
+            obj = ObjectReply(reply, floor)
 
-        action_like=ActionLike(user_id)
+        action_like = ActionLike(user_id)
         action_like.set_object(obj)
 
         action_like.update_database()
@@ -384,16 +372,16 @@ def unlike():
         if comment_id == -1:
             # 取消赞的是post本身
             post = Post.query.get(post_id)
-            obj=ObjectPost(post)
+            obj = ObjectPost(post)
 
         else:
             # 取消赞的是post下的评论
-            reply=Comment.query.get(comment_id)
-            obj=ObjectReply(reply,floor)
+            reply = Comment.query.get(comment_id)
+            obj = ObjectReply(reply, floor)
 
-        action_unlike=ActionUnlike(user_id)
+        action_unlike = ActionUnlike(user_id)
         action_unlike.set_object(obj)
-        action_unlike.update_database()   
+        action_unlike.update_database()
 
     return "202"
 
@@ -418,10 +406,10 @@ def comment_towards():
 
         comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id)
 
-        action_comment=ActionComment(action_id,comment,new_floor)
+        action_comment = ActionComment(action_id, comment, new_floor)
 
-        reply=Comment.query.get(comment_id)
-        obj=ObjectReply(reply)
+        reply = Comment.query.get(comment_id)
+        obj = ObjectReply(reply)
 
         action_comment.set_object(obj)
 
@@ -450,10 +438,10 @@ def add_reply(type_of_form):
 
         comment = Comment(body=body, from_author=from_author, post_id=post_id, towards=-1, user_id=action_id)
 
-        action_comment=ActionComment(action_id,comment,new_floor)
+        action_comment = ActionComment(action_id, comment, new_floor)
 
-        post=Post.query.get(post_id)
-        obj=ObjectPost(post)
+        post = Post.query.get(post_id)
+        obj = ObjectPost(post)
         action_comment.set_object(obj)
 
         action_comment.update_database()
@@ -520,3 +508,12 @@ def admin_delete():
         db.session.commit()
 
     return redirect(url_for("posts.detail", post_id=post_id))
+
+@csrf.exempt
+@bp.route("/read_notification", methods=["POST"])
+def read_notification():
+    form=request.form
+    notice_id=int(form['notice_id'])
+    notice=Notification.query.get(notice_id)
+    notice.state=StateType.READ.value
+    db.session.commit()

@@ -7,8 +7,7 @@ render_pagination %} {% block head %}
   type="text/css"
   href="{{ url_for('static',filename='css/posts/index-and-detail-style.css')}}"
 />
-{{ super() }} {# {% from 'bootstrap/pagination.html' import render_pagination %}
-#} {% endblock head%} {% block content%}
+{{ super() }}  {% endblock head%} {% block content%}
 
 <div class="index">
   {# Posts now #}
@@ -19,19 +18,19 @@ render_pagination %} {% block head %}
           class="col-lg-9 col-md-9"
           style="padding-left: 0; margin-top: 20px"
         >
-          {% if (index_posts | length) >0 %} {# POSTs #} {% for i in
-          range((index_posts | length) )%} {% if index_posts[i].valid %}
+          {% if (search_users | length) >0 %} {# POSTs #} {% for i in
+          range((search_users | length) )%} 
           <div class="post post-block">
             <div class="wrap-ut pull-left">
               <div class="wrapper pull-left">
                 <div class="userinfo">
                   <div class="index-user-photo detail-user-photo">
-                    <img src="{{(index_posts[i].user).image}}" />
+                    <img src="{{search_users[i].image}}" />
                   </div>
 
                   <div class="postername">
                     <a href="#">
-                      <span>{{(index_posts[i].user).username}}</span>
+                      <span>{{search_users[i].about}}</span>
                     </a>
                   </div>
                 </div>
@@ -39,59 +38,18 @@ render_pagination %} {% block head %}
               <div class="posttext pull-right">
                 <h3>
                   <a
-                    href="{{url_for('posts.detail',post_id=index_posts[i].id)}}"
+                    href="{{url_for('user.profile',uid=search_users[i].id)}}"
                     target="_blank"
                   >
-                    {{index_posts[i].title}}
+                    {{search_users[i].username}}
                   </a>
                 </h3>
 
-                <div class="post_text_para" >
-                  {{index_posts[i].body | safe }}
-                </div>
+                
 
-                <div class="tag">
-                  <div class="category{{ ((index_posts[i].category).id) % 10}}">
-                    <a
-                      href="{{url_for('posts.search',search_content=index_posts[i].category.name,search_category='分区')}}"
-                    >
-                      <span class="tag-icon"></span>
-                      <span>{{(index_posts[i].category).name}}</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div class="clearfix"></div>
-            </div>
-
-            <div class="postinfo pull-right">
-              <div class="likes">
-                <i class="iconfont icon-like"></i>
-                <span> {{index_posts[i].num_likes}}</span>
-                <span> 点赞</span>
-              </div>
-              <div class="replies">
-                <i class="iconfont icon-comment1"></i>
-                <span>{{index_posts[i].num_comments}}</span>
-                <span> 回复</span>
-              </div>
-              <div class="views">
-                <i class="iconfont icon-view"></i>
-                <span>{{index_posts[i].num_views}}</span>
-                <span> 浏览</span>
-              </div>
-              <div class="latest">
-                <i class="iconfont icon-time"></i>
-                <span
-                  >{{index_posts[i].timestamp.strftime("%Y-%m-%d %I:%M:%S
-                  %p")}}</span
-                >
-              </div>
-            </div>
-
-            <div class="clearfix"></div>
           </div>
-          {%endif %} {% endfor %} {% else %} "暂无结果" {% endif %}
+          {% endfor %} 
+          {% else %} "暂无结果" {% endif %}
         </div>
 
         {# Siderbars #}
@@ -228,13 +186,7 @@ render_pagination %} {% block head %}
       </div>
     </div>
     {# Pages #}
-    <div class="container pages" style="margin-bottom: 20px">
-      <div class="row">
-        <div class="col-lg-9 col-xs-12 col-md-9" style="margin-left: 20%">
-          <div class="page-footer">{{ render_pagination(pagination) }}</div>
-        </div>
-      </div>
-    </div>
+    
   </section>
 </div>
 
