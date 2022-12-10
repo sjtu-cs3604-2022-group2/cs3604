@@ -11,7 +11,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import mail, db
 from models import User, Email, Comment, Photo
 from forms import RegisterForm, LoginForm, ProfileForm
-from app import csrf, dropzone
 from utils import *
 
 bp = Blueprint("user", __name__, url_prefix="/user")
@@ -95,6 +94,7 @@ def profile(uid):
                            )
 
 
+from app import csrf, dropzone
 @csrf.exempt
 @bp.route("/profile_upload", methods=["POST"])
 def profile_upload():

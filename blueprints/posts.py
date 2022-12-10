@@ -520,3 +520,12 @@ def admin_delete():
         db.session.commit()
 
     return redirect(url_for("posts.detail", post_id=post_id))
+
+@csrf.exempt
+@bp.route("/read_notification", methods=["POST"])
+def read_notification():
+    form=request.form
+    notice_id=int(form['notice_id'])
+    notice=Notification.query.get(notice_id)
+    notice.state=StateType.READ.value
+    db.session.commit()

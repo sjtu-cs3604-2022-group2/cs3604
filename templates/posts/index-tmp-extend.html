@@ -46,27 +46,12 @@ render_pagination %} {% block head %}
                   </a>
                 </h3>
 
-                <div
-                  style="
-                    margin-top: 10px;
-                    text-overflow: ellipsis;
-                    height: 38px;
-                    overflow: hidden;
-                    width: 720px;
-                    -webkit-line-clamp: 2;
-                    line-clamp: 2;
-                    word-break: break-all;
-                    display: -webkit-box;
-                    -webkit-box-orient: vertical;
-                    letter-spacing: 2px;
-                    font-size: 13px;
-                  "
-                >
+                <div class="post_text_para" >
                   {{index_posts[i].body | safe }}
                 </div>
 
                 <div class="tag">
-                  <div class="category{{(index_posts[i].category).id}}">
+                  <div class="category{{ ((index_posts[i].category).id) % 10}}">
                     <a
                       href="{{url_for('posts.search',search_content=index_posts[i].category.name,search_category='分区')}}"
                     >
@@ -239,7 +224,7 @@ render_pagination %} {% block head %}
     {# Pages #}
     <div class="container pages" style="margin-bottom: 20px">
       <div class="row">
-        <div class="col-lg-9 col-xs-12 col-md-9" style="margin-left: 74px">
+        <div class="col-lg-9 col-xs-12 col-md-9" style="margin-left: 20%">
           <div class="page-footer">{{ render_pagination(pagination) }}</div>
         </div>
       </div>
