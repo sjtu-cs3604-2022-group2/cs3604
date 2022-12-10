@@ -69,16 +69,20 @@ def detail(post_id):
     add_reply_pop_form = AddReplyPopForm()
     report_form = ReportForm()
     post = Post.query.get(post_id)
+    if not post or post.valid == 0:
+        return render_template("errors/404.html")
     post_user = post.user
     user_id = session["user_id"]
     current_user = User.query.get(user_id)
-    if post.valid == 0:
-        return render_template("errors/404.html")
+    
 
     list_like_of_user = get_list_of_like(post_id, user_id)
     recommendation_post = get_recommendation_posts(user_id)
     body_list = post.body.split("\n\r\n")
     # print(repr(post.body))
+    post.num_views+=1
+    db.session.commit()
+    print('add')
     if current_user.is_admin:
 
         return render_template(
