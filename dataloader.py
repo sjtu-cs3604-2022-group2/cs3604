@@ -3,6 +3,7 @@ import json
 from faker import Faker
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
+from flask_dropzone import random_filename
 from extensions import db
 from models import *
 from app import *
@@ -18,6 +19,15 @@ def random_relation(count, active):
     while positive == active:
         positive = random.randint(0, count - 1)
     return positive
+
+
+def clear_uploads():
+    cur = os.curdir
+    path = "\\static\\uploads"
+    rm = os.listdir(cur+path)
+    for i in rm:
+        rm_path = os.path.join(path, i)
+        os.remove(cur+rm_path)
 
 
 def init_categories(count=5):
@@ -47,11 +57,31 @@ def init_user(count=30):
     for u in User.query.all():
         db.session.delete(u)
     db.session.commit()
+    
+    clear_uploads()
+    image_pool = set()
+
+    def get_image() -> str:
+        nonlocal image_pool
+        cur = os.curdir
+        id = random.randint(1, 100)
+        if len(image_pool) == 100:
+            image_pool = set()
+        while id in image_pool:
+            id = random.randint(1, 100)
+        origin = open(f"{cur}/data/avatar/{id}.png", mode="rb")
+        path = f"/static/uploads/"+random_filename(f"{id}.png")
+        new = open(cur+path, mode="wb")
+        new.write(origin.read())
+        origin.close()
+        new.close()
+        return path
+    
     user = User(
         username="test",
         password="123",
         about="this is me",
-        image="https://i1.hdslb.com/bfs/face/e47ac0d2a743fe169dd1fbbc96b2482edd96f550.jpg",
+        image=get_image(),
     )
     db.session.add(user)
     for i in range(count):
@@ -62,12 +92,12 @@ def init_user(count=30):
             email=fake.email(),
             join_time=fake.date_time_this_year(),
             about=raw["sign"],
-            image=raw["face"],
+            image=get_image(),
         )
         db.session.add(user)
     db.session.commit()
     for u in User.query.all():
-        for i in range(3):
+        for i in range(6):
             if getattr(u, "id", 0):
                 positive = random_relation(count, u.id)
                 follow_u = User.query.get(positive)
