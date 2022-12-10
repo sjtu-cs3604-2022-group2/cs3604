@@ -65,7 +65,7 @@ def notifications():
 
 
 
-@bp.route("/profile/<int:uid>")
+@bp.route("/profile/<int:uid>",methods=["GET","POST"])
 def profile(uid):
 
     Current = namedtuple("Current", ["image", "username", "follow", "posts", "id", "about"])
@@ -91,7 +91,8 @@ def profile(uid):
                            poster_user=poster,
                            profile_form=profile_form,
                            recommend_posts=recommend_posts,
-                           length_rec = len(recommend_posts))
+                           length_rec = len(recommend_posts),
+                           )
 
 
 @csrf.exempt

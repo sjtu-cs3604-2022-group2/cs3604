@@ -70,13 +70,17 @@
       <div id="u-name">{{poster_user.username}}</div>
       <div class="tb" id="m-btns">
         {% if poster_user.id != current_user.id %}
-        <div class="td">
+        <button class="td">
           <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href = {{ "/chat/%d" | format(poster_user.id)}}><span>私聊</span></a></div>
-        </div>
-        
+        </button>
+
+
+
+        <form method="post"  action="" >
         <div class="td">
-          <div class="m-btn"><i class="material-icons">lock</i><span>关注</span></div>
+          <button class="m-btn" type="submit" value="{{poster_user.id}}"><i class="material-icons">chat</i><span>关注</span></button>
         </div>
+      </form>
         {% endif %}
 
 
@@ -189,47 +193,32 @@
           </div>
           <div id="photos">
             <div class="tb">
+
+
+
               <div class="tr">
+                {% for img_src in poster_user_photos[0:3] %}
                 <div class="td">
                   <img
-                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
+                    src="{{img_src}}">
                 </div>
-                <div class="td">
-                  <img
-                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
-                </div>
-                <div class="td">
-                  <img
-                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
-                </div>
+                {% endfor %}
               </div>
               <div class="tr">
+                {% for img_src in poster_user_photos[3:6] %}
                 <div class="td">
                   <img
-                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
+                    src="{{img_src}}">
                 </div>
-                <div class="td">
-                  <img
-                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
-                </div>
-                <div class="td">
-                  <img
-                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
-                </div>
+                {% endfor %}
               </div>
               <div class="tr">
+                {% for img_src in poster_user_photos[6:9] %}
                 <div class="td">
                   <img
-                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
+                    src="{{img_src}}">
                 </div>
-                <div class="td">
-                  <img
-                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
-                </div>
-                <div class="td">
-                  <img
-                    src="https://img0.baidu.com/it/u=2320671763,3046530050&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=411">
-                </div>
+                {% endfor %}
               </div>
             </div>
           </div>
@@ -365,8 +354,10 @@
                     私聊
                   </div></a></td>
                   <td align="center"><div class='btn-group dropright'>
-                    <button type='button' class='btn btn-primary btn-sm transactionButton' 
-                    data-toggle='dropdown'>取消关注</button>
+                    <form method="post" action="" value="{{follow_user.id}}">
+                      <button type='submit' class='btn btn-primary btn-sm transactionButton' 
+                      data-toggle='dropdown'>取消关注</button>
+                    </form>
                   </div></td> 
                 </tr>
                 {% endfor %}
