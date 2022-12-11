@@ -93,12 +93,11 @@ class ReportForm(FlaskForm):
         label="Report_reason",
         validators=[DataRequired("请选择理由")],
         render_kw={"style": "list-style-type:none;margin-left:0px;text-align:left;padding-left:0px"},
-        choices=[(1, "不实信息"), (2, "引战嫌疑"), (3, "不适当内容"), (4, "涉及抄袭"), (5, "其他")],
+        choices=[(0, "不实信息"), (1, "引战嫌疑"), (2, "不适当内容"), (3, "涉及抄袭"), (4, "其他")],
         coerce=int,
     )
-    other_reason = StringField(label="other_reason")
+    other_reason = StringField(label="other_reason",render_kw={'style':'outline:none;'})
     submit4 = SubmitField(label="提交")
-
 
 class NewPostForm(FlaskForm):
     object_list = [(1, "Default"), (2, "动画"), (3, "小说"), (4, "游戏"),(5,"音乐"),(6,"体育")]

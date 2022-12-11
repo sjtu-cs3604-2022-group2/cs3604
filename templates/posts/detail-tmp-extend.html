@@ -295,7 +295,7 @@
                     <hr />
                     <div class="detail-block" style="padding-left:0;">
                         <div id='comment{{i+2}}' class="answer-block">
-                            {%block delete_reply_btn%}{%endblock delete_reply_btn%}
+                            {%if (comment.valid)%}
                             <div class="wrapper pull-left">
                                 <div class="userinfo">
                                     <div class="detail-user-photo">
@@ -326,15 +326,11 @@
     
 
                             <div class="answer-description" style="margin-bottom: 20px;">
-                                {%if (comment.valid)%}
+                                
                                 <div style="width: 95%;word-break: break-all;">
                                     {{comment.body | safe }}
                                 </div>
-                                {% else %}
-                                <div style="width: 95%; word-break: break-all;color:brown">
-                                    【本评论已被删除】
-                                </div>
-                                {%endif %}
+                               
 
                                
 
@@ -381,8 +377,13 @@
 
                                 </div>
                             </div>
+                        
+                        {% else %}
+                            <div class="deleted_comment" style="width:100%;text-align:center;margin-top:10px;margin-bottom:10px; word-break: break-all;color:#cf2f2f">
+                                【该评论已被删除】
+                            </div>
+                        {%endif %}
                         </div>
-
                         <div class="clearfix"></div>
                     </div>
                     {% endfor %}

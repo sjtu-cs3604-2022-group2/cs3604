@@ -215,6 +215,7 @@ class AdminNotification(db.Model):  # 表示管理员接收到的举报通知
     object = db.Column(db.Integer, default=0)  # 0表示是举报post本身 1表示举报comment。
     action_id = db.Column(db.Integer)  # 这个举报信息是由哪个用户发出的
     link = db.Column(db.String(100), default="#")
+    body = db.Column(db.Text) #被举报对象的文字信息
 
     # 表示这个通知要发给哪个管理员
     # user_id = db.Column(db.Integer, db.ForeignKey("user.id"))

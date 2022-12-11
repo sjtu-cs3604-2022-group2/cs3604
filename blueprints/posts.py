@@ -543,3 +543,19 @@ def read_notification():
     notice = Notification.query.get(notice_id)
     notice.state = StateType.READ.value
     db.session.commit()
+
+@bp.route("/admin_notifications")
+def admin_notifications():
+    current_user = User.query.get(session["user_id"])
+    notices = current_user.notifications
+    admin_notices = AdminNotification.query.all()
+    return render_template("user/admin-notification.html", current_user=current_user, notices=notices,admin_notices=admin_notices, User=User)
+
+@csrf.exempt
+@bp.route("/read_admin_notification", methods=["POST"])
+def read_admin_notification():
+    form=request.form
+    notice_id=int(form['admin_notice_id'])
+    notice=AdminNotification.query.get(notice_id)
+    notice.state=StateType.READ.value
+    db.session.commit()

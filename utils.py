@@ -79,6 +79,14 @@ def filter_body_content(str):
     reg_tag = re.compile(r"<.+?>")
     str = reg_p.sub("   ", str)
     str = reg_tag.sub("", str)
+    i=0
+    str = str.replace("&nbsp;", " ")
+    str = str.replace("\n", " ")
+    str = str.replace("\r", " ")
+    while(str[i]==' '):
+        i+=1
+    str=str[i:]
+    print(i,str)
     if len(str) > 40:
         str = str[:40]
         if str[-1] != " ":

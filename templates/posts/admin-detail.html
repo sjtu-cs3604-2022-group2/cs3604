@@ -290,6 +290,7 @@
           <hr />
           <div class="detail-block" style="padding-left: 0">
             <div id="comment{{i+2}}" class="answer-block">
+              {%if comment.valid %}
               <div class="delete-comment">
                 <button
                   class="btn pull-right"
@@ -327,15 +328,11 @@
                 {% endif %} 
 
                 <div class="answer-description" style="margin-bottom: 20px">
-                  {%if (comment.valid)%}
+                  
                   <div style="width: 95%; word-break: break-all">
                     {{comment.body | safe }}
                   </div>
-                  {% else %}
-                  <div style="width: 95%; word-break: break-all;color:brown">
-                    【本评论已被删除】
-                  </div>
-                  {%endif %}
+                  
                 </div>
 
                 <div class="footer pull-right">
@@ -398,6 +395,11 @@
                   </div>
                 </div>
               </div>
+              {% else %}
+              <div class="deleted_comment" style="width:100%;text-align:center;margin-top:10px;margin-bottom:10px; word-break: break-all;color:#cf2f2f">
+                【该评论已被删除】
+              </div>
+              {%endif%}
             </div>
 
             <div class="clearfix" style="margin-bottom: 2px"></div>

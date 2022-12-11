@@ -184,20 +184,25 @@ class ActionUnlike(AbstractAction):
 class ActionReport(AbstractAction):
     def __init__(self,user_id,reason):
         self.user_id=user_id
-        self.reason=filter_body_content(reason)
+        self.reason=reason
 
     def send_report(self):
         post_id,comment_id=self.obj.get_obj_id_tuple()
         link=self.obj.get_mainlink()+self.obj.get_sublink()
         obj_type=self.obj.get_object_type()
-
+        text=self.obj.get_text()
+        text=text.replace("&nbsp;",' ')
+        if(len(text)>23):
+            text=text[:20]+'...'
+        text=text.replace("   ",'&nbsp;&nbsp;&nbsp;')
         notice=AdminNotification(reason=self.reason,
                                 action_id=self.user_id,
                                 link=link,
                                 state=StateType.UNREAD.value,
                                 object=obj_type,
                                 post_id=post_id,
-                                comment_id=comment_id)
+                                comment_id=comment_id,
+                                body=text)
         db.session.add(notice)
         db.session.commit()
 
