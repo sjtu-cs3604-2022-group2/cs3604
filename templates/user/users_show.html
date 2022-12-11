@@ -2,24 +2,17 @@
 render_pagination %} {% block head %}
 
 <title>Index</title>
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="{{ url_for('static',filename='css/posts/index-and-detail-style.css')}}"
-/>
-{{ super() }}  {% endblock head%} {% block content%}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/posts/index-and-detail-style.css')}}" />
+{{ super() }} {% endblock head%} {% block content%}
 
 <div class="index">
   {# Posts now #}
   <section class="content">
     <div class="container">
       <div class="row">
-        <div
-          class="col-lg-9 col-md-9"
-          style="padding-left: 0; margin-top: 20px"
-        >
+        <div class="col-lg-9 col-md-9" style="padding-left: 0; margin-top: 20px">
           {% if (search_users | length) >0 %} {# POSTs #} {% for i in
-          range((search_users | length) )%} 
+          range((search_users | length) )%}
           <div class="post post-block">
             <div class="wrap-ut pull-left">
               <div class="wrapper pull-left">
@@ -37,20 +30,22 @@ render_pagination %} {% block head %}
               </div>
               <div class="posttext pull-right">
                 <h3>
-                  <a
-                    href="{{url_for('user.profile',uid=search_users[i].id)}}"
-                    target="_blank"
-                  >
+                  <a href="{{url_for('user.profile',uid=search_users[i].id)}}" target="_blank">
                     {{search_users[i].username}}
                   </a>
                 </h3>
 
-                
 
+
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+            {% endfor %}
+            {% else %} "暂无结果" {% endif %}
           </div>
-          {% endfor %} 
-          {% else %} "暂无结果" {% endif %}
         </div>
+
 
         {# Siderbars #}
         <div class="col-lg-3 col-md-3">
@@ -71,15 +66,13 @@ render_pagination %} {% block head %}
           </div>
 
           <div class="sidebarblock recommendations user-recommendation">
-            <h3
-              style="
+            <h3 style="
                 line-height: 66px;
                 padding-left: 20px;
                 padding-top: 10px;
                 padding-bottom: 10px;
                 margin: 0;
-              "
-            >
+              ">
               推荐关注
             </h3>
 
@@ -88,24 +81,19 @@ render_pagination %} {% block head %}
               <ul class="recom recom-user">
                 {% for recom_user in recommend_users%}
                 <li>
-                  <div
-                    class="recom_user_img pull-left"
-                    style="
+                  <div class="recom_user_img pull-left" style="
                       padding-top: 2px;
                       padding-bottom: 2px;
                       height: 28px;
                       width: 24px;
                       overflow: hidden;
-                    "
-                  >
+                    ">
                     <img src="{{recom_user.image}} " style="width: 24px" />
                   </div>
 
                   <a href="#">
                     {# 个人主页的链接？ #}
-                    <p
-                      class="pull-left"
-                      style="
+                    <p class="pull-left" style="
                         text-overflow: ellipsis;
                         height: 28px;
                         overflow: hidden;
@@ -119,13 +107,10 @@ render_pagination %} {% block head %}
                         font-size: 13px;
                         padding-top: 2px;
                         padding-left: 6px;
-                      "
-                    >
+                      ">
                       {{recom_user.username}}
                     </p>
-                    <span class="badge pull-right"
-                      >{{recom_user.followers.count()}} 关注</span
-                    >
+                    <span class="badge pull-right">{{recom_user.followers.count()}} 关注</span>
                     <div class="clearfix"></div>
                   </a>
                 </li>
@@ -135,15 +120,13 @@ render_pagination %} {% block head %}
           </div>
 
           <div class="sidebarblock recommendations">
-            <h3
-              style="
+            <h3 style="
                 line-height: 66px;
                 padding-left: 20px;
                 padding-top: 10px;
                 padding-bottom: 10px;
                 margin: 0;
-              "
-            >
+              ">
               推荐话题
             </h3>
 
@@ -153,9 +136,7 @@ render_pagination %} {% block head %}
                 {% for po in recommend_posts%}
                 <li>
                   <a href="{{url_for('posts.detail',post_id=po.id)}}">
-                    <p
-                      class="pull-left"
-                      style="
+                    <p class="pull-left" style="
                         text-overflow: ellipsis;
                         height: 28px;
                         overflow: hidden;
@@ -167,13 +148,10 @@ render_pagination %} {% block head %}
                         -webkit-box-orient: vertical;
                         /* letter-spacing: 2px; */
                         font-size: 13px;
-                      "
-                    >
+                      ">
                       {{po.title}}
                     </p>
-                    <span class="badge pull-right"
-                      >{{po.num_comments}} 讨论</span
-                    >
+                    <span class="badge pull-right">{{po.num_comments}} 讨论</span>
                     <!-- <div class="badge pull-right" style="width:25%;">{{po.num_comments}} 讨论</div>  -->
                     <div class="clearfix"></div>
                   </a>
@@ -186,7 +164,7 @@ render_pagination %} {% block head %}
       </div>
     </div>
     {# Pages #}
-    
+
   </section>
 </div>
 
