@@ -62,9 +62,7 @@ def notifications():
     return render_template("user/notifications.html")
 
 
-
-
-@bp.route("/profile/<int:uid>",methods=["GET","POST"])
+@bp.route("/profile/<int:uid>", methods=["GET", "POST"])
 def profile(uid):
 
     Current = namedtuple("Current", ["image", "username", "follow", "posts", "id", "about"])
@@ -77,24 +75,31 @@ def profile(uid):
         visit_user = User.query.get(uid)
         followers = [f.followed for f in user.followed.all()]
         visit_followers = [f.followed for f in visit_user.followed.all()]
-        current = Current(user.image, user.username, followers, user.posts, id,user.about)
-        poster = Current(visit_user.image, visit_user.username, visit_followers, visit_user.posts, uid, visit_user.about)
+        current = Current(user.image, user.username, followers, user.posts, id, user.about)
+        poster = Current(
+            visit_user.image, visit_user.username, visit_followers, visit_user.posts, uid, visit_user.about
+        )
         recommend_posts_id = CF_get_recommendation_posts(uid)
         recommend_posts = [Post.query.get(post_id).category.name for post_id in recommend_posts_id][:5]
         recommend_posts = list(set(recommend_posts))
 
+        # post_user_photos= user.photos
+
     except:
         return redirect(url_for("user.login"))
-    return render_template("user/profile-tmp.html", 
-                           current_user=current,
-                           poster_user=poster,
-                           profile_form=profile_form,
-                           recommend_posts=recommend_posts,
-                           length_rec = len(recommend_posts),
-                           )
+    return render_template(
+        "user/profile-tmp.html",
+        current_user=current,
+        poster_user=poster,
+        profile_form=profile_form,
+        recommend_posts=recommend_posts,
+        length_rec=len(recommend_posts),
+    )
 
 
 from app import csrf, dropzone
+
+
 @csrf.exempt
 @bp.route("/profile_upload", methods=["POST"])
 def profile_upload():
@@ -102,8 +107,8 @@ def profile_upload():
     if "user_id" in request.form:
         form = request.form
         user_id = int(form.get("user_id"))
-        new_name = form.get('username')
-        about = form.get('about')
+        new_name = form.get("username")
+        about = form.get("about")
         user = User.query.get(user_id)
         user.username = new_name
         user.about = about
@@ -113,12 +118,13 @@ def profile_upload():
         f = request.files.get("file")
         filename = random_filename(f.filename)
         upload_path = os.path.join(current_app.config["FILE_UPLOAD_PATH"], filename)
-        photo_path = url_for("static", filename="uploads/"+filename)
+        photo_path = url_for("static", filename="uploads/" + filename)
         f.save(upload_path)
         user.image = photo_path
         db.session.commit()
         print(user.image)
     return redirect(url_for("user.profile", uid=user_id))
+
 
 # @bp.route("/chat")
 # def chat():

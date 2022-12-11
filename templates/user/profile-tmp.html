@@ -197,26 +197,26 @@
 
 
               <div class="tr">
-                {% for img_src in poster_user_photos[0:3] %}
+                {% for photo in current_user.photos[0:3] %}
                 <div class="td">
                   <img
-                    src="{{img_src}}">
+                    src="{{photo.photo_path}}">
                 </div>
                 {% endfor %}
               </div>
               <div class="tr">
-                {% for img_src in poster_user_photos[3:6] %}
+                {% for photo in current_user.photos[3:6] %}
                 <div class="td">
                   <img
-                    src="{{img_src}}">
+                    src="{{photo.photo_path}}">
                 </div>
                 {% endfor %}
               </div>
               <div class="tr">
-                {% for img_src in poster_user_photos[6:9] %}
+                {% for photo in current_user.photos[6:9] %}
                 <div class="td">
                   <img
-                    src="{{img_src}}">
+                    src="{{photo.photo_path}}">
                 </div>
 
                 
