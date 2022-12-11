@@ -71,7 +71,7 @@
       <div class="tb" id="m-btns">
         {% if poster_user.id != current_user.id %}
         <button class="td">
-          <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href = {{ "/chat/%d" | format(poster_user.id)}}><span>私聊</span></a></div>
+          <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href={{ "/chat/%d" | format(poster_user.id)}}><span>私聊</span></a></div>
         </button>
 
         <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
@@ -178,8 +178,7 @@
           </div>
           <div id="i-box">
             <p  id="i-box-about">{{poster_user.about}}</p>
-            <div id="u-loc"><i class="material-icons">location_on</i><a href="#">Shanghai</a>, <a href="#">China</a>
-            </div>
+            {#<div id="u-loc"><i class="material-icons">location_on</i><a href="#">Shanghai</a>, <a href="#">China</a></div>#}
           </div>
         </div>
         <div class="l-cnt l-mrg">
@@ -190,11 +189,8 @@
           </div>
           <div id="photos">
             <div class="tb">
-
-
-
               <div class="tr">
-                {% for photo in current_user.photos[0:3] %}
+                {% for photo in poster_user.photos[0:3] %}
                 <div class="td">
                   <img
                     src="{{photo.photo_path}}">
@@ -202,7 +198,7 @@
                 {% endfor %}
               </div>
               <div class="tr">
-                {% for photo in current_user.photos[3:6] %}
+                {% for photo in poster_user.photos[3:6] %}
                 <div class="td">
                   <img
                     src="{{photo.photo_path}}">
@@ -210,13 +206,11 @@
                 {% endfor %}
               </div>
               <div class="tr">
-                {% for photo in current_user.photos[6:9] %}
+                {% for photo in poster_user.photos[6:9] %}
                 <div class="td">
                   <img
                     src="{{photo.photo_path}}">
                 </div>
-
-                
                 {% endfor %}
               </div>
             </div>
@@ -226,14 +220,13 @@
           <div class="cnt-label">
             <i class="l-i" id="l-i-k"></i>
 
-            <span>我偏好的分区<i id="k-nm">{{ length_rec }}</i></span>
+            <span>偏好的分区<i id="k-nm">{{ recommend_category | length }}</i></span>
           </div>
           <div>
-            {% for post in recommend_posts %}
+            {% for category in recommend_category %}
             <div class="q-ad-c">
               <a href="#" class="q-ad">
-  
-                <span>{{post}} 区</span>
+                <span>{{category}} 区</span>
               </a>
             </div>
             {% endfor %}
@@ -327,26 +320,24 @@
             <table id="usertable"  class = "table table-striped" style = "height:auto;width: 100%;" >
               <thead>
                 <tr class="text-center">
-      
                   <th ><center>ID</center></th>
                   <th ><center>头像</center></th>
                   <th ><center>昵称</center></th>
-
-
                   <th ><center>签名</center></th>
                   <th></th> 
-      
                   <th></th>     
                 </tr>
-              </thead>`
+              </thead>
       
               <tbody>
                 {% for relation in poster_user.followed.all() %}
                 <tr>
                   <td align="center">{{relation.followed.id}}</td> 
-                  <td align="center"><img class = 'avatar'  
-                    src = "{{relation.followed.image}}"
-                     alt = ''></td>
+                  <td align="center">
+                    <a href={{ "%d" | format(relation.followed.id)}}>
+                      <img class='avatar' src="{{relation.followed.image}}" alt='avatar'>
+                    </a>
+                  </td>
                   <td align="center">{{relation.followed.username}}</td>
                   <td align="center"  class="line-limit-length">{{relation.followed.about}}</td>
                   <td align="center"><a href={{ "/chat/%d" | format(relation.followed.id)}}><div class ="testbtn">

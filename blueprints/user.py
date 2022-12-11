@@ -85,6 +85,7 @@ def profile(uid):
     # recommend_posts = [Post.query.get(post_id).category.name for post_id in recommend_posts_id][:5]
     # recommend_posts = list(set(recommend_posts))
     # recommend_posts = [recommend_posts[i] for i in range(len(recommend_posts))]
+    recommend_category = list(set([p.category.name for p in recommend_posts]))
     recommend_users = CF_get_recommendation_users(uid)
 
     return render_template(
@@ -93,8 +94,8 @@ def profile(uid):
         poster_user=visit_user,
         profile_form=profile_form,
         recommend_posts=recommend_posts,
-        length_rec=len(recommend_posts),
         recommend_user=recommend_users,
+        recommend_category=recommend_category
     )
 
 

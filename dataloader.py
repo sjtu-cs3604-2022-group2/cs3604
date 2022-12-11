@@ -1,3 +1,4 @@
+import os
 import random
 import json
 from faker import Faker
@@ -113,6 +114,27 @@ def init_post(count=180):
     for p in Post.query.all():
         db.session.delete(p)
     db.session.commit()
+    
+    image_pool = set()
+    image_list = os.listdir("./data/pic")
+
+    def get_image() -> str:
+        nonlocal image_pool, image_list
+        cur = os.curdir
+        id = random.randint(0, len(image_list)-1)
+        if len(image_pool) == len(image_list):
+            image_pool = set()
+        while id in image_pool:
+            id = random.randint(0, len(image_list)-1)
+        origin = open(os.path.join(f"{cur}/data/pic", image_list[id]), mode="rb")
+        filename = random_filename(image_list[id])
+        path = f"/static/uploads/"+filename
+        new = open(cur+path, mode="wb")
+        new.write(origin.read())
+        origin.close()
+        new.close()
+        return filename, path
+    
     for i in range(count):
         raw = posts[i]
         post = Post(
@@ -125,7 +147,10 @@ def init_post(count=180):
             num_comments=raw["n_comment"],
             num_views=random.randint(50, 100),
         )
+        filename, path = get_image()
+        photo = Photo(filename=filename, user_id=post.user_id, post=post, timestamp=post.timestamp, photo_path=path)
         db.session.add(post)
+        db.session.add(photo)
         db.session.commit()
         all_comment = raw["comment"] + raw["sub_cmt"]
         for j in range(raw["n_comment"]):
