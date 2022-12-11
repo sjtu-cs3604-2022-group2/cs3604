@@ -105,6 +105,12 @@
                           <li>
                             <a href="#" onclick="shows($(this).text())">分区</a>
                           </li>
+                          <li>
+                            <a href="#" onclick="shows($(this).text())"
+                              >搜索用户</a
+                            >
+                          </li>
+
                         </ul>
                       </div>
                       <div class="input-group-btn">
@@ -180,7 +186,7 @@
                       </li>
                     </ul>
                   </li>
-                  <li><a href="{{url_for('user.follows')}}">关注</a></li>
+                  <li><a href="#">关注</a></li>
 
                   <li class="dropdown current-user">
                     <a
@@ -231,7 +237,7 @@
                       <li><a href="#"> 设置 </a></li>
                       <li><a href="#">帮助</a></li>
                       <li><a href="{{url_for('user.logout')}}">注销</a></li>
-                      <li><a href="#"> 联系我们 </a></li>
+                      <li><a href="{{url_for('posts.contributers')}}"> 联系我们 </a></li>
                     </ul>
                   </li>
                 </ul>

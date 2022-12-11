@@ -26,7 +26,7 @@
   <tbody>
     {%set states=["未读","已读"]%} {%set actions=["点赞","评论"]%} {%set
     objects=["帖子","回帖"]%} {%for notice in notices%}
-    <tr class="state{{notice.state}}">
+    <tr class="state{{notice.state}}" id="notice{{notice.id}}">
       <td class="state">{{states[notice.state]}}</td>
       <td class="from_user">
         <span>{{User.query.get(notice.action_id).username}}</span>
@@ -36,15 +36,17 @@
         ><sapn>{{objects[notice.object]}}</sapn>
       </td>
       <td class="object_detail">
-        {#
+
+        {#--------
         {%if notice.object == 0 %}  
         <!-- onload="filter($(this).innerHTML,'{{notice.link}}');" -->
         <div class="comment_body" >{{notice.body | safe}}</div>
         {%elif notice.object == 1 %}
         <div class="comment_body" >{{notice.body |safe }}</div>
-        {%endif%}
-        #}
-        <div><a href='{{notice.link}}'>{{notice.body |safe }}</a></div>
+        {%endif%} onclick="read({{notice.id}},{{notice.state}});"
+        ----------------#}
+
+        <div onclick="read({{notice.id}},{{notice.state}});"><a  href='{{notice.link}}' target="_Blank">{{notice.body |safe }}</a></div>
       </td>
       <td class="timestamp">{{notice.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</td>
     </tr>
@@ -56,8 +58,33 @@
 
 {%block scripts%}
 {{super()}}
+<script>
+  function read(id,read_already){
+    if (read_already == 1 || read_already == '1' || read_already == 'true' || read_already=='True'){
+      return;
+    }
 
-{#<script>
+    var tr=$('#notice'+id);
+    tr.removeClass('state0');
+    tr.addClass('state1');
+    console.log($(tr).children());
+    var state_td=$(tr).children()[0];
+    state_td.innerHTML="已读";
+
+    var dic={'notice_id':id};
+
+    $.ajax({
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{url_for('posts.read_notification')}}" ,//url
+                data: dic,
+                success: function () {},
+                error : function() { }
+            });
+  }
+</script>
+{#
+<!-- <script>
 
   function filter(str,link){
     console.log('******');
@@ -89,5 +116,6 @@
       $(element).html(str);
     }
   })
-</script> #}
+</script>  -->#}
+
 {%endblock scripts%}

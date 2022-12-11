@@ -11,7 +11,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import mail, db
 from models import User, Email, Comment, Photo
 from forms import RegisterForm, LoginForm, ProfileForm
-from app import csrf, dropzone
 from utils import *
 
 bp = Blueprint("user", __name__, url_prefix="/user")
@@ -72,7 +71,7 @@ def follows():
     return render_template("user/friends-tmp.html", main_user=user)
 
 
-@bp.route("/profile/<int:uid>")
+@bp.route("/profile/<int:uid>",methods=["GET","POST"])
 def profile(uid):
     profile_form = ProfileForm()
     try:
@@ -92,9 +91,11 @@ def profile(uid):
                            poster_user=visit_user,
                            profile_form=profile_form,
                            recommend_posts=recommend_posts,
-                           length_rec = len(recommend_posts))
+                           length_rec = len(recommend_posts),
+                           )
 
 
+from app import csrf, dropzone
 @csrf.exempt
 @bp.route("/profile_upload", methods=["POST"])
 def profile_upload():
