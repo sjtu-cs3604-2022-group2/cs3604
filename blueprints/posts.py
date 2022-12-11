@@ -61,15 +61,14 @@ def detail(post_id):
     post_user = post.user
     user_id = session["user_id"]
     current_user = User.query.get(user_id)
-    
 
     list_like_of_user = get_list_of_like(post_id, user_id)
     recommendation_post = get_recommendation_posts(user_id)
     body_list = post.body.split("\n\r\n")
     # print(repr(post.body))
-    post.num_views+=1
+    post.num_views += 1
     db.session.commit()
-    print('add')
+    print("add")
     if current_user.is_admin:
 
         return render_template(
@@ -253,6 +252,8 @@ def search():
     page = request.args.get("page", 1, type=int)
 
     per_page = current_app.config["POST_PER_PAGE"]
+    recommend_posts = CF_get_recommendation_posts(user_id)
+    recommend_users = CF_get_recommendation_users(user_id)
     if category == "全局搜索":
         pagination = (
             Post.query.filter(
@@ -274,7 +275,6 @@ def search():
         )
         posts = pagination.items
     elif category == "分区":
-        ### 分区还没写好
         post_category = Category.query.filter(Category.name == srchterm).first()
         pagination = (
             Post.query.with_parent(post_category).order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
@@ -296,9 +296,12 @@ def search():
         search_users = User.query.filter(User.username.like("%" + srchterm + "%")).all()
         # search_users = search_res.items
 
-        return render_template("user/users_show.html", search_users=search_users)
-
-    recommend_posts = get_recommendation_posts(user_id)
+        return render_template(
+            "user/users_show.html",
+            search_users=search_users,
+            recommend_posts=recommend_posts,
+            recommend_users=recommend_users,
+        )
 
     return render_template(
         "posts/index-tmp-extend.html",
@@ -306,6 +309,7 @@ def search():
         index_posts=posts,
         current_user=user,
         recommend_posts=recommend_posts,
+        recommend_users=recommend_users,
     )
 
 
@@ -458,8 +462,9 @@ def notifications():
     return render_template("user/notification.html", current_user=current_user, notices=notices, User=User)
 
 
+report_reasons = ["不实信息", "引战嫌疑", "不适当内容", "涉及抄袭"]
 
-report_reasons=["不实信息","引战嫌疑","不适当内容","涉及抄袭"]
+
 @bp.route("/report", methods=["POST"])
 def report():
     if request.method == "POST":
@@ -472,22 +477,21 @@ def report():
         other_reason = form["other_reason"]  # empty if '其他' is not selected
         print(post_id, floor, comment_id, user_id, reason, other_reason)
 
-        if(reason<4):
-            reason_text=report_reasons[reason]
+        if reason < 4:
+            reason_text = report_reasons[reason]
         else:
-            reason_text=other_reason
+            reason_text = other_reason
 
-        if(comment_id==-1):
-            post=Post.query.get(post_id)
-            obj=ObjectPost(post)
+        if comment_id == -1:
+            post = Post.query.get(post_id)
+            obj = ObjectPost(post)
         else:
-            reply=Comment.query.get(comment_id)
-            obj=ObjectReply(reply,floor)
+            reply = Comment.query.get(comment_id)
+            obj = ObjectReply(reply, floor)
 
-        action_report=ActionReport(user_id,reason_text)
+        action_report = ActionReport(user_id, reason_text)
         action_report.set_object(obj)
         action_report.send_report()
-
 
     return redirect(url_for("posts.detail", post_id=post_id))
 
@@ -528,13 +532,12 @@ def admin_delete():
 
     return redirect(url_for("posts.detail", post_id=post_id))
 
+
 @csrf.exempt
 @bp.route("/read_notification", methods=["POST"])
 def read_notification():
-    form=request.form
-    notice_id=int(form['notice_id'])
-    notice=Notification.query.get(notice_id)
-    notice.state=StateType.READ.value
+    form = request.form
+    notice_id = int(form["notice_id"])
+    notice = Notification.query.get(notice_id)
+    notice.state = StateType.READ.value
     db.session.commit()
-
-

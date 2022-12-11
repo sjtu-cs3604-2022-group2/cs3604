@@ -149,6 +149,7 @@ return {*}
 
 
 def CF_get_recommendation_users(user_id):
+    ## 返回的是一个用户对象的列表
 
     user_similar = compute_user_similar()
     # 取出对应该行的数据，然后移除掉自身
@@ -158,7 +159,7 @@ def CF_get_recommendation_users(user_id):
     # print(_df_sorted)
     top5 = list(_df_sorted.index[:5])
     # topN_users[i] = top2
-    return top5
+    return [User.query.get(user_id) for user_id in top5]
 
 
 def CF_get_recommendation_posts(user_id, num_posts=10):
@@ -178,4 +179,5 @@ def CF_get_recommendation_posts(user_id, num_posts=10):
     rs_result -= set(df.loc[user_id].replace(0, np.nan).dropna().index)
 
     # return list()
-    return list(rs_result)[:num_posts]
+    tmp = list(rs_result)[:num_posts]
+    return [Post.query.get(post_id) for post_id in tmp]
