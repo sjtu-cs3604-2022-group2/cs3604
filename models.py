@@ -50,7 +50,7 @@ class User(UserMixin, db.Model):
     like_comments = db.relationship("Comment", secondary=user_like_comment_table, back_populates="like_users")
     messages = db.relationship("Message", back_populates="author", cascade="all")
     notifications = db.relationship("Notification", back_populates="user", cascade="all")
-    admin_notifications = db.relationship("Admin_Notification", back_populates="user", cascade="all")
+    # admin_notifications = db.relationship("AdminNotification", back_populates="user", cascade="all")
 
     # 本用户关注的其他用户
     followed = db.relationship(
@@ -137,7 +137,7 @@ class Post(db.Model):
 
     notifications = db.relationship("Notification", back_populates="post", cascade="all")
 
-    admin_notifications = db.relationship("Admin_Notification", back_populates="post", cascade="all")
+    admin_notifications = db.relationship("AdminNotification", back_populates="post", cascade="all")
     # 隐式属性
     # user = db.relationship('User', back_populates='posts')
     # category = db.relationship('Category', back_ref='posts')
@@ -155,7 +155,7 @@ class Comment(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
     post = db.relationship("Post", back_populates="comments")
-    admin_notifications = db.relationship("Admin_Notification", back_populates="comment", cascade="all")
+    admin_notifications = db.relationship("AdminNotification", back_populates="comment", cascade="all")
 
     num_likes = db.Column(db.Integer, default=0)
     towards = db.Column(db.Integer, default=-1)
@@ -206,7 +206,7 @@ class Notification(db.Model):
     comment = db.relationship("Comment", back_populates="notifications")
 
 
-class Admin_Notification(db.Model):  # 表示管理员接收到的举报通知
+class AdminNotification(db.Model):  # 表示管理员接收到的举报通知
     __tablename__ = "admin_notification"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     reason = db.Column(db.Text) # 记录举报理由
@@ -214,10 +214,11 @@ class Admin_Notification(db.Model):  # 表示管理员接收到的举报通知
     state = db.Column(db.Integer, default=0)  # 表示已读还是未读
     object = db.Column(db.Integer, default=0)  # 0表示是举报post本身 1表示举报comment。
     action_id = db.Column(db.Integer)  # 这个举报信息是由哪个用户发出的
+    link = db.Column(db.String(100), default="#")
 
     # 表示这个通知要发给哪个管理员
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    user = db.relationship("User", back_populates="admin_notifications")
+    # user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    # user = db.relationship("User", back_populates="admin_notifications")
     
     # 举报对应哪个post
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"))

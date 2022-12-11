@@ -458,17 +458,36 @@ def notifications():
     return render_template("user/notification.html", current_user=current_user, notices=notices, User=User)
 
 
+
+report_reasons=["不实信息","引战嫌疑","不适当内容","涉及抄袭"]
 @bp.route("/report", methods=["POST"])
 def report():
     if request.method == "POST":
         form = request.form
-        post_id = form["report_post_id"]
-        floor = form["report_floor"]  # -1 if post is reported
-        comment_id = form["report_comment_id"]  # -1 if post is reported
-        user_id = form["report_user_id"]
-        reason = form["reason"]
+        post_id = int(form["report_post_id"])
+        floor = int(form["report_floor"])  # -1 if post is reported
+        comment_id = int(form["report_comment_id"])  # -1 if post is reported
+        user_id = int(form["report_user_id"])
+        reason = int(form["reason"])
         other_reason = form["other_reason"]  # empty if '其他' is not selected
         print(post_id, floor, comment_id, user_id, reason, other_reason)
+
+        if(reason<4):
+            reason_text=report_reasons[reason]
+        else:
+            reason_text=other_reason
+
+        if(comment_id==-1):
+            post=Post.query.get(post_id)
+            obj=ObjectPost(post)
+        else:
+            reply=Comment.query.get(comment_id)
+            obj=ObjectReply(reply,floor)
+
+        action_report=ActionReport(user_id,reason_text)
+        action_report.set_object(obj)
+        action_report.send_report()
+
 
     return redirect(url_for("posts.detail", post_id=post_id))
 
@@ -517,3 +536,5 @@ def read_notification():
     notice=Notification.query.get(notice_id)
     notice.state=StateType.READ.value
     db.session.commit()
+
+

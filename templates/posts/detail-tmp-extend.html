@@ -218,6 +218,8 @@
                                     {{topic.title}}
                                 </h3>
                             </div>
+                            {%block delete_post_btn%}
+                            {%endblock delete_post_btn%}
                             <div class="topic-description">
                                 {# {% for paragraph in topic.body%}
                                 <p>
@@ -225,9 +227,9 @@
                                 </p>
                                 {% endfor %} {% endcomment %} #}
                                 
-                                <p style="width: 95%;word-break: break-all;">
+                                <div style="width: 95%;word-break: break-all;">
                                     {{ topic.body | safe }}
-                                </p>
+                                </div>
                                
                                 {% for image in topic.photos%}
                                 <img class='topic_image' src='{{image.photo_path}}' width="60%">
@@ -293,6 +295,7 @@
                     <hr />
                     <div class="detail-block" style="padding-left:0;">
                         <div id='comment{{i+2}}' class="answer-block">
+                            {%block delete_reply_btn%}{%endblock delete_reply_btn%}
                             <div class="wrapper pull-left">
                                 <div class="userinfo">
                                     <div class="detail-user-photo">
@@ -320,25 +323,17 @@
                                 {% endif %}
                             
 
-                           {# <!--      <div class="answer-description" style="margin-bottom: 20px;">
-                                    {% for paragraph in comment.body %}
-                                    <p style="width: 95%;word-break: break-all;">
-                                        {{paragraph}}
-                                    </p>
-                                    {% endfor %}
-
-                                </div>    -->
-                            #}    
+    
 
                             <div class="answer-description" style="margin-bottom: 20px;">
                                 {%if (comment.valid)%}
-                                <p style="width: 95%;word-break: break-all;">
+                                <div style="width: 95%;word-break: break-all;">
                                     {{comment.body | safe }}
-                                </p>
+                                </div>
                                 {% else %}
-                                <p style="width: 95%; word-break: break-all;color:brown">
+                                <div style="width: 95%; word-break: break-all;color:brown">
                                     【本评论已被删除】
-                                  </p>
+                                </div>
                                 {%endif %}
 
                                
@@ -663,6 +658,11 @@
     $('#reason-1')[0].addEventListener('click',disable_input);
     $('#reason-2')[0].addEventListener('click',disable_input);
     $('#reason-3')[0].addEventListener('click',disable_input);
+    $('#reason-4').addClass('notclear');
+    $('#reason-0').addClass('notclear');
+    $('#reason-1').addClass('notclear');
+    $('#reason-2').addClass('notclear');
+    $('#reason-3').addClass('notclear');
 </script>
 
 
@@ -752,6 +752,11 @@
         var h = document.body.offsetHeight * 2;
         console.log(h);
         $('#fade').css('height', h + 'px');
+        $('#reason-4').addClass('notclear');
+        $('#reason-0').addClass('notclear');
+        $('#reason-1').addClass('notclear');
+        $('#reason-2').addClass('notclear');
+        $('#reason-3').addClass('notclear');
 
         $('input:not(.notclear)').val('');
         $('textarea:not(.notclear)').val('');

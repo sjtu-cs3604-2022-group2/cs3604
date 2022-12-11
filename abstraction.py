@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, g, flash, request, redirect, url_f
 
 
 from blueprints import posts
-from models import User, Post, Comment, Notification
+from models import User, Post, Comment, Notification, AdminNotification
 from actiontype import *
 from utils import filter_body_content
 from extensions import db
@@ -18,6 +18,15 @@ class Object:
     def get_mainlink(self):
         pass
     def get_sublink(self):
+        pass
+
+    def get_text(self):
+        pass
+    def get_object(self):
+        pass
+    def get_obj_id_tuple(self):
+        pass
+    def get_object_type(self):
         pass
 
 class ObjectPost(Object):
@@ -93,10 +102,10 @@ class ObjectReply(Object):
 class AbstractAction:
     def set_object(self,obj:Object):
         self.obj=obj
-    def update_database():
-        pass
-    def send_notification():
-        pass
+    # def update_database():
+    #     pass
+    # def send_notification():
+    #     pass
 
 class ActionLike(AbstractAction):
     def __init__(self,user_id):
@@ -170,6 +179,26 @@ class ActionUnlike(AbstractAction):
         like_list=self.obj.get_like_list(cur_user)
         like_list.remove(object)
         object.num_likes -= 1
+        db.session.commit()
+
+class ActionReport(AbstractAction):
+    def __init__(self,user_id,reason):
+        self.user_id=user_id
+        self.reason=filter_body_content(reason)
+
+    def send_report(self):
+        post_id,comment_id=self.obj.get_obj_id_tuple()
+        link=self.obj.get_mainlink()+self.obj.get_sublink()
+        obj_type=self.obj.get_object_type()
+
+        notice=AdminNotification(reason=self.reason,
+                                action_id=self.user_id,
+                                link=link,
+                                state=StateType.UNREAD.value,
+                                object=obj_type,
+                                post_id=post_id,
+                                comment_id=comment_id)
+        db.session.add(notice)
         db.session.commit()
 
 
