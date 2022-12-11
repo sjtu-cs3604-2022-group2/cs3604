@@ -515,6 +515,7 @@ def admin_delete():
             post.valid = 0
             for c in post.comments:
                 c.valid = 0
+            return redirect(url_for("posts.index"))
         elif comment_id != -1:
 
             comment_1 = Comment.query.get(comment_id)
@@ -530,7 +531,7 @@ def admin_delete():
 
         db.session.commit()
 
-    return redirect(url_for("posts.detail", post_id=post_id))
+        return redirect(url_for("posts.detail", post_id=post_id))
 
 
 @csrf.exempt
