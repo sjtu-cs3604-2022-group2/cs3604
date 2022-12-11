@@ -77,6 +77,8 @@ def get_recommendation_users(user_id):
 def filter_body_content(str):
     reg_p = re.compile(r"</p>")
     reg_tag = re.compile(r"<.+?>")
+    reg_img = re.compile(r"<\s*img.+?>")
+    str = reg_img.sub("[图片]", str)
     str = reg_p.sub("   ", str)
     str = reg_tag.sub("", str)
     i=0

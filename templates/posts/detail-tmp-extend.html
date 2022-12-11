@@ -734,9 +734,29 @@
 
 <script>
     function adjust_picture() {
-        var pic_list = $('.topic_image');
-        for (var i = 0; i < pic_list.length; ++i) {
-            var pic = pic_list[i];
+        // var pic_list = $('.topic_image');
+        // for (var i = 0; i < pic_list.length; ++i) {
+        //     var pic = pic_list[i];
+        //     var cur_width = pic.clientWidth;
+        //     var cur_height = pic.clientHeight;
+        //     var rate = 50 * cur_height / cur_width;
+        //     pic.style.width = '50%';
+        //     pic.style.height = rate + '%';
+        // }
+        var lst1=$('.topic-content img');
+        var lst2=$('.answer-description img');
+        // var pic_list=lst1.concat(lst2);
+        // console.log(pic_list);
+        for (var i = 0; i < lst1.length; ++i) {
+            var pic = lst1[i];
+            var cur_width = pic.clientWidth;
+            var cur_height = pic.clientHeight;
+            var rate = 50 * cur_height / cur_width;
+            pic.style.width = '50%';
+            pic.style.height = rate + '%';
+        }
+        for (var i = 0; i < lst2.length; ++i) {
+            var pic = lst2[i];
             var cur_width = pic.clientWidth;
             var cur_height = pic.clientHeight;
             var rate = 50 * cur_height / cur_width;
