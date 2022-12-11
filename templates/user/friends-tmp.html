@@ -170,21 +170,21 @@
 				</thead>
 
 				<tbody>
-					{% for follow_user in main_user.follow %}
+					{% for relation in main_user.followed.all() %}
 					<tr>
-						<td align="center">{{follow_user.id}}</td> 
+						<td align="center">{{relation.followed.id}}</td> 
 						<td align="center"><img class = 'avatar'  
-							src = "{{follow_user.image}}"
+							src = "{{relation.followed.image}}"
 							 alt = ''></td>
 						<td align="center"><div class='btn-group dropright'>
 							<button type='button' class='btn btn-primary btn-sm transactionButton' 
 							data-toggle='dropdown'>取消关注</button>
 						</div></td> 
-						<td align="center">{{follow_user.join_time}}</td>
-						<td align="center">{{follow_user.username}}</td>
-						<td align="center"  class="line-limit-length">{{follow_user.about}}</td>
+						<td align="center">{{relation.followed.join_time}}</td>
+						<td align="center">{{relation.followed.username}}</td>
+						<td align="center"  class="line-limit-length">{{relation.followed.about}}</td>
 
-						<td align="center">{{follow_user.email}}</td>
+						<td align="center">{{relation.followed.email}}</td>
 					</tr>
 					{% endfor %}
 

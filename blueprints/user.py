@@ -64,21 +64,16 @@ def notifications():
 
 @bp.route("/follows", methods=["GET"])
 def follows():
-    Current = namedtuple("Current", ["image", "username", "follow", "posts", "id"])
     try:
         id = session["user_id"]
         user = User.query.get(id)
-        followers = [f.followed for f in user.followed.all()]
-        current_user = Current(user.image, user.username, followers, user.posts, id)
     except:
         return redirect(url_for("user.login"))
-    return render_template("user/friends-tmp.html", main_user=current_user)
+    return render_template("user/friends-tmp.html", main_user=user)
 
 
 @bp.route("/profile/<int:uid>")
 def profile(uid):
-
-    Current = namedtuple("Current", ["image", "username", "follow", "posts", "id", "about"])
     profile_form = ProfileForm()
     try:
         id = session["user_id"]
@@ -86,10 +81,6 @@ def profile(uid):
         if uid == 0:
             uid = id
         visit_user = User.query.get(uid)
-        followers = [f.followed for f in user.followed.all()]
-        visit_followers = [f.followed for f in visit_user.followed.all()]
-        current = Current(user.image, user.username, followers, user.posts, id,user.about)
-        poster = Current(visit_user.image, visit_user.username, visit_followers, visit_user.posts, uid, visit_user.about)
         recommend_posts_id = CF_get_recommendation_posts(uid)
         recommend_posts = [Post.query.get(post_id).category.name for post_id in recommend_posts_id][:5]
         recommend_posts = list(set(recommend_posts))
@@ -97,8 +88,8 @@ def profile(uid):
     except:
         return redirect(url_for("user.login"))
     return render_template("user/profile-tmp.html", 
-                           current_user=current,
-                           poster_user=poster,
+                           current_user=user,
+                           poster_user=visit_user,
                            profile_form=profile_form,
                            recommend_posts=recommend_posts,
                            length_rec = len(recommend_posts))
