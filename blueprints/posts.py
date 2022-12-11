@@ -63,12 +63,14 @@ def detail(post_id):
     current_user = User.query.get(user_id)
 
     list_like_of_user = get_list_of_like(post_id, user_id)
-    recommendation_post = get_recommendation_posts(user_id)
+    recommendation_users = CF_get_recommendation_users(user_id)
+    recommendation_posts = CF_get_recommendation_posts(user_id)
     body_list = post.body.split("\n\r\n")
     # print(repr(post.body))
     post.num_views += 1
     db.session.commit()
     print("add")
+
     if current_user.is_admin:
 
         return render_template(
@@ -85,7 +87,8 @@ def detail(post_id):
             add_reply_pop_form=add_reply_pop_form,
             report_form=report_form,
             related_topics=related_topics,
-            recommend_posts=recommendation_post,
+            recommend_posts=recommendation_posts,
+            recommend_users=recommendation_users,
             likes=list_like_of_user,
         )
     else:
@@ -103,7 +106,8 @@ def detail(post_id):
             add_reply_pop_form=add_reply_pop_form,
             report_form=report_form,
             related_topics=related_topics,
-            recommend_posts=recommendation_post,
+            recommend_posts=recommendation_posts,
+            recommend_users=recommendation_users,
             likes=list_like_of_user,
         )
 
@@ -544,18 +548,26 @@ def read_notification():
     notice.state = StateType.READ.value
     db.session.commit()
 
+
 @bp.route("/admin_notifications")
 def admin_notifications():
     current_user = User.query.get(session["user_id"])
     notices = current_user.notifications
     admin_notices = AdminNotification.query.all()
-    return render_template("user/admin-notification.html", current_user=current_user, notices=notices,admin_notices=admin_notices, User=User)
+    return render_template(
+        "user/admin-notification.html",
+        current_user=current_user,
+        notices=notices,
+        admin_notices=admin_notices,
+        User=User,
+    )
+
 
 @csrf.exempt
 @bp.route("/read_admin_notification", methods=["POST"])
 def read_admin_notification():
-    form=request.form
-    notice_id=int(form['admin_notice_id'])
-    notice=AdminNotification.query.get(notice_id)
-    notice.state=StateType.READ.value
+    form = request.form
+    notice_id = int(form["admin_notice_id"])
+    notice = AdminNotification.query.get(notice_id)
+    notice.state = StateType.READ.value
     db.session.commit()

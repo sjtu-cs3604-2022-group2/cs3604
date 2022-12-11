@@ -30,7 +30,9 @@ render_pagination %} {% block head %}
                   </div>
 
                   <div class="postername">
-                    <a href="#">
+                    <a
+                      href="{{url_for('user.profile',uid=(index_posts[i].user).id)}}"
+                    >
                       <span>{{(index_posts[i].user).username}}</span>
                     </a>
                   </div>
@@ -46,7 +48,7 @@ render_pagination %} {% block head %}
                   </a>
                 </h3>
 
-                <div class="post_text_para" >
+                <div class="post_text_para">
                   {{index_posts[i].body | safe }}
                 </div>
 
@@ -143,7 +145,7 @@ render_pagination %} {% block head %}
                     <img src="{{recom_user.image}} " style="width: 24px" />
                   </div>
 
-                  <a href="#">
+                  <a href="{{url_for("user.profile",uid=recom_user.id)}}">
                     {# 个人主页的链接？ #}
                     <p
                       class="pull-left"

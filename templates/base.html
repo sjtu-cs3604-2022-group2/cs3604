@@ -110,7 +110,6 @@
                               >搜索用户</a
                             >
                           </li>
-
                         </ul>
                       </div>
                       <div class="input-group-btn">
@@ -186,7 +185,6 @@
                       </li>
                     </ul>
                   </li>
-                  <li><a href="#">关注</a></li>
 
                   <li class="dropdown current-user">
                     <a
@@ -225,24 +223,31 @@
                           {{current_user.username}}
                         </div>
                       </li>
-                      
+
                       <li>
-                        <a href="{{url_for('user.profile', uid=current_user.id)}}">个人中心</a>
+                        <a
+                          href="{{url_for('user.profile', uid=current_user.id)}}"
+                          >个人中心</a
+                        >
                       </li>
-                      
+
                       <li>
                         <a href="{{url_for('posts.notifications')}}"> 通知 </a>
                       </li>
                       {%if current_user.is_admin%}
                       <li>
-                        <a href="{{url_for('posts.admin_notifications')}}"> 管理员通知 </a>
+                        <a href="{{url_for('posts.admin_notifications')}}">
+                          管理员通知
+                        </a>
                       </li>
                       {% endif %}
-                      <li><a href="#"> 历史 </a></li>
-                      <li><a href="#"> 设置 </a></li>
-                      <li><a href="#">帮助</a></li>
+
                       <li><a href="{{url_for('user.logout')}}">注销</a></li>
-                      <li><a href="{{url_for('posts.contributers')}}"> 联系我们 </a></li>
+                      <li>
+                        <a href="{{url_for('posts.contributers')}}">
+                          联系我们
+                        </a>
+                      </li>
                     </ul>
                   </li>
                 </ul>
