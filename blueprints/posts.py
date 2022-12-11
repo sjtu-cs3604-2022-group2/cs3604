@@ -30,11 +30,11 @@ def index(page):
     )
     posts = pagination.items
 
-    recommend_posts_id = CF_get_recommendation_posts(user_id)
-    recommend_posts = [Post.query.get(post_id) for post_id in recommend_posts_id]
+    recommend_posts = CF_get_recommendation_posts(user_id)
+    # recommend_posts = [Post.query.get(post_id) for post_id in recommend_posts_id]
 
-    recommend_users_id = CF_get_recommendation_users(user_id)
-    recommend_users = [User.query.get(user_id) for user_id in recommend_users_id]
+    recommend_users = CF_get_recommendation_users(user_id)
+    # recommend_users = [User.query.get(user_id) for user_id in recommend_users_id]
 
     return render_template(
         "posts/index-tmp-extend.html",
@@ -515,6 +515,7 @@ def admin_delete():
             post.valid = 0
             for c in post.comments:
                 c.valid = 0
+            db.session.commit()
             return redirect(url_for("posts.index"))
         elif comment_id != -1:
 
@@ -529,9 +530,9 @@ def admin_delete():
             for comment in association_comments:
                 comment.valid = 0
 
-        db.session.commit()
+            db.session.commit()
 
-        return redirect(url_for("posts.detail", post_id=post_id))
+            return redirect(url_for("posts.detail", post_id=post_id))
 
 
 @csrf.exempt

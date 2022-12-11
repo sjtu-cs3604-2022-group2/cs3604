@@ -61,6 +61,7 @@ def login():
 def notifications():
     return render_template("user/notifications.html")
 
+
 @bp.route("/follows", methods=["GET"])
 def follows():
     try:
@@ -71,32 +72,35 @@ def follows():
     return render_template("user/friends-tmp.html", main_user=user)
 
 
-@bp.route("/profile/<int:uid>",methods=["GET","POST"])
+@bp.route("/profile/<int:uid>", methods=["GET", "POST"])
 def profile(uid):
     profile_form = ProfileForm()
-    try:
-        id = session["user_id"]
-        user = User.query.get(id)
-        if uid == 0:
-            uid = id
-        visit_user = User.query.get(uid)
-        recommend_posts_id = CF_get_recommendation_posts(uid)
-        recommend_posts = [Post.query.get(post_id).category.name for post_id in recommend_posts_id][:5]
-        recommend_posts = list(set(recommend_posts))
 
-    except:
-        return redirect(url_for("user.login"))
-    return render_template("user/profile-tmp.html", 
-                           current_user=user,
-                           poster_user=visit_user,
-                           profile_form=profile_form,
-                           recommend_posts=recommend_posts,
-                           length_rec = len(recommend_posts),
-                           poster_user_photos=visit_user.photos
-                           )
+    id = session["user_id"]
+    user = User.query.get(id)
+    if uid == 0:
+        uid = id
+    visit_user = User.query.get(uid)
+    recommend_posts = CF_get_recommendation_posts(uid)
+    # recommend_posts = [Post.query.get(post_id).category.name for post_id in recommend_posts_id][:5]
+    # recommend_posts = list(set(recommend_posts))
+    # recommend_posts = [recommend_posts[i] for i in range(len(recommend_posts))]
+    recommend_users = CF_get_recommendation_users(uid)
+
+    return render_template(
+        "user/profile-tmp.html",
+        current_user=user,
+        poster_user=visit_user,
+        profile_form=profile_form,
+        recommend_posts=recommend_posts,
+        length_rec=len(recommend_posts),
+        recommend_user=recommend_users,
+    )
 
 
 from app import csrf, dropzone
+
+
 @csrf.exempt
 @bp.route("/profile_upload", methods=["POST"])
 def profile_upload():
@@ -104,8 +108,8 @@ def profile_upload():
     if "user_id" in request.form:
         form = request.form
         user_id = int(form.get("user_id"))
-        new_name = form.get('username')
-        about = form.get('about')
+        new_name = form.get("username")
+        about = form.get("about")
         user = User.query.get(user_id)
         user.username = new_name
         user.about = about
@@ -115,12 +119,13 @@ def profile_upload():
         f = request.files.get("file")
         filename = random_filename(f.filename)
         upload_path = os.path.join(current_app.config["FILE_UPLOAD_PATH"], filename)
-        photo_path = url_for("static", filename="uploads/"+filename)
+        photo_path = url_for("static", filename="uploads/" + filename)
         f.save(upload_path)
         user.image = photo_path
         db.session.commit()
         print(user.image)
     return redirect(url_for("user.profile", uid=user_id))
+
 
 # @bp.route("/chat")
 # def chat():
