@@ -6,4 +6,4 @@ uploads
 static/uploads
 test.ipynb
 .history
-.vscode
+.vscode/settings.json

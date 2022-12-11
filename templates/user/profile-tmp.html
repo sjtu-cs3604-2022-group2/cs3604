@@ -74,16 +74,13 @@
           <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href = {{ "/chat/%d" | format(poster_user.id)}}><span>私聊</span></a></div>
         </button>
 
-
-
-        <form method="post"  action="" >
-        <div class="td">
-          <button class="m-btn" type="submit" value="{{poster_user.id}}"><i class="material-icons">chat</i><span>关注</span></button>
-        </div>
-      </form>
+        <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
+          <div class="td">
+            <input type="text" name="follow" value="{{poster_user.id}}" style="display:none">
+            <button class="m-btn" type="submit"><i class="material-icons">chat</i><span>关注</span></button>
+          </div>
+        </form>
         {% endif %}
-
-
 
         <div class="td">
           <style type="text/css">
@@ -356,9 +353,9 @@
                     私聊
                   </div></a></td>
                   <td align="center"><div class='btn-group dropright'>
-                    <form method="post" action="" value="{{relation.followed.id}}">
-                      <button type='submit' class='btn btn-primary btn-sm transactionButton' 
-                      data-toggle='dropdown'>取消关注</button>
+                    <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
+                      <input type="text" name="unfollow" value="{{relation.followed.id}}" style="display:none">
+                      <button type="submit" class='btn btn-primary btn-sm transactionButton'>取消关注</button>
                     </form>
                   </div></td> 
                 </tr>

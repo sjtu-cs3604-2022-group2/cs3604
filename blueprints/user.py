@@ -127,6 +127,28 @@ def profile_upload():
     return redirect(url_for("user.profile", uid=user_id))
 
 
+@csrf.exempt
+@bp.route("/profile_follow", methods=["POST"])
+def profile_follow():
+    form = request.form
+    if 'unfollow' in form:
+        uid = session["user_id"]
+        unfollow_id = int(form['unfollow'])
+        user = User.query.get(uid)
+        unfollow_user = User.query.get(unfollow_id)
+        user.unfollow(unfollow_user)
+        db.session.commit()
+        return redirect(url_for("user.profile", uid=uid))
+    elif 'follow' in form:
+        uid = session["user_id"]
+        follow_id = int(form['follow'])
+        user = User.query.get(uid)
+        follow_user = User.query.get(follow_id)
+        user.follow(follow_user)
+        db.session.commit()
+        return redirect(url_for("user.profile", uid=follow_id))
+
+
 # @bp.route("/chat")
 # def chat():
 #     chat = {
