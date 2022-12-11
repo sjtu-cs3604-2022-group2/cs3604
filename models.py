@@ -190,7 +190,7 @@ class Notification(db.Model):
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     state = db.Column(db.Integer, default=0)  # 表示已读还是未读
-    action = db.Column(db.Integer)  # 0表示点赞，1表示评论,
+    action = db.Column(db.Integer)  # 0表示点赞，1表示评论, 2 表示该帖子/评论被管理员删除
     object = db.Column(db.Integer, default=0)  # 0表示是post本身 1表示comment。
     action_id = db.Column(db.Integer)  # 动作发起用户的id
     # towards=db.Column(db.Integer)  ### -1 表示帖子本身，其他的表示评论的楼层。

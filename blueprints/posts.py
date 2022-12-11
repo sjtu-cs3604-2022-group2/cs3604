@@ -251,27 +251,27 @@ def search():
     if srchterm == "":
         return redirect(request.referrer or url_for("posts.index"))
     # print(srchterm)
-    category = request.args.get("search_category", "分区")
+    category = request.args.get("search_category", "帖子标题")
     # print(category)
     page = request.args.get("page", 1, type=int)
 
     per_page = current_app.config["POST_PER_PAGE"]
     recommend_posts = CF_get_recommendation_posts(user_id)
     recommend_users = CF_get_recommendation_users(user_id)
-    if category == "全局搜索":
-        pagination = (
-            Post.query.filter(
-                or_(
-                    Post.title.like("%" + srchterm + "%"),
-                    Post.body.like("%" + srchterm + "%"),
-                    User.username.like("%" + srchterm + "%"),
-                )
-            )
-            .order_by(Post.timestamp.desc())
-            .paginate(page=page, per_page=per_page)
-        )
-        posts = pagination.items
-    elif category == "帖子内容":
+    # if category == "全局搜索":
+    #     pagination = (
+    #         Post.query.filter(
+    #             or_(
+    #                 Post.title.like("%" + srchterm + "%"),
+    #                 Post.body.like("%" + srchterm + "%"),
+    #                 User.username.like("%" + srchterm + "%"),
+    #             )
+    #         )
+    #         .order_by(Post.timestamp.desc())
+    #         .paginate(page=page, per_page=per_page)
+    #     )
+    #     posts = pagination.items
+    if category == "帖子内容":
         pagination = (
             Post.query.filter(Post.body.like("%" + srchterm + "%"))
             .order_by(Post.timestamp.desc())
@@ -307,6 +307,18 @@ def search():
             recommend_users=recommend_users,
         )
 
+    elif category == "该用户发布的帖子":
+        # search_user= User.query.filter(User.username==srchterm)
+        search_user = User.query.filter(User.username == srchterm).first()
+
+        pagination = (
+            Post.query.filter(
+                Post.user_id == search_user.id,
+            )
+            .order_by(Post.timestamp.desc())
+            .paginate(page=page, per_page=per_page)
+        )
+        posts = pagination.items
     return render_template(
         "posts/index-tmp-extend.html",
         pagination=pagination,
@@ -519,6 +531,15 @@ def admin_delete():
             post.valid = 0
             for c in post.comments:
                 c.valid = 0
+            notification = Notification(
+                body=filter_body_content(Post.query.get(post_id).title),
+                action=2,
+                object=0,
+                action_id=admin_id,
+                user_id=Post.query.get(post_id).user.id,
+                post_id=post_id,
+            )
+            db.session.add(notification)
             db.session.commit()
             return redirect(url_for("posts.index"))
         elif comment_id != -1:
@@ -531,9 +552,26 @@ def admin_delete():
                 )
             ).all()
             comment_1.valid = 0
+            notification1 = Notification(
+                body=filter_body_content(comment_1.body),
+                action=2,
+                object=1,
+                action_id=admin_id,
+                user_id=comment_1.user.id,
+                comment_id=comment_1.id,
+            )
+            db.session.add(notification1)
             for comment in association_comments:
                 comment.valid = 0
-
+                notification = Notification(
+                    body=filter_body_content(comment.body),
+                    action=2,
+                    object=1,
+                    action_id=admin_id,
+                    user_id=comment.user.id,
+                    comment_id=comment.id,
+                )
+                db.session.add(notification)
             db.session.commit()
 
             return redirect(url_for("posts.detail", post_id=post_id))

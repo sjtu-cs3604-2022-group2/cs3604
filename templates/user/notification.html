@@ -24,7 +24,7 @@
     </tr>
   </thead>
   <tbody>
-    {%set states=["未读","已读"]%} {%set actions=["点赞","评论"]%} {%set
+    {%set states=["未读","已读"]%} {%set actions=["点赞","评论","删除"]%} {%set
     objects=["帖子","回帖"]%} {%for notice in notices%}
     <tr class="state{{notice.state}}" id="notice{{notice.id}}">
       <td class="state">{{states[notice.state]}}</td>
@@ -42,6 +42,8 @@
         <!-- onload="filter($(this).innerHTML,'{{notice.link}}');" -->
         <div class="comment_body" >{{notice.body | safe}}</div>
         {%elif notice.object == 1 %}
+        <div class="comment_body" >{{notice.body |safe }}</div>
+        {%elif notice.object == 2 %}
         <div class="comment_body" >{{notice.body |safe }}</div>
         {%endif%} onclick="read({{notice.id}},{{notice.state}});"
         ----------------#}
