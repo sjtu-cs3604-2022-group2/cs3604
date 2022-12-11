@@ -92,6 +92,7 @@ def profile(uid):
                            profile_form=profile_form,
                            recommend_posts=recommend_posts,
                            length_rec = len(recommend_posts),
+                           poster_user_photos=visit_user.photos
                            )
 
 
