@@ -29,6 +29,9 @@ class Object:
     def get_object_type(self):
         pass
 
+    def set_invalid(self):
+        pass
+
 class ObjectPost(Object):
     def __init__(self,post):
         self.database=Post
@@ -63,6 +66,12 @@ class ObjectPost(Object):
     def get_sublink(self):
         return ''
 
+    def set_invalid(self):
+        self.object.valid=0
+        for comment in self.object.comments:
+            comment.valid = 0
+        db.session.commit()
+
 
 class ObjectComment(Object):
     def __init__(self,reply,reply_floor=-1):
@@ -96,6 +105,10 @@ class ObjectComment(Object):
 
     def get_sublink(self):
         return '#comment'+str(self.floor)
+
+    def set_invalid(self):
+        self.object.valid=0
+        db.session.commit()
 
 #抽象类
 
@@ -160,7 +173,7 @@ class ActionReply(AbstractAction):
         dst_user=self.obj.get_dst_user()
         notice = Notification(body=text, 
                               state=StateType.UNREAD.value,
-                              action=OptionType.COMMENT.value, 
+                              action=OptionType.REPLY.value, 
                               object=obj_type,
                               link=link, user_id=dst_user,
                               action_id=self.user_id, post_id=post_id,comment_id=comment_id)
@@ -206,4 +219,26 @@ class ActionReport(AbstractAction):
         db.session.add(notice)
         db.session.commit()
 
+class ActionDelete(AbstractAction):
+    def __init__(self,user_id):
+        self.user_id=user_id
+
+    def delete_object(self):
+        self.obj.set_invalid()
+
+    def send_notification(self):
+        text=self.obj.get_text()
+        link='#'
+        obj_type=self.obj.get_object_type()
+        dst_user=self.obj.get_dst_user()
+        post_id=self.obj.get_obj_id_tuple()[0]
+        comment_id=self.obj.get_obj_id_tuple()[1]
+        notice = Notification(body=text, 
+                              state=StateType.UNREAD.value,
+                              action=OptionType.DELETE.value, 
+                              object=obj_type,
+                              link=link, user_id=dst_user,
+                              action_id=self.user_id, post_id=post_id,comment_id=comment_id)
+        db.session.add(notice)
+        db.session.commit()
 

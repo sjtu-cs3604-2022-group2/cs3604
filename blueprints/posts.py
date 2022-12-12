@@ -524,57 +524,112 @@ def admin_delete():
         reason = form["delete_reason"]
 
         print(post_id, floor, comment_id, admin_id, reason)
-        # if floor.isdigit():
-        #     floor = int(floor)
+
+        action_delete=ActionDelete(admin_id)
+
         if comment_id == -1:
             post = Post.query.get(post_id)
-            post.valid = 0
-            for c in post.comments:
-                c.valid = 0
-            notification = Notification(
-                body=filter_body_content(Post.query.get(post_id).title),
-                action=2,
-                object=0,
-                action_id=admin_id,
-                user_id=Post.query.get(post_id).user.id,
-                post_id=post_id,
-            )
-            db.session.add(notification)
-            db.session.commit()
-            return redirect(url_for("posts.index"))
+            obj=ObjectPost(post)
+            
+            action_delete.set_object(obj)
+            action_delete.delete_object()
+            action_delete.send_notification()
+
+            redirect_url=url_for("posts.index")
+            
         elif comment_id != -1:
 
             comment_1 = Comment.query.get(comment_id)
-            association_comments = Comment.query.filter(
-                and_(
-                    Comment.post_id == post_id,
-                    Comment.towards == floor,
-                )
-            ).all()
-            comment_1.valid = 0
-            notification1 = Notification(
-                body=filter_body_content(comment_1.body),
-                action=2,
-                object=1,
-                action_id=admin_id,
-                user_id=comment_1.user.id,
-                comment_id=comment_1.id,
-            )
-            db.session.add(notification1)
-            for comment in association_comments:
-                comment.valid = 0
-                notification = Notification(
-                    body=filter_body_content(comment.body),
-                    action=2,
-                    object=1,
-                    action_id=admin_id,
-                    user_id=comment.user.id,
-                    comment_id=comment.id,
-                )
-                db.session.add(notification)
-            db.session.commit()
 
-            return redirect(url_for("posts.detail", post_id=post_id))
+            obj=ObjectComment(comment_1)
+
+            action_delete.set_object(obj)
+            action_delete.delete_object()
+            action_delete.send_notification()
+
+            redirect_url=url_for("posts.detail", post_id=post_id)
+
+            if(1):
+
+                association_comments = Comment.query.filter(
+                    and_(
+                        Comment.post_id == post_id,
+                        Comment.towards == floor,
+                    )
+                ).all()
+                
+                for comment in association_comments:
+                    obj=ObjectComment(comment)
+
+                    action_delete.set_object(obj)
+                    action_delete.delete_object()
+                    action_delete.send_notification()
+
+    return redirect(redirect_url)
+
+# @csrf.exempt
+# @bp.route("/admin_delete", methods=["POST"])
+# def admin_delete():
+#     if request.method == "POST":
+#         form = request.form
+#         post_id = int(form["delete_post_id"])
+#         floor = int(form["delete_floor"])  # -1 if post is deleted
+#         comment_id = int(form["delete_comment_id"])  # -1 if post is deleted
+#         admin_id = int(form["delete_admin_id"])
+#         reason = form["delete_reason"]
+
+#         print(post_id, floor, comment_id, admin_id, reason)
+#         # if floor.isdigit():
+#         #     floor = int(floor)
+#         if comment_id == -1:
+#             post = Post.query.get(post_id)
+#             post.valid = 0
+#             for c in post.comments:
+#                 c.valid = 0
+#             notification = Notification(
+#                 body=filter_body_content(Post.query.get(post_id).title),
+#                 action=2,
+#                 object=0,
+#                 action_id=admin_id,
+#                 user_id=Post.query.get(post_id).user.id,
+#                 post_id=post_id,
+#             )
+#             db.session.add(notification)
+#             db.session.commit()
+#             return redirect(url_for("posts.index"))
+#         elif comment_id != -1:
+
+#             comment_1 = Comment.query.get(comment_id)
+#             association_comments = Comment.query.filter(
+#                 and_(
+#                     Comment.post_id == post_id,
+#                     Comment.towards == floor,
+#                 )
+#             ).all()
+#             comment_1.valid = 0
+#             notification1 = Notification(
+#                 body=filter_body_content(comment_1.body),
+#                 action=2,
+#                 object=1,
+#                 action_id=admin_id,
+#                 user_id=comment_1.user.id,
+#                 comment_id=comment_1.id,
+#             )
+#             db.session.add(notification1)
+#             for comment in association_comments:
+#                 comment.valid = 0
+#                 notification = Notification(
+#                     body=filter_body_content(comment.body),
+#                     action=2,
+#                     object=1,
+#                     action_id=admin_id,
+#                     user_id=comment.user.id,
+#                     comment_id=comment.id,
+#                 )
+#                 db.session.add(notification)
+#             db.session.commit()
+
+#             return redirect(url_for("posts.detail", post_id=post_id))
 
 
 @csrf.exempt
