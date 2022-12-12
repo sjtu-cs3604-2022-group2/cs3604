@@ -731,7 +731,7 @@ theme blue:6fa8dc
 
 .posttext .post_text_para{
   text-overflow: ellipsis;
-  /* height: 38px; */
+  max-height: 90px;
   overflow: hidden;
   /* width: 720px; */
   width: 90%;
@@ -776,7 +776,7 @@ theme blue:6fa8dc
 @media only screen and (min-width:1700px) {
   .posttext .post_text_para{
     text-overflow: ellipsis;
-    /* height: 57px; */
+    max-height: 90px;
     overflow: hidden;
     width: 94%;
     -webkit-line-clamp: 3;
