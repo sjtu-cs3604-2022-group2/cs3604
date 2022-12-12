@@ -77,14 +77,22 @@
         <button class="td">
           <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href={{ "/chat/%d" | format(poster_user.id)}}><span>私聊</span></a></div>
         </button>
-
+          {% if poster_user.id not in all_follower_id %}
         <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
           <div class="td">
             <input type="text" name="follow" value="{{poster_user.id}}" style="display:none">
-            <button class="m-btn" type="submit"><i class="material-icons">chat</i><span>关注</span></button>
+            <button class="m-btn" type="submit"><i class="material-icons">people</i><span>关注</span></button>
           </div>
         </form>
+          {% else %}
+          <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
+            <div class="td"><input type="text" name="unfollow" value="{{poster_user.id}}" style="display:none">
+              <button type="submit" class='m-btn'><i class="material-icons">people</i><span>取消关注</span></button>
+            </div>
+          </form>
+          {% endif %}
         {% endif %}
+
 
         <div class="td">
           <style type="text/css">
@@ -198,7 +206,7 @@
             {#<div id="u-loc"><i class="material-icons">location_on</i><a href="#">Shanghai</a>, <a href="#">China</a></div>#}
           </div>
         </div>
-        <div class="l-cnt l-mrg">相册
+        <div class="l-cnt l-mrg">
           <div class="cnt-label">
             <i class="l-i" id="l-i-p"></i>
             <span>相册</span>
@@ -390,7 +398,7 @@
       </div>
       <div class="td" id="r-col">
         <div id="chat-bar">
-          <div id="chat-lb"><i class="material-icons"></i><span>好友</span></div>
+          <div id="chat-lb"><i class="material-icons"></i><span>Ta关注的人</span></div>
           <div id="cts">
             {% for relation in poster_user.followed.all() %}
             <div class="on-ct active">

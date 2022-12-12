@@ -313,7 +313,7 @@
   }
   
   #l-col {
-    width: 200px;
+    width: 17%;
     max-width:200px;
     padding-top: 6px;
     padding-right: 20px;
@@ -554,7 +554,7 @@
   
   #m-col {
     max-width: 600px;
-    width:600px;
+    width:60%;
     padding: 13px 55px;
     padding-left: 100px;
 
@@ -878,7 +878,7 @@
   /* Chat bar */
   #r-col {
     position: relative;
-    width: 150px;
+    width: 15%;
   }
   
   #chat-bar {

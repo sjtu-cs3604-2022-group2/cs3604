@@ -92,10 +92,12 @@ def profile(uid):
         "user/profile-tmp.html",
         current_user=user,
         poster_user=visit_user,
+        all_follower_id=[relation.followed.id for relation in user.followed.all()],
         profile_form=profile_form,
         recommend_posts=recommend_posts,
         recommend_user=recommend_users,
         recommend_category=recommend_category
+
     )
 
 
