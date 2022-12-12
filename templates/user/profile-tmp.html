@@ -74,10 +74,11 @@
       <div id="u-name">{{poster_user.username}}</div>
       <div class="tb" id="m-btns">
         {% if poster_user.id != current_user.id %}
-        <button class="td">
-          <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href={{ "/chat/%d" | format(poster_user.id)}}><span>私聊</span></a></div>
-        </button>
-          {% if poster_user.id not in all_follower_id %}
+
+          {% if poster_user.id not in current_all_follower_id %}
+          <button class="td">
+            <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href={{ "/chat/%d" | format(poster_user.id)}}><span>私聊</span></a></div>
+          </button>
         <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
           <div class="td">
             <input type="text" name="follow" value="{{poster_user.id}}" style="display:none">
@@ -85,6 +86,9 @@
           </div>
         </form>
           {% else %}
+          <button class="td">
+            <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href={{ "/chat/%d" | format(poster_user.id)}}><span>&nbsp;&nbsp;&nbsp;私聊&nbsp;&nbsp;&nbsp;&nbsp;</span></a></div>
+          </button>
           <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
             <div class="td"><input type="text" name="unfollow" value="{{poster_user.id}}" style="display:none">
               <button type="submit" class='m-btn'><i class="material-icons">people</i><span>取消关注</span></button>
@@ -269,7 +273,7 @@
 
                 <div class="td" ><i class="material-icons"></i></div>
                 <div class="td active" value="显示" onclick="show1()" id="nav1-1"><i class="material-icons">av_timer</i><span>动态</span></div>
-                <div class="td" value="隐藏" onclick="show2()" id="btn2"><i class="material-icons">people</i><span>关注</span></div>
+                <div class="td" value="隐藏" onclick="show2()" id="btn2"><i class="material-icons">people</i><span>Ta的关注</span></div>
                 <div class="td" value="隐藏" onclick="show()"  id="btn1"><i class="material-icons">archive</i><span>资料</span></div>
                 <div class="td"><i class="material-icons"></i></div>
 
@@ -365,14 +369,23 @@
                   </td>
                   <td align="center">{{relation.followed.username}}</td>
                   <td align="center"  class="line-limit-length">{{relation.followed.about}}</td>
-                  <td align="center"><a href={{ "/chat/%d" | format(relation.followed.id)}}><div class ="testbtn">
-                    私聊
+                  <td align="center"><a href={{ "/chat/%d" | format(relation.followed.id)}}><div class ="testbtn" style="width: 10px;">
+                       私聊
                   </div></a></td>
                   <td align="center"><div class='btn-group dropright'>
+                    {% if relation.followed.id in current_all_follower_id %}
                     <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
                       <input type="text" name="unfollow" value="{{relation.followed.id}}" style="display:none">
                       <button type="submit" class='btn btn-primary btn-sm transactionButton'>取消关注</button>
                     </form>
+                    {% else %}
+                    <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
+
+                        <input type="text" name="follow" value="{{poster_user.id}}" style="display:none">
+                        <button class="btn btn-primary btn-sm transactionButton" type="submit">&nbsp;&nbsp;&nbsp;关注&nbsp;&nbsp;&nbsp;</button>
+
+                    </form>
+                    {% endif %}
                   </div></td> 
                 </tr>
                 {% endfor %}
