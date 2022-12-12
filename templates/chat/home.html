@@ -29,7 +29,7 @@
     {#<div class="pusher">
         <div class="chat-box">
             <div class="messages">
-                <div class="ui text loader">Loading messages...</div>
+                <div class="ui text loader">加载消息...</div>
                 {% include 'chat/_messages.html' %}
             </div>
         </div>
@@ -41,10 +41,9 @@
                             <img class="pop-card input-avatar" data-position="bottom left"
                                  data-href="{{ url_for('chat.get_profile', user_id=current_user.id) }}"
                                  src="{{ current_user.image }}">
-                            <textarea rows="2" id="message-textarea"
-                                      placeholder="Write your message here... Enter to send"></textarea>
+                            <textarea rows="2" id="message-textarea" placeholder="在这里输入消息"></textarea>
                         {% else %}
-                            <div class="ui floating message">Please <a href="{{ url_for('user.login') }}">Sign in to send message.
+                            <div class="ui floating message">Please <a href="{{ url_for('user.login') }}">请登录以发送消息.
                             </div>
                         {% endif %}
                     </div>
@@ -56,7 +55,7 @@
     <section class="msger">
         <header class="msger-header">
           <div class="msger-header-title">
-            <i class="fas fa-comment-alt"></i> 聊天室
+            <i class="fas fa-comment-alt"></i>聊天
           </div>
           <div class="msger-header-options">
             
@@ -97,7 +96,6 @@
                     <div class="msg-info-name">{{message.author.username}}</div>
                     <div class="msg-info-time">{{message.timestamp}}</div>
                   </div>
-    
                   <div class="msg-text">
                     {{message.body}}
                   </div>
@@ -112,8 +110,8 @@
         </main>
 
         <form class="msger-inputarea">
-          <input type="text" id="message-textarea" class="msger-input" placeholder="Enter your message...">
-          <button type="submit" class="msger-send-btn" id="snippet-button">Send</button>
+          <input type="text" id="message-textarea" class="msger-input" placeholder="请输入消息...">
+          <button type="submit" class="msger-send-btn" id="snippet-button">发送</button>
         </form>
       </section>
 {% endblock %}

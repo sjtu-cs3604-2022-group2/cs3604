@@ -36,7 +36,7 @@ def init_categories(count=5):
     for c in Category.query.all():
         db.session.delete(c)
     db.session.commit()
-    category = Category(name="Default")
+    category = Category(name="开发测试")
     db.session.add(category)
     for i in range(count):
         if i <= 4:
@@ -178,7 +178,7 @@ def init_message():
             if i == j:
                 continue
             comment = Message(
-                body=f"From {i+1} to {j+1}:" + fake.sentence(),
+                body=f"嗨!你好",
                 timestamp=fake.date_time_this_year(),
                 author=User.query.get(i + 1),
                 to_id=j + 1,

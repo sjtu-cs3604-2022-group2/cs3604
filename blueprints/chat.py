@@ -17,17 +17,25 @@ online_users = []
 @socketio.on('new message')
 def new_message(message_body):
     uid = session.get('room', 0)
+    print(f"uid={uid},session={session}")
     html_message = message_body
     message = Message(author=current_user._get_current_object(), body=html_message, to_id=uid)
     db.session.add(message)
     db.session.commit()
     emit('new message',
-        {'message_html': render_template('chat/_message.html', message=message),
+        {'message_html': render_template('chat/_message.html', message=message, flag=True),
         'message_body': html_message,
         'image': current_user.image,
         'username': current_user.username,
         'user_id': current_user.id},
-        broadcast=True)
+        broadcast=True, include_self=False)
+    emit('new message',
+         {'message_html': render_template('chat/_message.html', message=message, flag=False),
+          'message_body': html_message,
+          'image': current_user.image,
+          'username': current_user.username,
+          'user_id': current_user.id},
+         broadcast=False)
 
 
 @socketio.on('new message', namespace='/anonymous')
@@ -68,16 +76,13 @@ def disconnect():
 def home(uid):
     amount = current_app.config['CHAT_MESSAGE_PER_PAGE']
     session['room'] = uid
-    print(f'\nnew room: {uid}')
-    print('session now', session)
     messages = Message.query.filter(
         or_(
             and_(Message.author_id==current_user.id, Message.to_id==uid),
             and_(Message.author_id==uid, Message.to_id==current_user.id)
         )
     ).order_by(Message.timestamp.asc())[-amount:]
-    user_amount = User.query.count()
-    return render_template('chat/home.html', messages=messages, user_amount=user_amount, current_user=current_user)
+    return render_template('chat/home.html', messages=messages)
 
 
 @chat_bp.route('/anonymous')
