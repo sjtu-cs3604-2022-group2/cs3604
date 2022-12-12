@@ -2,7 +2,8 @@ from enum import Enum
 
 class OptionType(Enum):
     LIKE = 0
-    COMMENT = 1
+    REPLY = 1
+    DELETE = 2
 
 
 class StateType(Enum):
