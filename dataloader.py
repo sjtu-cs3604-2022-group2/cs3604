@@ -25,10 +25,10 @@ def random_relation(count, active):
 def clear_uploads():
     cur = os.curdir
     path = "\\static\\uploads"
-    rm = os.listdir(cur+path)
+    rm = os.listdir(cur + path)
     for i in rm:
         rm_path = os.path.join(path, i)
-        os.remove(cur+rm_path)
+        os.remove(cur + rm_path)
 
 
 def init_categories(count=5):
@@ -36,7 +36,7 @@ def init_categories(count=5):
     for c in Category.query.all():
         db.session.delete(c)
     db.session.commit()
-    category = Category(name="Default")
+    category = Category(name="开发测试")
     db.session.add(category)
     for i in range(count):
         if i <= 4:
@@ -58,7 +58,7 @@ def init_user(count=30):
     for u in User.query.all():
         db.session.delete(u)
     db.session.commit()
-    
+
     clear_uploads()
     image_pool = set()
 
@@ -71,15 +71,15 @@ def init_user(count=30):
         while id in image_pool:
             id = random.randint(1, 100)
         origin = open(f"{cur}/data/avatar/{id}.png", mode="rb")
-        path = f"/static/uploads/"+random_filename(f"{id}.png")
-        new = open(cur+path, mode="wb")
+        path = f"/static/uploads/" + random_filename(f"{id}.png")
+        new = open(cur + path, mode="wb")
         new.write(origin.read())
         origin.close()
         new.close()
         return path
-    
+
     user = User(
-        username="test",
+        username="管理员1",
         password="123",
         about="this is me",
         image=get_image(),
@@ -114,27 +114,27 @@ def init_post(count=180):
     for p in Post.query.all():
         db.session.delete(p)
     db.session.commit()
-    
+
     image_pool = set()
     image_list = os.listdir("./data/pic")
 
     def get_image() -> str:
         nonlocal image_pool, image_list
         cur = os.curdir
-        id = random.randint(0, len(image_list)-1)
+        id = random.randint(0, len(image_list) - 1)
         if len(image_pool) == len(image_list):
             image_pool = set()
         while id in image_pool:
-            id = random.randint(0, len(image_list)-1)
+            id = random.randint(0, len(image_list) - 1)
         origin = open(os.path.join(f"{cur}/data/pic", image_list[id]), mode="rb")
         filename = random_filename(image_list[id])
-        path = f"/static/uploads/"+filename
-        new = open(cur+path, mode="wb")
+        path = f"/static/uploads/" + filename
+        new = open(cur + path, mode="wb")
         new.write(origin.read())
         origin.close()
         new.close()
         return filename, path
-    
+
     for i in range(count):
         raw = posts[i]
         post = Post(
