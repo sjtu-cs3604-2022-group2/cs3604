@@ -366,7 +366,7 @@ def like():
 
         else:
             reply = Comment.query.get(comment_id)
-            obj = ObjectReply(reply, floor)
+            obj = ObjectComment(reply, floor)
 
         action_like = ActionLike(user_id)
         action_like.set_object(obj)
@@ -397,7 +397,7 @@ def unlike():
         else:
             # 取消赞的是post下的评论
             reply = Comment.query.get(comment_id)
-            obj = ObjectReply(reply, floor)
+            obj = ObjectComment(reply, floor)
 
         action_unlike = ActionUnlike(user_id)
         action_unlike.set_object(obj)
@@ -424,18 +424,18 @@ def comment_towards():
         else:
             from_author = False
 
-        comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id)
+        new_comment = Comment(body=body, from_author=from_author, user_id=action_id, towards=towards, post_id=post_id)
 
-        action_comment = ActionComment(action_id, comment, new_floor)
+        action_reply = ActionReply(action_id, new_comment, new_floor)
 
-        reply = Comment.query.get(comment_id)
-        obj = ObjectReply(reply)
+        target_comment = Comment.query.get(comment_id)
+        obj = ObjectComment(target_comment)
 
-        action_comment.set_object(obj)
+        action_reply.set_object(obj)
 
-        action_comment.update_database()
+        action_reply.update_database()
 
-        action_comment.send_notification()
+        action_reply.send_notification()
 
     return redirect(url_for("posts.detail", post_id=post_id))
 
@@ -458,15 +458,15 @@ def add_reply(type_of_form):
 
         comment = Comment(body=body, from_author=from_author, post_id=post_id, towards=-1, user_id=action_id)
 
-        action_comment = ActionComment(action_id, comment, new_floor)
+        action_reply = ActionReply(action_id, comment, new_floor)
 
         post = Post.query.get(post_id)
         obj = ObjectPost(post)
-        action_comment.set_object(obj)
+        action_reply.set_object(obj)
 
-        action_comment.update_database()
+        action_reply.update_database()
 
-        action_comment.send_notification()
+        action_reply.send_notification()
 
     return redirect(url_for("posts.detail", post_id=post_id))
 
@@ -503,7 +503,7 @@ def report():
             obj = ObjectPost(post)
         else:
             reply = Comment.query.get(comment_id)
-            obj = ObjectReply(reply, floor)
+            obj = ObjectComment(reply, floor)
 
         action_report = ActionReport(user_id, reason_text)
         action_report.set_object(obj)

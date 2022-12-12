@@ -31,7 +31,11 @@
   type="text/css"
   href="{{ url_for('static', filename='css/base.min.css')}}"
 />
-
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/user/avatar.css')}}"
+/>
 
 
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -132,10 +136,23 @@
                   <div class="about-input-area"><span>请输入新的简介:</span>{{profile_form.about()}}</div>
                   {{profile_form.submit()}}
                 </form>
+
+
+                <style type="text/css">
+                  
+                </style>
                 <div class="avatar-input-area">
-                  <span>请拖放或者选择新头像:</span>
-                  {{dropzone.create(action=url_for("user.profile_upload"), id="upload_image")}}
+                  <div class="avatar-upload">
+                    <div class="avatar-edit">
+                        
+                    </div>
+                    <div class="avatar-preview">
+                      <span>请拖放或者选择新头像:</span>
+                      {{dropzone.create(action=url_for("user.profile_upload"), id="upload_image")}}
+                    </div>
+                    </div>
                 </div>
+                  
                 <div id="window-header-right" onclick="pop_window_hide()">x</div>
               </div>
             </div>
@@ -149,7 +166,7 @@
               document.getElementById('pop-window').style.display="none";
             }
           </script>
-          <script src="{{url_for('static',filename='js/posts/dropzone.min.js')}}"></script>
+          <script src="{{url_for('static',filename='js/posts/dropzone-avatar.js')}}"></script>
 
         </div>
 
@@ -181,7 +198,7 @@
             {#<div id="u-loc"><i class="material-icons">location_on</i><a href="#">Shanghai</a>, <a href="#">China</a></div>#}
           </div>
         </div>
-        <div class="l-cnt l-mrg">
+        <div class="l-cnt l-mrg">相册
           <div class="cnt-label">
             <i class="l-i" id="l-i-p"></i>
             <span>相册</span>

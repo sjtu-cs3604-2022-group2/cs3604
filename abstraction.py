@@ -64,7 +64,7 @@ class ObjectPost(Object):
         return ''
 
 
-class ObjectReply(Object):
+class ObjectComment(Object):
     def __init__(self,reply,reply_floor=-1):
         self.database=Comment
         self.object=reply
@@ -136,7 +136,7 @@ class ActionLike(AbstractAction):
         db.session.add(notice)
         db.session.commit()
 
-class ActionComment(AbstractAction):
+class ActionReply(AbstractAction):
     def __init__(self,user_id,new_com:Comment,new_floor):
         self.user_id=user_id
         self.new_comment=new_com
