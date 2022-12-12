@@ -764,11 +764,11 @@
     height: 50px;
     border-radius: 50%;
     overflow: hidden;
-    display: flex;
+    display: block;
   }
   
   .p-p-pic img {
-
+    height:100%;
     width: 100%;
     display: block;
     border: 0;
