@@ -541,7 +541,7 @@ def admin_delete():
 
             comment_1 = Comment.query.get(comment_id)
 
-            obj=ObjectComment(comment_1)
+            obj=ObjectComment(comment_1,floor)
 
             action_delete.set_object(obj)
             action_delete.delete_object()
