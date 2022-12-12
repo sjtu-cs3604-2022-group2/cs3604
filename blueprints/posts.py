@@ -296,18 +296,8 @@ def search():
 
     # return url_for("search_result", search_content="")
     # return srchterm
-    elif category == "搜索用户":
-        search_users = User.query.filter(User.username.like("%" + srchterm + "%")).all()
-        # search_users = search_res.items
 
-        return render_template(
-            "user/users_show.html",
-            search_users=search_users,
-            recommend_posts=recommend_posts,
-            recommend_users=recommend_users,
-        )
-
-    elif category == "该用户发布的帖子":
+    elif category == "帖子作者":
         # search_user= User.query.filter(User.username==srchterm)
         search_user = User.query.filter(User.username == srchterm).first()
 
@@ -319,6 +309,16 @@ def search():
             .paginate(page=page, per_page=per_page)
         )
         posts = pagination.items
+    elif category == "搜索用户":
+        search_users = User.query.filter(User.username.like("%" + srchterm + "%")).all()
+        # search_users = search_res.items
+
+        return render_template(
+            "user/users_show.html",
+            search_users=search_users,
+            recommend_posts=recommend_posts,
+            recommend_users=recommend_users,
+        )
     return render_template(
         "posts/index-tmp-extend.html",
         pagination=pagination,
