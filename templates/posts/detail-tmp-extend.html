@@ -213,7 +213,7 @@
                             <div class="detail-author-info">
                                 <div class="detail-author-photo">
                                     <!-- <i class="fa fa-user-circle-o fa-3x" aria-hidden="true"></i> -->
-                                    <a href="#">
+                                    <a href="{{url_for('user.profile',uid=topic.user.id)}}">
                                         <img src={{topic.user.image}}>
                                     </a>
                                 </div>
@@ -311,7 +311,7 @@
                             <div class="wrapper pull-left">
                                 <div class="userinfo">
                                     <div class="detail-user-photo">
-                                        <a href="#">
+                                        <a href="{{url_for('user.profile',uid=comment.user_id)}}">
                                             <img src={{User.query.get(comment.user_id).image}}>
                                         </a>
                                     </div>
@@ -537,7 +537,7 @@
                                     
                                   </div>
                 
-                                  <a href="#"> {# 个人主页的链接？ #}
+                                  <a href="{{url_for('user.profile',uid=recom_user.id)}}"> {# 个人主页的链接？ #}
                                     <p class='pull-left' style="
                                     text-overflow: ellipsis;
                                     height: 28px;

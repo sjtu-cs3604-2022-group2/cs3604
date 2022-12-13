@@ -18,6 +18,7 @@ class BaseConfig(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     
     ADMIN_NAME = ['test','管理员1']
+    ADMIN_ID = [1]
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True

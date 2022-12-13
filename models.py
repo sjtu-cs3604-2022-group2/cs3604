@@ -88,7 +88,8 @@ class User(UserMixin, db.Model):
 
     @property
     def is_admin(self):
-        return self.username in current_app.config["ADMIN_NAME"]
+        return self.id in current_app.config["ADMIN_ID"]
+        #return self.username in current_app.config["ADMIN_NAME"]
 
 
 class Photo(db.Model):
