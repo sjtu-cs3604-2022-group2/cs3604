@@ -549,7 +549,7 @@ def admin_delete():
 
             redirect_url=url_for("posts.detail", post_id=post_id)
 
-            if(1):
+            if(0):
 
                 association_comments = Comment.query.filter(
                     and_(

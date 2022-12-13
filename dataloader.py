@@ -213,3 +213,7 @@ if __name__ == "__main__":
     # init photo
     # init likes
     # init notifications
+    admin1=User.query.get(1)
+    normal_user=User.query.get(9)
+    admin1.follow(normal_user)
+    db.session.commit()

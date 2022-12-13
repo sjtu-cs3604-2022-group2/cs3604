@@ -85,7 +85,7 @@ def filter_body_content(str):
     str = str.replace("&nbsp;", " ")
     str = str.replace("\n", " ")
     str = str.replace("\r", " ")
-    while(str[i]==' '):
+    while(i<len(str)-1 and str[i]==' '):
         i+=1
     str=str[i:]
     print(i,str)
