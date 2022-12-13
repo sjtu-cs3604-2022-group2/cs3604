@@ -141,7 +141,8 @@ def profile_follow():
         unfollow_user = User.query.get(unfollow_id)
         user.unfollow(unfollow_user)
         db.session.commit()
-        return redirect(url_for("user.profile", uid=uid))
+        current_poster_user_id = int(form['currentPage'])
+        return redirect(url_for("user.profile", uid=current_poster_user_id))
     elif 'follow' in form:
         uid = session["user_id"]
         follow_id = int(form['follow'])

@@ -90,7 +90,9 @@
             <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href={{ "/chat/%d" | format(poster_user.id)}}><span>&nbsp;&nbsp;&nbsp;私聊&nbsp;&nbsp;&nbsp;&nbsp;</span></a></div>
           </button>
           <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
-            <div class="td"><input type="text" name="unfollow" value="{{poster_user.id}}" style="display:none">
+            <div class="td">
+              <input type="text" name="unfollow" value="{{poster_user.id}}" style="display:none">
+              <input type="text" name="currentPage" value="{{poster_user.id}}" style="display:none">
               <button type="submit" class='m-btn'><i class="material-icons">people</i><span>取消关注</span></button>
             </div>
           </form>
@@ -373,6 +375,7 @@
                     {% if relation.followed.id in current_all_follower_id %}
                     <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
                       <input type="text" name="unfollow" value="{{relation.followed.id}}" style="display:none">
+                      <input type="text" name="currentPage" value="{{poster_user.id}}" style="display:none">
                       <button type="submit" class='btn btn-primary btn-sm transactionButton'>取消关注</button>
                     </form>
                     {% else %}
