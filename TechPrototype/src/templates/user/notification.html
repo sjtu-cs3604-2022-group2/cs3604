@@ -1,0 +1,123 @@
+{% extends 'base.html'%} {% block head %}
+
+<title>Notifications</title>
+{{super()}}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/user/notification.css')}}"
+/>
+
+{%endblock head%} {%block content%}
+
+<table class="table table-hover notice_table">
+  <caption>
+    <h1>通知</h1>
+  </caption>
+  <thead>
+    <tr>
+      <!-- <th>状态</th>
+        <th>来自</th>
+        <th>动作</th>
+        <th>详情</th>
+        <th>时间</th> -->
+    </tr>
+  </thead>
+  <tbody>
+    {%set states=["未读","已读"]%} {%set actions=["点赞","评论","删除"]%} {%set
+    objects=["帖子","回帖"]%} {%for notice in notices%}
+    <tr class="state{{notice.state}}" id="notice{{notice.id}}">
+      <td class="state">{{states[notice.state]}}</td>
+      <td class="from_user">
+        <span>{{User.query.get(notice.action_id).username}}</span>
+      </td>
+      <td class="action">
+        <span>{{actions[notice.action]}}</span><span>了你的</span
+        ><sapn>{{objects[notice.object]}}</sapn>
+      </td>
+      <td class="object_detail">
+
+        {#--------
+        {%if notice.object == 0 %}  
+        <!-- onload="filter($(this).innerHTML,'{{notice.link}}');" -->
+        <div class="comment_body" >{{notice.body | safe}}</div>
+        {%elif notice.object == 1 %}
+        <div class="comment_body" >{{notice.body |safe }}</div>
+        {%elif notice.object == 2 %}
+        <div class="comment_body" >{{notice.body |safe }}</div>
+        {%endif%} onclick="read({{notice.id}},{{notice.state}});"
+        ----------------#}
+
+        <div onclick="read({{notice.id}},{{notice.state}});"><a  href='{{notice.link}}' target="_Blank">{{notice.body |safe }}</a></div>
+      </td>
+      <td class="timestamp">{{notice.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</td>
+    </tr>
+    {%endfor%}
+  </tbody>&nbsp;
+</table>
+
+{%endblock content%}
+
+{%block scripts%}
+{{super()}}
+<script>
+  function read(id,read_already){
+    if (read_already == 1 || read_already == '1' || read_already == 'true' || read_already=='True'){
+      return;
+    }
+
+    var tr=$('#notice'+id);
+    tr.removeClass('state0');
+    tr.addClass('state1');
+    console.log($(tr).children());
+    var state_td=$(tr).children()[0];
+    state_td.innerHTML="已读";
+
+    var dic={'notice_id':id};
+
+    $.ajax({
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{url_for('posts.read_notification')}}" ,//url
+                data: dic,
+                success: function () {},
+                error : function() { }
+            });
+  }
+</script>
+{#
+<!-- <script>
+
+  function filter(str,link){
+    console.log('******');
+    console.log(str);
+    var re1=new RegExp("</p>","g");
+    var re=new RegExp("<.+?>","g");
+      //var newstr=str.replace(re1,"&nbsp;&nbsp;&nbsp;");
+      var newstr=str.replace(re1,"   ");
+      newstr=newstr.replace(re,'');
+      if(newstr.length>40){
+        newstr=newstr.substring(0,40);
+        if (newstr[newstr.length-1]!=' '){
+          newstr=newstr+'...';
+        }
+      }
+      newstr.replace("   ","&nbsp;&nbsp;&nbsp;");
+      console.log(newstr);
+      return newstr;
+
+  }
+  
+  $(window).on('load',function(){
+    var lst=$('.comment_body');
+    for(var i=0;i<lst.length;++i){
+      var element=lst[i];
+      var str=$(element).innerHTML;
+      var link={{notices[j].link}};
+      str=filter(str,link);
+      $(element).html(str);
+    }
+  })
+</script>  -->#}
+
+{%endblock scripts%}

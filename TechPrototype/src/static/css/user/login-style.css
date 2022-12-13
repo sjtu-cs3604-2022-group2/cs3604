@@ -1,0 +1,301 @@
+:root {
+	/* COLORS */
+	--white: #e9e9e9;
+	--gray: #333;
+	--blue: #0367a6;
+	--lightblue: #008997;
+
+	/* RADII */
+	--button-radius: 0.7rem;
+
+	/* SIZES */
+	/* --max-width: 758px;
+	--max-height: 420px; */
+	--max-width: 899px;
+	--max-height: 498px;
+
+	font-size: 16px;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+		Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+body {
+	align-items: center;
+	background-color: var(--white);
+	background: url("../../image/imgs_icons/painted-blue.jpg");
+	/* background: url("https://res.cloudinary.com/dci1eujqw/image/upload/v1616769558/Codepen/waldemar-brandt-aThdSdgx0YM-unsplash_cnq4sb.jpg"); */
+	background-attachment: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	display: grid;
+	height: 100vh;
+	place-items: center;
+}
+
+.form__title {
+	font-weight: 300;
+	margin: 0;
+	margin-bottom: 1.25rem;
+}
+
+.link {
+	color: var(--gray);
+	font-size: 0.9rem;
+	margin: 1.5rem 0;
+	
+}
+
+.container {
+	background-color: var(--white);
+	border-radius: var(--button-radius);
+	box-shadow: 0 0.9rem 1.7rem rgba(0, 0, 0, 0.25),
+		0 0.7rem 0.7rem rgba(0, 0, 0, 0.22);
+	height: var(--max-height);
+	max-width: var(--max-width);
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+}
+
+.container__form {
+	height: 100%;
+	position: absolute;
+	top: 0;
+	transition: all 0.6s ease-in-out;
+}
+
+.container--signup {
+	left: 0;
+	width: 50%;
+	z-index: 2;
+}
+
+.container.right-panel-active .container--signup {
+	transform: translateX(100%);
+}
+
+.container--signin {
+	left: 0;
+	opacity: 0;
+	width: 50%;
+	z-index: 1;
+}
+
+.container.right-panel-active .container--signin {
+	animation: show 0.6s;
+	opacity: 1;
+	transform: translateX(100%);
+	z-index: 5;
+}
+
+.container__overlay {
+	height: 100%;
+	left: 50%;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	transition: transform 0.6s ease-in-out;
+	width: 50%;
+	z-index: 100;
+}
+
+.container.right-panel-active .container__overlay {
+	transform: translateX(-100%);
+}
+
+.overlay {
+	background-color: var(--lightblue);
+	/* background: url("https://res.cloudinary.com/dci1eujqw/image/upload/v1616769558/Codepen/waldemar-brandt-aThdSdgx0YM-unsplash_cnq4sb.jpg"); */
+	background: url("../../image/imgs_icons/painted-blue.jpg");
+	background-attachment: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	height: 100%;
+	left: -100%;
+	position: relative;
+	transform: translateX(0);
+	transition: transform 0.6s ease-in-out;
+	width: 200%;
+}
+
+.container.right-panel-active .overlay {
+	transform: translateX(50%);
+}
+
+.overlay__panel {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	justify-content: center;
+	position: absolute;
+	text-align: center;
+	top: 0;
+	transform: translateX(0);
+	transition: transform 0.6s ease-in-out;
+	width: 50%;
+}
+
+.overlay--left {
+	transform: translateX(-20%);
+}
+
+.container.right-panel-active .overlay--left {
+	transform: translateX(0);
+}
+
+.overlay--right {
+	right: 0;
+	transform: translateX(0);
+}
+
+.container.right-panel-active .overlay--right {
+	transform: translateX(20%);
+}
+
+.mybtn {
+	background-color: var(--blue);
+	/* background-image: linear-gradient(90deg, var(--blue) 0%, var(--lightblue) 74%); */
+	background-image: linear-gradient(to left top, #89c0d0, #71b0c3, #58a0b7, #3c90ac, #1280a0);
+	border-radius: 20px;
+	border: 1px solid var(--blue);
+	color: var(--white);
+	cursor: pointer;
+	font-size: 0.8rem;
+	font-weight: bold;
+	letter-spacing: 0.1rem;
+	padding: 0.9rem 4rem;
+	text-transform: uppercase;
+	transition: transform 80ms ease-in;
+}
+
+.form  .mybtn {
+	margin-top: 1.5rem;
+}
+
+.mybtn:active {
+	transform: scale(0.95);
+}
+
+.mybtn:focus {
+	outline: none;
+}
+
+.form {
+	/* background-color: var(--white); */
+	background-color: #f4f4f4;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	padding: 0 3rem;
+	height: 100%;
+	text-align: center;
+}
+
+.input {
+	background-color: #fff;
+	border: none;
+	padding: 0.9rem 0.9rem;
+	margin: 0.5rem 0;
+	width: 100%;
+}
+
+@keyframes show {
+	0%,
+	49.99% {
+		opacity: 0;
+		z-index: 1;
+	}
+
+	50%,
+	100% {
+		opacity: 1;
+		z-index: 5;
+	}
+}
+
+
+.logo-text{
+	font-family: "Kalam";
+	font-size:100px;
+	-webkit-text-stroke:1px #91cdee;
+	text-shadow: 2px 2px #0367a6;
+	color:#ffffff;
+	height: 135px;
+}
+.slogan-text{
+	font-family: "Nunito";
+	font-size:40px;
+	/* -webkit-text-stroke:1px #1280a0;
+	text-shadow: 2px 2px 0 #0367a6; */
+	color:#0368a6e2;
+}
+
+body{
+	/* grid-template-rows:10px 135px 60px 450px; */
+	grid-template-rows: 4px 119px 67px 515px;
+}
+
+.mybtn{
+	border:none;
+	box-shadow: 0 0 8px -2px var(--blue);
+	font-size: 1.01rem;
+	padding:0.7rem 3.6rem;
+	
+	
+}
+
+.form .mybtn{
+	margin-top:1.3rem;
+}
+
+.jaccount-login{
+	color:#207581;
+	text-decoration: none;
+	font-size:1.1rem;
+}
+
+.jaccount-login:hover,.jaccount-login:focus{
+	color:#034975;
+	
+}
+
+.form input:focus-visible{
+	outline-color: rgb(104, 99, 99);
+	outline-width: 1px;
+}
+
+.add-on{
+	position: relative;
+	left: -4%;
+	width: 100%;
+	background-color: #f1f1f1;
+}
+.add-on input{
+	width: 100%;
+	/* height: 30px; */
+}
+.add-on button{
+	position: absolute;
+	top: 20px;
+	right: 0;
+	background-color: #fff;
+	border: none;  
+	box-shadow: 0 0 1px 1px rgb(207, 206, 206);
+	border-radius: 2px;
+	outline: none; 
+	padding:3px;
+	cursor: pointer;
+	
+ }
+
+ .add-on button:active {
+	transform: scale(0.95);
+}
+
+.hidden{
+	display: none;
+}

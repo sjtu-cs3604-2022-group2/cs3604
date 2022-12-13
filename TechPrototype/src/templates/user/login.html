@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon"  href="#"/>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/login-style.css')}}">
+	<link href="https://fonts.font.im/css?family=Kalam|Nunito" rel="stylesheet">
+	<title>Log in</title>
+
+</head>
+
+<body>
+
+	<div></div>
+	<div class="logo-text">
+		Hobbitat
+	</div>
+	<div class="slogan-text">
+		Habitat For Hobbies.
+	</div>
+
+	<div class="hidden">
+		<form action="{{url_for('user.get_captcha')}}" id="email_only" class="hidden">
+			<input type="text" class="hidden" name="email" id="hidden_email">
+		</form>
+	</div>
+
+	{% for message in get_flashed_messages() %}
+                    <div class="flash form-group"style='position: fixed;
+					top:30%;
+					left:25%;
+					background-color: #d5e1e7;
+					height:10%;
+					/* line-height:50%; */
+					padding-top:5%;
+					width:50%;
+					text-align:center;
+					border-radius:10px;
+					/* border:solid #333 1px; */
+					z-index:200;
+					font-size:20px;'>
+                        <div class="text-danger">
+                            {{ message}}
+                        </div>
+                    </div>
+	{% endfor %}
+
+	<div class="container right-panel-active">
+
+		<!-- Sign Up -->
+		<div class="container__form container--signup">
+			<form action="{{url_for('user.login')}}" class="form" method="post" id="form2">
+				<h2 class="form__title">注册</h2>
+				{{registerform.csrf_token(class='notclear')}}
+				{{registerform.username}}
+				{{registerform.email(id='register_email')}} 
+				<div class="add-on">
+				{{registerform.captcha}}
+				<button id="send-btn" onclick="send_captcha();return false;">发送验证码</button>
+				</div>
+				{{registerform.password}}
+				{{registerform.password_confirm}}
+				{{registerform.submit2(class='mybtn notclear')}}
+				
+			</form>
+		</div>
+
+		{# <input type="text" placeholder="用户名" class="input" />
+				<input type="email" placeholder="邮箱" class="input" />
+				<input type="password" placeholder="密码" class="input" />
+				<button class="btn" href="{{url_for('user.register')}}">注册</button>
+				<button  class="btn" type="submit">注册</button> --><!-- Sign In --> #}
+				
+		<div class="container__form container--signin">
+			<form action="{{url_for('user.login')}}" class="form" method="post" id="form1"> 
+				<h2 class="form__title">登录</h2>
+				{{form.csrf_token(class='notclear')}}
+				{{form.username}}  <br>
+				{{form.password}}  <br>
+				<div class="link">
+					<span>或 &nbsp; </span>
+				<a href="#" class=" jaccount-login">Jaccount登录</a>
+				</div>
+				{{form.submit1(class='mybtn notclear')}} 
+
+			</form>
+		</div>
+
+		<!-- <div class="container__form container--signin">
+			<form action="{{url_for('user.login')}}" class="form" method="post"> 
+				<h2 class="form__title">登录</h2>
+				{{form.csrf_token}}
+				<input type="text" placeholder="用户名/邮箱/管理员" class="input" name='username'/>
+				<input type="password" placeholder="密码" class="input" name="password" />
+				
+				<div class="link">
+					<span>或 &nbsp; </span>
+				<a href="#" class=" jaccount-login">Jaccount登录</a>
+				</div>
+
+	
+				<button class="btn" type="submit" id="submit1" name="submit1">登录</button>
+			</form>
+		</div> -->
+
+
+
+		<!-- Overlay -->
+		<div class="container__overlay">
+			<div class="overlay">
+
+				<div class="overlay__panel overlay--right">
+					<button class="mybtn" id="signIn">登录</button>
+				</div>
+				<div class="overlay__panel overlay--left">
+					<button class="mybtn" id="signUp">注册</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="{{ url_for('static',filename='js/user/login-script.js')}}"></script>
+	<script>
+		function send_captcha(){
+			var email=$('#register_email')[0].value;
+			$('#hidden_email').val(email);
+			$.ajax({
+                type: "GET",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{url_for('user.get_captcha')}}" ,//url
+                data: $('#email_only').serialize(),
+                success: function () {},
+                error : function() { }
+            });
+			return false;
+		}
+	</script>
+	<script>
+		$(window).on('load',function(){
+			$('input:not(.notclear)').val('');
+		})
+	</script>
+	<script>
+      $('.flash').fadeOut(1000);
+	</script>
+</body>
+
+</html>

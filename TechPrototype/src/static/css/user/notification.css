@@ -1,0 +1,47 @@
+.notice_table {
+  width: 90%;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.notice_table caption {
+  text-align: center;
+  color: black;
+}
+
+.notice_table thead tr th {
+  text-align: left;
+}
+
+.notice_table tbody tr.state0 {
+  color: #54b393;
+}
+
+.notice_table tbody tr .state {
+  width: 10%;
+}
+
+.notice_table tbody tr .from_user {
+  width: 10%;
+}
+
+.notice_table tbody tr .action {
+  width: 15%;
+}
+
+.notice_table tbody tr .object_detail {
+  width: 50%;
+}
+
+.notice_table tbody tr .object_detail a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.notice_table tbody tr .object_detail a:hover {
+  color: #0555b3;
+}
+
+.notice_table tbody tr .time {
+  width: 20%;
+}

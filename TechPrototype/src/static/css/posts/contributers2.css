@@ -1,0 +1,9 @@
+.main-content{
+display:flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+ .main-content div{
+    margin: 20px;
+  }

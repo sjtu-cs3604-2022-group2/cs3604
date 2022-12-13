@@ -1,0 +1,124 @@
+{%block head %}
+    <link rel="stylesheet"  href="{{ url_for('static',filename='css/user/chat-2.css')}}">
+    <meta charset="utf-8">
+    <meta name="referrer" content="no-referrer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon"  href="#"/>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.font.im/css?family=Kalam" rel="stylesheet">
+    <link
+        href='https://fonts.googlefonts.cn/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+        rel='stylesheet' type='text/css'>
+    <link
+    href='http://at.alicdn.com/t/c/font_3798940_dgpjna1zj7p.css'
+    rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_3724642_dw14pio9i6b.css">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.min.css')}}">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/user/bootstrapAdd.css')}}">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script  type="text/javascript" src="{{ url_for('static',filename='js/script.js')}}" ></script>
+{%endblock head %}
+
+{% extends 'base.html' %}
+
+{% block content %}
+    {#<div class="pusher">
+        <div class="chat-box">
+            <div class="messages">
+                <div class="ui text loader">加载消息...</div>
+                {% include 'chat/_messages.html' %}
+            </div>
+        </div>
+        <div class="input-area">
+            <div class="ui grid form">
+                <div class="ten wide column">
+                    <div class="field fluid message-box">
+                        {% if current_user.is_authenticated %}
+                            <img class="pop-card input-avatar" data-position="bottom left"
+                                 data-href="{{ url_for('chat.get_profile', user_id=current_user.id) }}"
+                                 src="{{ current_user.image }}">
+                            <textarea rows="2" id="message-textarea" placeholder="在这里输入消息"></textarea>
+                        {% else %}
+                            <div class="ui floating message">Please <a href="{{ url_for('user.login') }}">请登录以发送消息.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> #}
+
+    <section class="msger">
+        <header class="msger-header">
+          <div class="msger-header-title">
+            <i class="fas fa-comment-alt"></i>聊天
+          </div>
+          <div class="msger-header-options">
+            
+            <div  onclick = "scrollToBottom()"><span><i class="iconfont icon-shuangjiantouxia"></i></span></div>
+          </div>
+        </header>
+        <main class="messages msger-chat">
+        {% include 'chat/_messages.html' %}
+        {#{% for message in messages %}
+            {% if message.author_id != current_user.id %}
+            <div class="msg left-msg">
+                <div
+                 class="msg-img"
+                 style="background-image: url({{message.author.image}})"
+                ></div>
+    
+                <div class="msg-bubble">
+                  <div class="msg-info">
+                    <div class="msg-info-name">{{message.author.username}}</div>
+                    <div class="msg-info-time">{{message.timestamp}}</div>
+                  </div>
+    
+                  <div class="msg-text">
+                    {{message.body}}
+                  </div>
+                </div>
+
+              </div>
+            {% else %}
+            <div class="msg right-msg">
+                <div
+                 class="msg-img"
+                 style="background-image: url({{message.author.image}})"
+                ></div>
+    
+                <div class="msg-bubble">
+                  <div class="msg-info">
+                    <div class="msg-info-name">{{message.author.username}}</div>
+                    <div class="msg-info-time">{{message.timestamp}}</div>
+                  </div>
+                  <div class="msg-text">
+                    {{message.body}}
+                  </div>
+                </div>
+              </div>
+
+
+            {% endif %}
+
+        {% endfor %}#}
+
+        </main>
+
+        <form class="msger-inputarea">
+          <input type="text" id="message-textarea" class="msger-input" placeholder="请输入消息...">
+          <button type="submit" class="msger-send-btn" id="snippet-button">发送</button>
+        </form>
+      </section>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript">
+        var socket = io('/');
+    </script>
+{% endblock %}

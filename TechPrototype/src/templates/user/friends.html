@@ -1,0 +1,268 @@
+
+<!doctype html>
+	<html lang="cn">
+	<head>
+
+		{% block head %}
+		<meta charset="utf-8">
+		<title>follows</title>
+		<meta name="referrer" content="no-referrer" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.font.im/css?family=Kalam" rel="stylesheet">
+    <link
+        href='https://fonts.googlefonts.cn/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+        rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_3724642_dw14pio9i6b.css">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.min.css')}}">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+
+		<link rel="stylesheet" href="{{ url_for('static',filename='css/user/friends.css')}}" >
+
+		<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+		<script type="text/javascript" src="{{ url_for('static',filename='js/user/friends.js')}}" defer></script>
+    {% endblock head %}
+
+		
+	</head>
+
+	<body>
+		{% block nav %}
+		<div class="container1 head1" style="height:auto;width:100%; margin: 0;padding: 0;">
+			<div class="row1" style="width:100%;">
+				<nav class="navbar-default navbar " >
+					<div class="headwrap" >
+						<div class="navbar-header" >
+							<a class="navbar-brand" href="#">
+								<div class="logo">
+									Hobbitat
+								</div>
+							</a>
+							<div class="slogan">
+								校园兴趣爱好分享社区
+							</div>
+							<div class="navbar-search " style=" padding-right: 10px ;" >
+								<form class="navbar-form" role="search" action="{{url_for('posts.search')}}">
+									<div class="input-group add-on">
+										<input class="form-control form-control222" placeholder="搜索" 
+											name="srch-term" id="srch-term" type="text">
+											<div class="input-group-btn">
+												<button type="button" class="btn btn-default 
+												dropdown-toggle" data-toggle="dropdown" style="outline:none;border-radius:0px;color:gray;">
+													<span class="search-in-area">帖子标题</span>
+													<span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu pull-right" style="min-width:100px;outline:none;">
+													<li>
+														<a href="#" onclick="shows($(this).text())">帖子标题</a>
+													</li>
+													<li>
+														<a href="#" onclick="shows($(this).text())">帖子内容</a>
+													</li>
+													<li>
+														<a href="#" onclick="shows($(this).text())">分区</a>
+													</li>
+												</ul>
+											</div>
+										<div class="input-group-btn">
+											<button class="btn btn-default btn-default2913" type="submit"
+												style="width:100%;height: 100%;text-align: center;">
+												<i class="glyphicon glyphicon-search" style="margin: auto;"></i>
+											</button>
+										</div>
+									</div>
+								</form>
+	
+							</div>
+						</div>
+	
+	
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1"
+							style="padding:15px 0px 5px 0px;">
+	
+							<ul class="nav navbar-nav navbar-right" style="padding:0;margin-right:2px;">
+								<li><a href="#">首页</a></li>
+								<li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+										role="button" aria-haspopup="true" aria-expanded="false">分区<span
+											class="caret"></span></a>
+									<ul class="dropdown-menu animated zoomIn">
+										<li><a href="#">音乐</a></li>
+										<li><a href="#">绘画</a></li>
+										<li><a href="#">运动</a></li>
+										<li><a href="#">游戏</a></li>
+									</ul>
+								</li>
+								<li><a href="#">关注</a></li>
+	
+								<li class="dropdown current-user">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+										aria-haspopup="true" aria-expanded="false"
+										style="padding-top:0;padding-bottom:0;-webkit-transform: translate(0,-9px);transform: translate(0,-9px);">
+	
+										<img class="current-user-photo" src='#' alt="个人中心"><!--注意这里-->
+										<span class="caret"
+											style="-webkit-transform: translate(0,11px);transform: translate(0,11px);"></span>
+									</a>
+	
+	
+									<ul class="dropdown-menu animated zoomIn">
+										<li>
+											<div>
+												用户名：
+												<br>
+												用户名<!--注意这里-->
+											</div>
+										</li>
+										<li><a href="#">个人中心</a></li>
+										<li><a href="#"> 关注列表</a></li>
+										<li><a href="#"> 通知 </a></li>
+										<li><a href="#"> 历史 </a></li>
+										<li><a href="#"> 设置 </a></li>
+										<li><a href="#">帮助</a></li>
+										<li><a href="#"> 联系我们 </a></li>
+	
+									</ul>
+								</li>
+	
+							</ul>
+						</div>
+					</div>
+				</nav>
+			   
+			</div>
+		</div>
+		{% endblock nav%}
+	
+		{% block other_content %}
+		{% endblock other_content%}
+	
+		{% block scripts %}
+		<script>
+			function shows(a) {
+				$('.search-in-area').text(a);
+			}
+		</script>
+	
+		<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+		<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	
+	
+		{% endblock scripts %}
+		<div class="container-fluid">
+
+			<h3 class="text-center hanzi-font">关注的人</h3>
+
+			<table id="usertable"  class = "table table-striped" style = "height:auto;width: 100%;" >
+				<thead>
+					<tr class="text-center">
+
+						<th>ID</th>
+						<th>头像</th>
+						<th></th>
+						<th>年龄</th>
+						<th>昵称</th>
+						<th>性别</th>
+
+						<th>邮箱</th>			     
+					</tr>
+				</thead>`
+
+				<tbody>
+					
+					<!-- <tr>
+						<td align="center">7</td> 
+						<td align="center"><img class = 'avatar'  
+							src = 'https://ts1.cn.mm.bing.net/th?id=OIP-C.JPaFw0vH2f6Qy44aUfZ4jgAAAA&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2'
+							 alt = ''></td>
+						<td align="center"><div class='btn-group dropright'>
+							<button type='button' class='btn btn-primary btn-sm transactionButton' 
+							data-toggle='dropdown'>取消关注</button>
+						</div></td> 
+						<td align="center">20</td>
+						<td align="center">小明</td>
+						<td align="center" class="line-limit-length">顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶</td>
+
+						<td align="center">111@sjtu.edu.cn</td>
+					</tr> -->
+					<tr>
+						<td align="center">7</td> 
+						<td align="center"><img class = 'avatar'  
+							src = 'https://ts1.cn.mm.bing.net/th?id=OIP-C.JPaFw0vH2f6Qy44aUfZ4jgAAAA&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2'
+							 alt = ''></td>
+						<td align="center"><div class='btn-group dropright'>
+							<button type='button' class='btn btn-primary btn-sm transactionButton' 
+							data-toggle='dropdown'>取消关注</button>
+						</div></td> 
+						<td align="center">20</td>
+						<td align="center">小明</td>
+						<td align="center">男</td>
+
+						<td align="center">111@sjtu.edu.cn</td>
+					</tr>
+					<tr>
+						<td align="center">7</td> 
+						<td align="center"><img class = 'avatar'  
+							src = 'https://ts1.cn.mm.bing.net/th?id=OIP-C.JPaFw0vH2f6Qy44aUfZ4jgAAAA&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2'
+							 alt = ''></td>
+						<td align="center"><div class='btn-group dropright'>
+							<button type='button' class='btn btn-primary btn-sm transactionButton' 
+							data-toggle='dropdown'>取消关注</button>
+						</div></td> 
+						<td align="center">20</td>
+						<td align="center">小明</td>
+						<td align="center">男</td>
+
+						<td align="center">111@sjtu.edu.cn</td>
+					</tr>
+					<tr>
+						<td align="center">7</td> 
+						<td align="center"><img class = 'avatar'  
+							src = 'https://ts1.cn.mm.bing.net/th?id=OIP-C.JPaFw0vH2f6Qy44aUfZ4jgAAAA&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2'
+							 alt = ''></td>
+						<td align="center"><div class='btn-group dropright'>
+							<button type='button' class='btn btn-primary btn-sm transactionButton' 
+							data-toggle='dropdown'>取消关注</button>
+						</div></td> 
+						<td align="center">20</td>
+						<td align="center">小明</td>
+						<td align="center">男</td>
+
+						<td align="center">111@sjtu.edu.cn</td>
+					</tr>
+					<tr>
+						<td align="center">7</td> 
+						<td align="center"><img class = 'avatar'  
+							src = 'https://ts1.cn.mm.bing.net/th?id=OIP-C.JPaFw0vH2f6Qy44aUfZ4jgAAAA&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2'
+							 alt = ''></td>
+						<td align="center"><div class='btn-group dropright'>
+							<button type='button' class='btn btn-primary btn-sm transactionButton' 
+							data-toggle='dropdown'>取消关注</button>
+						</div></td> 
+						<td align="center">20</td>
+						<td align="center">小明</td>
+						<td align="center">男</td>
+
+						<td align="center">111@sjtu.edu.cn</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+
+	</body>
+
+	<footer>
+
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+
+
+		<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/af-2.3.0/b-1.5.2/b-colvis-1.5.1/b-flash-1.5.2/b-html5-1.5.2/b-print-1.5.2/cr-1.5.0/fc-3.2.5/fh-3.1.4/kt-2.4.0/r-2.2.2/rg-1.0.3/rr-1.2.4/sc-1.5.0/sl-1.2.6/datatables.min.js"></script>
+
+	</footer>
+
+	
+</html>

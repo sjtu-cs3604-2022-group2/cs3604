@@ -1,0 +1,600 @@
+{% extends 'posts/detail-tmp-extend.html'%} {% block head %}
+
+<title>Admin details</title>
+{{super()}}
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='css/posts/admin.css')}}"
+/>
+<style>
+  .footer.pull-right i {
+    font-size: 10px;
+  }
+
+  .footer.pull-right span {
+    font-size: 10px;
+  }
+
+  .add-reply-btn {
+    width: 40%;
+    /* background-color: #b3d8fc4d; */
+    background-color: inherit;
+    /* border:none; */
+    outline: none;
+    margin-top: 30px;
+    color: #0555b3;
+    margin-left: 30%;
+    margin-right: 30%;
+  }
+
+  .quit-btn {
+    width: 50px;
+    /* background-color: #b3d8fc4d; */
+    background-color: inherit;
+    /* border:none; */
+    outline: none;
+    margin-top: 0px;
+    color: #0555b3;
+    border: 0;
+    /* margin-left: 30%; */
+    /* margin-right: 30%; */
+    display: inline-block;
+  }
+
+  .quit-btn:hover,
+  .quit-btn:active,
+  .quit-btn:focus {
+    width: 50px;
+    /* background-color: #b3d8fc4d; */
+    background-color: #fbfbfb;
+    /* border:none; */
+    outline: none;
+    margin-top: 0px;
+    color: #0555b3;
+    border: 0;
+    /* margin-left: 30%; */
+    /* margin-right: 30%; */
+    display: inline-block;
+  }
+
+  .reply-to {
+    margin-bottom: 10px;
+  }
+
+  .pop_win {
+    display: none;
+    position: fixed;
+    top: 15%;
+    left: 20%;
+    width: 60%;
+    /* height: 60%; */
+    border: 2px solid #3b3e41;
+    background-color: white;
+    z-index: 9999;
+    overflow: auto;
+    border-radius: 25px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 24px;
+    padding-bottom: 40px;
+    overflow-y: hidden;
+    text-align: center;
+  }
+
+  .pop_win_report {
+    width: 20%;
+    left: 40%;
+    text-align: left;
+    /* padding:10px; */
+  }
+
+  .pop_win h4 {
+    font-size: 20px;
+    margin-bottom: 16px;
+    margin-top: 0px;
+  }
+
+  .pop_win h5 {
+    font-size: 14px;
+    margin-bottom: 16px;
+    margin-top: 0px;
+  }
+
+  .cke_top {
+    border-bottom: 0px;
+    background-color: #fbfbfb;
+  }
+</style>
+{% endblock %} {% block other_content%}
+
+{{super()}}
+
+<div class="admin-detail">
+  <div id="admin-delete" class="pop_win">
+    <p></p>
+
+    <div>
+      <form
+        name="form"
+        id="delete-form"
+        method="post"
+        action="{{url_for('posts.admin_delete')}}"
+      >
+        <input
+          style="display: none"
+          class="notclear"
+          id="delete_post_id"
+          name="delete_post_id"
+          value="{{post.id}}"
+        />
+        <input
+          style="display: none"
+          class="notclear"
+          id="delete_admin_id"
+          name="delete_admin_id"
+          value="{{current_user.id}}"
+        />
+        <input
+          style="display: none"
+          name="delete_comment_id"
+          id="delete_comment_id"
+        />
+        <input style="display: none" name="delete_floor" id="delete_floor" />
+        <textarea
+          cols="30"
+          rows="8"
+          name="delete_reason"
+          id="delete_reason"
+        ></textarea
+        ><br />
+      </form>
+      <button
+        class="btn notclear"
+        id="delete-submit-btn"
+        onclick="console.log('????');(document.getElementById('delete-form')).submit();"
+      >
+        确认
+      </button>
+      <button class="btn notclear" id="delete-quit-btn" onclick="quit();">
+        取消
+      </button>
+    </div>
+  </div>
+</div>
+
+{% endblock other_content%} {%block content %}
+<div class="detail admin-detail">
+  <div class="container total-content">
+    <div class="row" style="margin-top: 40px">
+      <div class="col-lg-9 col-md-9 col-9" width="75%">
+        <div class="post-and-reply" style="box-shadow: 0px 0px 13px -3px">
+          <div class="detail-block topic-block" style="padding-left: 0">
+            <div class="wrapper pull-left" style="margin-top:20px;">
+              <div class="detail-author-info">
+                <div class="detail-author-photo">
+                  <!-- <i class="fa fa-user-circle-o fa-3x" aria-hidden="true"></i> -->
+                  <a href="#">
+                    <img src="{{topic.user.image}}" />
+                  </a>
+                </div>
+
+                <div class="postername">{{topic.user.username}}</div>
+              </div>
+            </div>
+
+            <div class="topic-content pull-right">
+              <div class="topic-header">
+                <h3>{{topic.title}}</h3>
+              </div>
+              
+              <div class="admin-delete-post">
+                <button class="btn" onclick="delete_post();">
+                  <i class="fa fa-user-circle-o">&nbsp;&nbsp;删除本贴</i>
+                </button>
+              </div>
+              <div class="clearfix"></div>
+
+              <div class="topic-description">
+
+                <div style="width: 95%; word-break: break-all">
+                  {{ topic.body | safe }}
+                </div>
+
+                {% for image in topic.photos%}
+                <img
+                  class="topic_image"
+                  src="{{image.photo_path}}"
+                  width="60%"
+                />
+                {% endfor %}
+              </div>
+
+              <div class="tag pull-right">
+                <div class="category{{(topic.category).id}}">
+                  <a href="#">
+                    <!-- <i class="fa fa-circle" aria-hidden="true"></i> -->
+                    <span class="tag-icon"></span>
+                    {{(topic.category).name}}
+                  </a>
+                </div>
+              </div>
+              <div class="footer pull-right">
+                <div class="post-stamps pull-left">
+                  <i class="iconfont icon-view" aria-hidden="true">
+                    {{post.num_views}} 浏览</i
+                  >
+                  <i class="iconfont icon-comment1" aria-hidden="true">
+                    {{post.num_comments}} 回复</i
+                  >
+                  <i class="iconfont icon-time" aria-hidden="true">
+                    {{post.post_time}}</i
+                  >
+                  <button
+                    type="button"
+                    class="tolltip-button thumbs-up2"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    onclick="report_post();"
+                    style="
+                      border: none;
+                      background-color: #ffffff;
+                      margin-left: 4px;
+                    "
+                  >
+                    <i class="iconfont icon-jubao" aria-hidden="true"> 举报</i>
+                  </button>
+                </div>
+
+                <div class="actions pull-right">
+                  <button
+                    type="button"
+                    class="tolltip-button thumbs-up2"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Like"
+                    style="color:
+                                            {%if likes[0]%}
+                                                #5dc362;
+                                            {%else%}
+                                                inherit;
+                                            {%endif%}
+                                            "
+                    onclick="like(this,{{likes[0]}},-1,-1);return false;"
+                  >
+                    <i class="iconfont icon-like" aria-hidden="true"></i>
+                    <span> {{post.num_likes}}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="tolltip-button thumbs-up2"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Reply"
+                    onclick="add_comment();"
+                  >
+                    <i class="iconfont icon-comment-o" aria-hidden="true"></i>
+                    <span> 添加回复</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+          </div>
+
+          {% for i in range(post.comments|length) %} {% set
+          comment=post.comments[i] %}
+          <hr />
+          <div class="detail-block" style="padding-left: 0">
+            <div id="comment{{i+2}}" class="answer-block">
+              {%if comment.valid %}
+              <div class="delete-comment">
+                <button
+                  class="btn pull-right"
+                  onclick="delete_comment({{i+2}},{{comment.id}});"
+                >
+                  <i class="fa fa-user-circle-o">&nbsp;&nbsp;删除本楼</i>
+                </button>
+              </div>
+              <div class="clearfix"></div>
+              <div class="wrapper pull-left">
+                <div class="userinfo">
+                  <div class="detail-user-photo">
+                    <a href="#">
+                      <img src="{{User.query.get(comment.user_id).image}}" />
+                    </a>
+                  </div>
+
+                  <div class="postername">
+                    {{User.query.get(comment.user_id).username}}
+                  </div>
+                </div>
+              </div>
+              <div class="answer-content pull-right">
+                {% if (comment.towards!=None and comment.towards != -1) %}
+                <div class="reply-to">
+                  <a href="#comment{{comment.towards}}">
+                    <span>回复 </span>
+                    <span>{{comment.towards}}楼 </span>
+                    <span
+                      >{{User.query.get(post.comments[comment.towards-2].user_id
+                      ).username}}</span
+                    >
+                  </a>
+                </div>
+                {% endif %} 
+
+                <div class="answer-description" style="margin-bottom: 20px">
+                  
+                  <div style="width: 95%; word-break: break-all">
+                    {{comment.body | safe }}
+                  </div>
+                  
+                </div>
+
+                <div class="footer pull-right">
+                  <div class="post-stamps pull-left">
+                    <i class="iconfont icon-time" aria-hidden="true">
+                      {{comment.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</i
+                    >
+                    <span> &nbsp;{{i+2}}楼</span>
+                    <button
+                      type="button"
+                      class="tolltip-button thumbs-up2"
+                      data-toggle="tooltip"
+                      data-placement="bottom"
+                      onclick="report_comment({{i+2}},{{comment.id}});"
+                      style="
+                        border: none;
+                        background-color: #ffffff;
+                        margin-left: 4px;
+                      "
+                    >
+                      <i class="iconfont icon-jubao" aria-hidden="true">
+                        举报</i
+                      >
+                    </button>
+                  </div>
+                  <div class="actions pull-right">
+                    <button
+                      type="button"
+                      class="tolltip-button thumbs-up2"
+                      data-toggle="tooltip"
+                      data-placement="bottom"
+                      title="Like"
+                      style="color:
+                                            {%if likes[i+1]%}
+                                                #5dc362;
+                                            {%else%}
+                                                inherit;
+                                            {%endif%}
+                                            "
+                      onclick="like(this,{{likes[i+1]}},{{comment.id}},{{i+2}});return false;"
+                    >
+                      <i class="iconfont icon-like" aria-hidden="true"></i>
+                      <span> {{comment.num_likes}}</span>
+                    </button>
+
+                    {# 待定！ #}
+                    <button
+                      type="button"
+                      class="tolltip-button thumbs-up2"
+                      data-toggle="tooltip"
+                      data-placement="bottom"
+                      title="Reply"
+                      onclick="reply_comment({{i+2}});
+                                            $(document.getElementById('towards')).val({{i+2}});
+                                            $(document.getElementById('comment_id')).val({{post.comments[i].id}}); "
+                    >
+                      <i class="iconfont icon-Reply" aria-hidden="true"></i>
+                      <span> 回复</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {% else %}
+              <div class="deleted_comment" style="width:100%;text-align:center;margin-top:10px;margin-bottom:10px; word-break: break-all;color:#cf2f2f">
+                【该评论已被删除】
+              </div>
+              {%endif%}
+            </div>
+
+            <div class="clearfix" style="margin-bottom: 2px"></div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div
+          class="add-reply-section"
+          style="padding-left: 0; padding-right: 0; margin-top: 10px"
+        >
+          <div class="add-reply">
+            <div class="leave-a-reply" style="padding: 15px">
+              <h3>添加回复</h3>
+            </div>
+
+            <div class="editor-wrap">
+              <form method="post" action="/add_reply/1">
+                {{ add_reply_form.csrf_token(class='notclear')}} {{
+                add_reply_form.new_floor1(style='display:none',value=(post.comments|length)+2,class='notclear')
+                }} {{
+                add_reply_form.user_id1(style='display:none',value=current_user.id
+                ,class='notclear')}} {{
+                add_reply_form.post_id1(style='display:none',value=post.id,class='notclear'
+                )}} {{add_reply_form.text_body1}}
+                {{add_reply_form.submit1(class=' btn btn-primary add-reply-btn
+                notclear')}} {{ ckeditor.load()}} {{
+                ckeditor.config(name='text_body1' ,height=250,custom_config="" ,
+                class='add_reply_form_cke') }}
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      {# Siderbars #}
+      <div class="col-lg-3 col-md-3 index detail-side">
+        <div class="sidebarblock">
+          <a href="{{url_for('posts.newpost')}}" class="topost">
+            <div class="topost">
+              <i class="iconfont icon-add"> 新建话题</i>
+            </div>
+          </a>
+        </div>
+
+        <div class="sidebarblock">
+          <a href="" class="activities">
+            <div class="activities">
+              <i class="iconfont icon-activity"> 活动</i>
+            </div>
+          </a>
+        </div>
+
+        <div class="sidebarblock recommendations user-recommendation">
+          <h3
+            style="
+              line-height: 66px;
+              padding-left: 20px;
+              padding-top: 10px;
+              padding-bottom: 10px;
+              margin: 0;
+            "
+          >
+            推荐关注
+          </h3>
+
+
+          
+          <div class="divline"></div>
+          <div class="blocktxt">
+            <ul class="recom recom-user">
+              {% for recom_user in recommend_users%}
+              <li>
+                <div class="recom_user_img pull-left" style="
+                padding-top:2px;
+                padding-bottom:2px;
+                height:28px;
+                width:24px;
+                overflow: hidden;
+                ">
+                   <img src="{{recom_user.image}} " style="width:24px;"> 
+                  
+                </div>
+
+                <a href="#"> {# 个人主页的链接？ #}
+                  <p class='pull-left' style="
+                  text-overflow: ellipsis;
+                  height: 28px;
+                  overflow: hidden;
+                  width: 50%;
+                  -webkit-line-clamp: 1;
+                  line-clamp: 1;
+                  word-break: break-all;
+                  display: -webkit-box;
+                  -webkit-box-orient: vertical;
+                  /* letter-spacing: 2px; */
+                  font-size: 13px;
+                  padding-top:2px;
+                  padding-left: 6px;
+                "
+                  >
+                  {{recom_user.username}}
+                  </p>
+                  <span class="badge pull-right" >{{recom_user.followers.count()}} 关注</span> 
+                  <div class="clearfix"></div>
+                  </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <div class="sidebarblock recommendations">
+          <h3
+            style="
+              line-height: 66px;
+              padding-left: 20px;
+              padding-top: 10px;
+              padding-bottom: 10px;
+              margin: 0;
+            "
+          >
+            推荐话题
+          </h3>
+
+          <div class="divline"></div>
+          <div class="blocktxt">
+            <ul class="recom">
+              {% for po in recommend_posts%}
+              <li>
+                <a href="{{url_for('posts.detail',post_id=po.id)}}">
+                  <p
+                    class="pull-left"
+                    style="
+                      text-overflow: ellipsis;
+                      height: 28px;
+                      overflow: hidden;
+                      width: 70%;
+                      -webkit-line-clamp: 1;
+                      line-clamp: 1;
+                      word-break: break-all;
+                      display: -webkit-box;
+                      -webkit-box-orient: vertical;
+                      /* letter-spacing: 2px; */
+                      font-size: 13px;
+                    "
+                  >
+                    {{po.title}}
+                  </p>
+                  <span class="badge pull-right"
+                    >{{po.num_comments}} 讨论</span
+                  >
+                  <!-- <div class="badge pull-right" style="width:25%;">{{po.num_comments}} 讨论</div>  -->
+                  <div class="clearfix"></div>
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %} {% block scripts %} {{ super() }}
+
+
+<script>
+  function delete_post() {
+    $("#admin-delete p")[0].innerHTML = "请输入删帖理由";
+    $("#delete_floor").val(-1);
+    $("#delete_comment_id").val(-1);
+    delete_popwin();
+  }
+
+  function delete_comment(floor, id) {
+    console.log("in delete");
+    $("#admin-delete p")[0].innerHTML = "请输入删除" + floor + "楼的理由";
+    $("#delete_floor").val(floor);
+    $("#delete_comment_id").val(id);
+    delete_popwin();
+  }
+</script>
+
+<script>
+  function delete_popwin() {
+    console.log("in pop");
+    //$('body,html').css('overflow', 'hidden');
+    document.getElementById("admin-delete").style.display = "block";
+    document.getElementById("fade").style.display = "block";
+  }
+</script>
+
+{% endblock %}
