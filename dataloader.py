@@ -216,3 +216,4 @@ if __name__ == "__main__":
     admin1=User.query.get(1)
     normal_user=User.query.get(9)
     admin1.follow(normal_user)
+    db.session.commit()
