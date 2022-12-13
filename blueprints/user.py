@@ -150,7 +150,8 @@ def profile_follow():
         follow_user = User.query.get(follow_id)
         user.follow(follow_user)
         db.session.commit()
-        return redirect(url_for("user.profile", uid=follow_id))
+        current_poster_user_id = int(form['currentPage'])
+        return redirect(url_for("user.profile", uid=current_poster_user_id))
 
 
 # @bp.route("/chat")
