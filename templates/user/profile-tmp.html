@@ -82,6 +82,7 @@
         <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
           <div class="td">
             <input type="text" name="follow" value="{{poster_user.id}}" style="display:none">
+            <input type="text" name="currentPage" value="{{poster_user.id}}" style="display:none">
             <button class="m-btn" type="submit"><i class="material-icons">people</i><span>关注</span></button>
           </div>
         </form>
@@ -382,6 +383,7 @@
                     <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
 
                         <input type="text" name="follow" value="{{poster_user.id}}" style="display:none">
+                        <input type="text" name="currentPage" value="{{poster_user.id}}" style="display:none">
                         <button class="btn btn-primary btn-sm transactionButton" type="submit">&nbsp;&nbsp;&nbsp;关注&nbsp;&nbsp;&nbsp;</button>
 
                     </form>
