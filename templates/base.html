@@ -143,9 +143,11 @@
                 <!-- <ul class="nav navbar-nav"> </ul> -->
                 <ul
                   class="nav navbar-nav navbar-right"
-                  style="padding: 0; margin-right: 2px;"
+                  style="padding: 0; margin-right: 2px"
                 >
                   <li><a href="/index">首页</a></li>
+                  <li><a href="/follow_posts">关注的人的Post</a></li>
+
                   <li class="dropdown">
                     <a
                       href="#"
@@ -159,32 +161,32 @@
                     <ul class="dropdown-menu animated zoomIn">
                       <li>
                         <a
-                          href="{{url_for('posts.search',search_content='动画')}}"
+                          href="{{url_for('posts.search',search_category='分区',search_content='动画')}}"
                           >动画</a
                         >
                       </li>
                       <li>
                         <a
-                          href="{{url_for('posts.search',search_content='小说')}}"
+                          href="{{url_for('posts.search',search_category='分区',search_content='小说')}}"
                           >小说</a
                         >
                       </li>
                       <li>
                         <a
-                          href="{{url_for('posts.search',search_content='游戏')}}"
+                          href="{{url_for('posts.search',search_category='分区',search_content='游戏')}}"
                           >游戏</a
                         >
                       </li>
                       <li>
                         <a
-                          href="{{url_for('posts.search',search_content='音乐')}}"
+                          href="{{url_for('posts.search',search_category='分区',search_content='音乐')}}"
                           >音乐</a
                         >
                       </li>
 
                       <li>
                         <a
-                          href="{{url_for('posts.search',search_content='电影')}}"
+                          href="{{url_for('posts.search',search_category='分区',search_content='电影')}}"
                           >电影</a
                         >
                       </li>
