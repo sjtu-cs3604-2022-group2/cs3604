@@ -46,41 +46,6 @@ def index(page):
     )
 
 
-@bp.route("/follow_posts", defaults={"page": 1})
-@bp.route("/follow_posts/<int:page>")
-def follow_posts(page):
-    user_id = int(session.get("user_id"))
-    user = User.query.get(user_id)
-    per_page = current_app.config["POST_PER_PAGE"]
-    followed_list = list()
-    for relation in user.followed.all():
-        followed_list.append(relation.followed.id)
-    # print(followed_id)
-
-    pagination = (
-        Post.query.filter(and_(Post.valid == 1, Post.user_id.in_(followed_list)))
-        .order_by(Post.timestamp.desc())
-        .paginate(page=page, per_page=per_page)
-    )
-
-    posts = pagination.items
-
-    recommend_posts = CF_get_recommendation_posts(user_id)
-    # recommend_posts = [Post.query.get(post_id) for post_id in recommend_posts_id]
-
-    recommend_users = CF_get_recommendation_users(user_id)
-    # recommend_users = [User.query.get(user_id) for user_id in recommend_users_id]
-
-    return render_template(
-        "posts/index-tmp-extend.html",
-        pagination=pagination,
-        index_posts=posts,
-        current_user=user,
-        recommend_posts=recommend_posts,
-        recommend_users=recommend_users,
-    )
-
-
 @bp.route("/detail/<int:post_id>")
 def detail(post_id):
     related1 = {"title": "Guide for beginner", "num_comments": 20}
@@ -170,9 +135,10 @@ def upload():
         photo = Photo(filename=filename, user=current_user, photo_path=photo_path)
         db.session.add(photo)
         db.session.commit()
+        return photo_path
 
         # redirect(url_for("posts.newpost", photo_path=os.path.join(upload_path, filename)))
-    return "202"  ###这里的返回
+    return "202"
 
 
 @bp.route("/textform", methods=["POST"])
@@ -560,31 +526,31 @@ def admin_delete():
 
         print(post_id, floor, comment_id, admin_id, reason)
 
-        action_delete = ActionDelete(admin_id)
+        action_delete=ActionDelete(admin_id)
 
         if comment_id == -1:
             post = Post.query.get(post_id)
-            obj = ObjectPost(post)
-
+            obj=ObjectPost(post)
+            
             action_delete.set_object(obj)
             action_delete.delete_object()
             action_delete.send_notification()
 
-            redirect_url = url_for("posts.index")
-
+            redirect_url=url_for("posts.index")
+            
         elif comment_id != -1:
 
             comment_1 = Comment.query.get(comment_id)
 
-            obj = ObjectComment(comment_1, floor)
+            obj=ObjectComment(comment_1,floor)
 
             action_delete.set_object(obj)
             action_delete.delete_object()
             action_delete.send_notification()
 
-            redirect_url = url_for("posts.detail", post_id=post_id)
+            redirect_url=url_for("posts.detail", post_id=post_id)
 
-            if 0:
+            if(0):
 
                 association_comments = Comment.query.filter(
                     and_(
@@ -592,16 +558,15 @@ def admin_delete():
                         Comment.towards == floor,
                     )
                 ).all()
-
+                
                 for comment in association_comments:
-                    obj = ObjectComment(comment)
+                    obj=ObjectComment(comment)
 
                     action_delete.set_object(obj)
                     action_delete.delete_object()
                     action_delete.send_notification()
 
     return redirect(redirect_url)
-
 
 # @csrf.exempt
 # @bp.route("/admin_delete", methods=["POST"])

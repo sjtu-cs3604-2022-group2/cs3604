@@ -27,7 +27,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
+var xhr;
 /*
  *
  * More info at [www.dropzonejs.com](http://www.dropzonejs.com)
@@ -929,8 +929,32 @@ var Dropzone = /*#__PURE__*/function (_Emitter) {
         // Receives `file`
         success: function success(file) {
           if (file.previewElement) {
+            var responseFileName=xhr.responseText;
+            // alert(responseFileName);
+            // alert(file.name);
+            var elem=document.getElementById("copy_url");
+            $(elem).val(responseFileName);
+            // alert($(elem).val());
+            var mystring=$(elem).val();
+            navigator.clipboard.writeText(mystring.toString());
+            // elem.select();
+            // try{
+            //   //进行复制到剪切板
+            //   if(document.execCommand("Copy","false",null)){
+            //     //如果复制成功
+            //     alert("复制成功！");  
+            //   }else{
+            //     //如果复制失败
+            //     alert("复制失败！");
+            //   }
+            // }catch(err){
+            //   //如果报错
+            //   alert("复制错误！")
+            // }
+          
             return file.previewElement.classList.add("dz-success");
           }
+          
         },
         successmultiple: function successmultiple() {},
         // When the upload is canceled.
@@ -2368,7 +2392,7 @@ var Dropzone = /*#__PURE__*/function (_Emitter) {
     value: function _uploadData(files, dataBlocks) {
       var _this16 = this;
 
-      var xhr = new XMLHttpRequest(); // Put the xhr object in the file objects to be able to reference it later.
+      xhr = new XMLHttpRequest(); // Put the xhr object in the file objects to be able to reference it later.
 
       var _iterator21 = _createForOfIteratorHelper(files),
           _step21;
@@ -2733,6 +2757,8 @@ var Dropzone = /*#__PURE__*/function (_Emitter) {
     key: "submitRequest",
     value: function submitRequest(xhr, formData, files) {
       xhr.send(formData);
+      // var responseFileName=xhr.responseText;
+      // alert(responseFileName);
     } // Called internally when processing is finished.
     // Individual callbacks have to be called in the appropriate sections.
 
