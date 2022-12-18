@@ -45,7 +45,41 @@ def index(page):
         recommend_users=recommend_users,
     )
 
+@bp.route("/follow_posts", defaults={"page": 1})
+@bp.route("/follow_posts/<int:page>")
+def follow_posts(page):
+    user_id = int(session.get("user_id"))
+    user = User.query.get(user_id)
+    per_page = current_app.config["POST_PER_PAGE"]
+    followed_list = list()
+    for relation in user.followed.all():
+        followed_list.append(relation.followed.id)
+    # print(followed_id)
 
+    pagination = (
+        Post.query.filter(and_(Post.valid == 1, Post.user_id.in_(followed_list)))
+        .order_by(Post.timestamp.desc())
+        .paginate(page=page, per_page=per_page)
+    )
+
+    posts = pagination.items
+
+    recommend_posts = CF_get_recommendation_posts(user_id)
+    # recommend_posts = [Post.query.get(post_id) for post_id in recommend_posts_id]
+
+    recommend_users = CF_get_recommendation_users(user_id)
+    # recommend_users = [User.query.get(user_id) for user_id in recommend_users_id]
+
+    return render_template(
+        "posts/index-tmp-extend.html",
+        pagination=pagination,
+        index_posts=posts,
+        current_user=user,
+        recommend_posts=recommend_posts,
+        recommend_users=recommend_users,
+    )
+
+    
 @bp.route("/detail/<int:post_id>")
 def detail(post_id):
     related1 = {"title": "Guide for beginner", "num_comments": 20}
