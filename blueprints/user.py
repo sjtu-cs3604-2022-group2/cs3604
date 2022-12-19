@@ -57,34 +57,61 @@ def login():
     return render_template("user/login.html", form=form, registerform=registerform)
 
 
-@bp.route("/notifications", methods=["GET"])
-def notifications():
-    return render_template("user/notifications.html")
+# @bp.route("/notifications", methods=["GET"])
+# def notifications():
+#     return render_template("user/notifications.html")
 
 
-@bp.route("/follows", methods=["GET"])
-def follows():
-    try:
-        id = session["user_id"]
-        user = User.query.get(id)
-    except:
-        return redirect(url_for("user.login"))
-    return render_template("user/friends-tmp.html", main_user=user)
+# @bp.route("/follows", methods=["GET"])
+# def follows():
+#     try:
+#         id = session["user_id"]
+#         user = User.query.get(id)
+#     except:
+#         return redirect(url_for("user.login"))
+#     return render_template("user/friends-tmp.html", main_user=user)
 
 
 @bp.route("/profile/<int:uid>", methods=["GET", "POST"])
 def profile(uid):
+    # 必须使用封装以实现valid的筛选，否则前端逻辑会很麻烦
+    attrs_direct = ['id', 'username', 'about', 'image']
+    attrs_verify = ['posts', 'photos', 'comments', 'like_posts', 'like_comments']
+    attrs_follow = ['followers', 'followed']
+    # ["followed", "followers"]: List[User]
+    ValidUser = namedtuple('ValidUser', attrs_verify+attrs_direct+attrs_follow)
+    
+    def encapsulate(user: User):
+        info = dict()
+        for a in attrs_direct:
+            info[a] = getattr(user, a)
+        for a in attrs_verify:
+            invalid = getattr(user, a)
+            valid = []
+            for o in invalid:  
+                if hasattr(o, 'valid') and getattr(o, 'valid'):
+                    # 'posts', 'comments', 'like_posts', 'like_comments'
+                    valid.append(o)
+                elif hasattr(o, 'post') and getattr(getattr(o, 'post'), 'valid'):
+                    # 'photos'
+                    valid.append(o)
+            if valid and hasattr(valid[0], 'timestamp'):
+                valid = sorted(valid, key=lambda x: x.timestamp, reverse=True)
+            info[a] = valid
+        info['followed'] = [r.followed for r in user.followed.all()]
+        info['followers'] = [r.follower for r in user.followers.all()]
+        return ValidUser(**info)
+    
     profile_form = ProfileForm()
 
     id = session["user_id"]
-    user = User.query.get(id)
     if uid == 0:
         uid = id
+    user = User.query.get(id)
+    user = encapsulate(user)
     visit_user = User.query.get(uid)
+    visit_user = encapsulate(visit_user)
     recommend_posts = CF_get_recommendation_posts(uid)
-    # recommend_posts = [Post.query.get(post_id).category.name for post_id in recommend_posts_id][:5]
-    # recommend_posts = list(set(recommend_posts))
-    # recommend_posts = [recommend_posts[i] for i in range(len(recommend_posts))]
     recommend_category = list(set([p.category.name for p in recommend_posts]))
     recommend_users = CF_get_recommendation_users(uid)
 
@@ -92,12 +119,11 @@ def profile(uid):
         "user/profile-tmp.html",
         current_user=user,
         poster_user=visit_user,
-        current_all_follower_id=[relation.followed.id for relation in user.followed.all()],
+        current_all_follower_id=[u.id for u in user.followed],
         profile_form=profile_form,
         recommend_posts=recommend_posts,
         recommend_user=recommend_users,
         recommend_category=recommend_category
-
     )
 
 
