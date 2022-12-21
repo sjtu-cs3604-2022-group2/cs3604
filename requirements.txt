@@ -52,3 +52,4 @@ visitor==0.1.3
 Werkzeug==2.2.2
 WTForms==2.2.1
 zipp==3.10.0
+coverage==7.0.0
