@@ -1,5 +1,6 @@
 import os
 import random
+import json
 from flask import Blueprint, render_template, g, flash, request, redirect, url_for, current_app, session
 from flask_login import login_required
 from flask_dropzone import random_filename
@@ -153,6 +154,7 @@ from app import csrf
 @bp.route("/upload", methods=["POST", "GET"])
 def upload():
     if request.method == "POST" and "file" in request.files:
+        print("调用1次")
         current_user = User.query.get(session["user_id"])
         f = request.files.get("file")
         session["photo_nums"] = session.get("photo_nums", 0) + 1
@@ -699,3 +701,17 @@ def read_admin_notification():
     notice = AdminNotification.query.get(notice_id)
     notice.state = StateType.READ.value
     db.session.commit()
+
+@csrf.exempt
+@bp.route("/author_delete", methods=["POST"])
+def author_delete():
+    if request.method == "POST":
+        form = request.form
+        post_id = int(form["post_id"])
+        user_id=int(form['user_id'])
+        post = Post.query.get(post_id)
+        obj=ObjectPost(post)
+        action_delete=ActionDelete(user_id)
+        action_delete.set_object(obj)
+        action_delete.delete_object()
+    return json.dumps({'url':url_for('posts.index')})
