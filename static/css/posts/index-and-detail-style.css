@@ -784,6 +784,20 @@ theme blue:6fa8dc
   color:#cf6363;
 }
 
+.detail .topic-content .footer .actions .favorite i{
+  font-size: 20px;
+}
+
+.detail .topic-content .footer .actions .favorited i{
+  font-size: 20px;
+}
+
+.detail .topic-content .footer .actions .favorited{
+  color:#5dc362;
+}
+
+
+
 @media only screen and (min-width:1700px) {
   .posttext .post_text_para{
     text-overflow: ellipsis;

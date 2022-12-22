@@ -104,6 +104,20 @@
         border-bottom: 0px;
         background-color: #fbfbfb;
     }
+
+    .collections.list-group-item > *{
+        cursor: pointer;
+    }
+
+    .collections.list-group-item > *:hover{
+        color:#00aeec;
+    }
+
+    #favoriteModal input[type="checkbox"]:checked{
+        color:#00aeec;
+        background-color:#00aeec;
+        border-color:#00aeec;
+    }
 </style>
 {% endblock %}
 
@@ -202,6 +216,56 @@
 {% endblock other_content%}
 
 {%block modals%}
+<div class="modal fade" id="favoriteModal" tabindex="-1" role="dialog" aria-labelledby="favoriteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="height:60%; width:33%;margin-top:10%;">
+        <div class="modal-content" style="height:100%;" >
+            <div class="modal-header" style="border-bottom:none ;">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="myModalLabel" style="text-align: center;padding-top: 10px;">添加到收藏夹</h3>
+                
+            </div>
+            <div class="modal-body" style="height:70%;padding-left: 5%;padding-right: 5%;">
+                <p>请选择收藏夹</p>
+                <input id='chosen-collection' style="display: none;">
+                <div class="collection-list" style="height:80%;overflow:auto; ">
+                    <ul class="list-group">
+                        {#{%for i in range(collections|length)  %}#}
+                        {%for i in range(5)  %}
+                        {# <li class="list-group-item collections" id="collection{{collection[i].id}}" onclick="choose_collection(this);">{{collection[i].name}}</li>#}
+                        <li class="list-group-item collections" id="collection{{i}}" onclick="choose_collection(this);">
+                            <label style="height:100%;width:100%;">
+                                <input type="checkbox" style="margin-top:6px;">
+                                <span>实验</span>
+                            </label>
+                        </li>
+                        {%endfor%}
+                        <!-- <li class="list-group-item collections" id="collection1" onclick="choose_collection(this);"><input type="checkbox">实验</li>
+                        <li class="list-group-item collections" id="collection2" onclick="choose_collection(this);"><input type="checkbox">实验</li>
+                        <li class="list-group-item collections" id="collection3" onclick="choose_collection(this);"><input type="checkbox">实验</li>
+                        <li class="list-group-item collections" id="collection4" onclick="choose_collection(this);"><input type="checkbox">实验</li>
+                        <li class="list-group-item collections" id="collection5" onclick="choose_collection(this);"><input type="checkbox">实验实验实验实验实验实验实验实验实验实验</li> -->
+                    </ul>
+                </div>
+                <div class='add-collection-div' style="text-align: center;">
+                    <input id='new-collection' placeholder="新建收藏夹(不超过20字)" style="height:34px;">
+                    <button class="btn btn-primary" onclick="add_collection();">新建</button>
+                </div>
+
+            </div>
+            <div class="modal-footer" style="text-align: center;">
+                <div style="text-align: center;">
+                <button type="button" class="btn btn-primary  favorite-submit-btn"  onclick="favorite();"
+                style="margin-right:20px; width:30%; color: #0555b3; background-color: inherit;">
+                    收藏
+                </button>
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">取消</button> -->
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
 <div class="modal fade" id="authorDeleteModal" tabindex="-1" role="dialog" aria-labelledby="authorDeleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="height:30%; width:23%;margin-top:10%;">
         <div class="modal-content" style="height:100%;" >
@@ -311,6 +375,22 @@
                                 </div>
 
                                 <div class="actions pull-right">
+
+                                    {% if 1 %}
+                                        
+                                        <button type="button" class="tolltip-button thumbs-up2 favorite" data-toggle="modal" data-target="#favoriteModal"
+                                            data-placement="bottom" title="Favorite" >
+                                            <i class="iconfont icon-favorite " aria-hidden="true"></i>
+                                            <span> 收藏</span>
+                                        </button>
+                                    {% else %}
+                                        <button type="button" class="tolltip-button thumbs-up2 favorited" 
+                                            data-placement="bottom" title="Favorite" onclick="cancel_favorite();">
+                                            <i class="iconfont icon-favorited " aria-hidden="true"></i>
+                                            <span> 已收藏</span>
+                                        </button>
+                                    {% endif %}
+
                                     <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
                                         data-placement="bottom" title="Like" 
                                         style="color:
