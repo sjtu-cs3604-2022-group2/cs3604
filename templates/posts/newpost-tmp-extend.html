@@ -38,6 +38,7 @@
     box-shadow: 0 0 1px 1px #c9c9c5;
   }
 
+
   #cke_1_top {
     border-bottom: 0px;
     border-radius: 2.01em 2.01em 0em 0em;
@@ -77,6 +78,21 @@
   }
 </style>
 
+<style type="text/css">
+  .dropzone .dz-preview a.dz-copy-url:link, .dropzone .dz-preview a.dz-remove:link { 
+    color: #337ab7; text-decoration: none; 
+  }/* 未访问的链接 */
+  .dropzone .dz-preview a.dz-copy-url:visited, .dropzone .dz-preview a.dz-remove:visited {
+     color: #337ab7; text-decoration: none;
+     } /* 已访问的链接 */
+  .dropzone .dz-preview a.dz-copy-url:hover, .dropzone .dz-preview a.dz-remove:hover { 
+    color: rgb(231, 99, 99); text-decoration: none; 
+  }/* 鼠标移动到链接上 */
+  .dropzone .dz-preview a.dz-copy-url:active, .dropzone .dz-preview a.dz-remove:active {
+     color: rgb(247, 81, 81); text-decoration: none;
+     } /* 选定的链接 */
+</style>
+
 {% endblock head %} {%block content %}
 <div class="newpost" style="padding-left: 10%; padding-right: 10%">
   <form
@@ -96,27 +112,16 @@
     }}
     <h3>输入内容</h3>
     {{new_post_form.post_text(id='post_text')}} {{ ckeditor.load() }} {{
-    ckeditor.config(name='post_text' ,height=300,custom_config="uiColor:
+    ckeditor.config(name='post_text',height=300 ,custom_config="uiColor:
     '#fbfbfb' " ) }}
   </form>
 
   <div class="wrap">
     <h4>上传图片</h4>
-    {#
-    <form
-      action="/upload"
-      method="post"
-      class="dropzone dz-clickable"
-      id="uploadform"
-      enctype="multipart/form-data"
-    >
-      <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
-      <div class="dz-default dz-message"><span>选择或拖放文件</span></div>
-    </form>
-    #}
+
     
     {{dropzone.create(action=url_for("posts.upload"),id="uploadform")}}
-    <input id="copy_url" style="display:none" readonly="readonly">
+    <input id="copy_url_one" style="display:none" readonly="readonly">
   </div>
 
 
@@ -151,5 +156,6 @@
   $(".select2-container .select2-search")[0].style.width = "50%";
   $(".select2-container .select2-search textarea")[0].style.width = "40%";
 </script>
+
 
 {%endblock scripts%}

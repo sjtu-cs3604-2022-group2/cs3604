@@ -386,7 +386,9 @@ var Dropzone = /*#__PURE__*/function (_Emitter) {
          * already uploading) the file. The `dictCancelUpload`, `dictCancelUploadConfirmation`
          * and `dictRemoveFile` options are used for the wording.
          */
-        addRemoveLinks: false,
+        addRemoveLinks: true,
+
+        addCopyUrl: true,
 
         /**
          * Defines where to display the file previews – if `null` the
@@ -790,6 +792,11 @@ var Dropzone = /*#__PURE__*/function (_Emitter) {
               file.previewElement.appendChild(file._removeLink);
             }
 
+            if (this.options.addCopyUrl) {
+              file._copyurl = Dropzone.createElement("<div style=\"text-align:center\"><a class=\"dz-copy-url\" style=\"cursor:pointer\" onclick=\"copy_url_event(this);return false;\" href=\"javascript:undefined;\" >点击复制URL</a><input style=\"display:none\" class=\"store_url\" readonly=\"readonly\" type='text' value='0'></div>");
+              file.previewElement.appendChild(file._copyurl);
+            }
+
             var removeFileEvent = function removeFileEvent(e) {
               e.preventDefault();
               e.stopPropagation();
@@ -930,13 +937,18 @@ var Dropzone = /*#__PURE__*/function (_Emitter) {
         success: function success(file) {
           if (file.previewElement) {
             var responseFileName=xhr.responseText;
+            var elemlist=$(".store_url");
+            var last_elem=elemlist[elemlist.length-1];
+            $(last_elem).val(responseFileName);
+
+            //alert($(last_elem).val());
             // alert(responseFileName);
             // alert(file.name);
-            var elem=document.getElementById("copy_url");
-            $(elem).val(responseFileName);
+            // var elem=document.getElementById("copy_url_one");
+            // $(elem).val(responseFileName);
             // alert($(elem).val());
-            var mystring=$(elem).val();
-            navigator.clipboard.writeText(mystring.toString());
+            // var mystring=$(elem).val();
+            // navigator.clipboard.writeText(mystring.toString());
             // elem.select();
             // try{
             //   //进行复制到剪切板
@@ -3530,4 +3542,14 @@ function __guardMethod__(obj, methodName, transform) {
   } else {
     return undefined;
   }
+}
+
+function copy_url_event(th){
+ var div_=$(th).parent();
+ var input_=div_.children("input")[0];
+//  alert($(input_).val());
+ var mystring=$(input_).val();
+ navigator.clipboard.writeText(mystring.toString());
+ return false;
+
 }
