@@ -34,6 +34,22 @@ user_like_comment_table = db.Table(
 )
 
 
+favorite_collect_contents_table = db.Table(
+    "favorite_collect_contents",
+    db.Column("collection_id", db.Integer(), db.ForeignKey("favorite_collection.id")),
+    db.Column("post_id", db.Integer(), db.ForeignKey("post.id")),
+    db.Column("timestamp", db.DateTime, default=datetime.now)
+)
+
+
+class FavoriteCollection(db.Model):
+    __tablename__ = "favorite_collection"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    contents = db.relationship("Post", secondary=favorite_collect_contents_table, back_populates="favorite")
+    timestamp = db.Column(db.DateTime, default=datetime.now)
+
+
 class User(UserMixin, db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -51,6 +67,15 @@ class User(UserMixin, db.Model):
     messages = db.relationship("Message", back_populates="author", cascade="all")
     notifications = db.relationship("Notification", back_populates="user", cascade="all")
     # admin_notifications = db.relationship("AdminNotification", back_populates="user", cascade="all")
+
+    # 用户收藏夹
+    favorites = db.relationship(
+        "FavoriteCollection",
+        foreign_keys=[FavoriteCollection.user_id],
+        backref=db.backref("user", lazy="joined"),
+        lazy="dynamic",
+        cascade="all, delete-orphan",
+    )
 
     # 本用户关注的其他用户
     followed = db.relationship(
@@ -94,6 +119,20 @@ class User(UserMixin, db.Model):
     def is_admin(self):
         return self.id in current_app.config["ADMIN_ID"]
         #return self.username in current_app.config["ADMIN_NAME"]
+    
+    def in_favorite(self, collection, post):
+        if self.favorites.filter_by(id=collection.id).filter_by(user_id=self.id).first() is not None:
+            return post in collection.contents
+        else:
+            return False
+    
+    def add_favorite(self, collection, post):
+        if not self.in_favorite(collection, post):
+            collection.contents.append(post)
+            db.session.commit()
+            return True
+        else:
+            return False
 
 
 class Photo(db.Model):
@@ -150,6 +189,7 @@ class Post(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey("category.id"))
 
     comments = db.relationship("Comment", back_populates="post", cascade="all, delete-orphan")
+    favorite = db.relationship("FavoriteCollection", secondary=favorite_collect_contents_table, back_populates="contents")
 
 
 class Comment(db.Model):
