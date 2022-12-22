@@ -201,6 +201,33 @@
 </div>
 {% endblock other_content%}
 
+{%block modals%}
+<div class="modal fade" id="authorDeleteModal" tabindex="-1" role="dialog" aria-labelledby="authorDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="height:30%; width:23%;margin-top:10%;">
+        <div class="modal-content" style="height:100%;" >
+            <div class="modal-header" style="border-bottom:none ;">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <!-- <h3 class="modal-title" id="myModalLabel" style="text-align: center;">确认删除本帖？</h3> -->
+            </div>
+            <h3 class="modal-title" id="myModalLabel" style="text-align: center;padding-top: 30px;padding-bottom: 30px;">
+                确认删除本帖？
+            </h3>
+            <!-- <div class="modal-body">确认删除本帖？</div> -->
+            <div class="modal-footer" style="border-top:none ;">
+                <div style="text-align: center;">
+                <button type="button" class="btn btn-primary"  onclick="author_delete();"
+                style="margin-right:20px; background-color:#ee6464;border:none;">
+                    确认
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+{%endblock modals%}
+
 {%block content %}
 <div class="detail">
 
@@ -225,11 +252,23 @@
                         </div>
 
                         <div class="topic-content pull-right">
-                            <div class="topic-header">
+                            
+                            {%if topic.user.id==current_user.id%}
+                            <div class="author-operations pull-right" style="width:13%;margin-top: 20px;">
+                                <button class="tolltip-button author-edit-btn thumbs-up2" data-toggle="modal" data-target="#authorEditModal">
+                                    <i class="icon iconfont icon-edit" style="font-size:20px;"></i>
+                                </button>
+                                <button class="tolltip-button author-delete-btn thumbs-up2" data-toggle="modal" data-target="#authorDeleteModal">
+                                    <i class="icon iconfont icon-delete" style="font-size:20px;"></i>
+                                </button>
+                            </div>
+                            {%endif%}
+                            <div class="topic-header" style="width:85%;">
                                 <h3>
                                     {{topic.title}}
                                 </h3>
                             </div>
+
                             {%block delete_post_btn%}
                             {%endblock delete_post_btn%}
                             <div class="topic-description">
@@ -263,7 +302,7 @@
 
                                     <i class="iconfont icon-view" aria-hidden="true"> {{post.num_views}} 浏览</i>
                                     <i class="iconfont icon-comment1" aria-hidden="true"> {{post.num_comments}} 回复</i>
-                                    <i class="iconfont icon-time" aria-hidden="true"> {{post.post_time}}</i>
+                                    <i class="iconfont icon-time" aria-hidden="true"> {{post.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</i>
                                     <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
                                         data-placement="bottom" onclick="report_post();"
                                         style="border:none;background-color:#ffffff;margin-left: 4px;">
@@ -864,6 +903,20 @@
         
 
         return false;
+    }
+</script>
+<script>
+    function author_delete(){
+        $('#authorDeleteModal').modal('hide');
+        var dic={'user_id':{{current_user.id}},'post_id':{{post.id}}};
+        $.ajax({
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{url_for('posts.author_delete')}}" ,//url
+                data: dic,
+                success: function (a) {window.location.href=a['url'];},
+                error : function() { }
+            });
     }
 </script>
 
