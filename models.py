@@ -1,3 +1,4 @@
+from email.policy import default
 import random
 from datetime import datetime
 from flask import current_app
@@ -38,7 +39,7 @@ favorite_collect_contents_table = db.Table(
     "favorite_collect_contents",
     db.Column("collection_id", db.Integer(), db.ForeignKey("favorite_collection.id")),
     db.Column("post_id", db.Integer(), db.ForeignKey("post.id")),
-    db.Column("timestamp", db.DateTime, default=datetime.now)
+    db.Column("timestamp", db.DateTime, default=datetime.now),
 )
 
 
@@ -119,8 +120,8 @@ class User(UserMixin, db.Model):
     @property
     def is_admin(self):
         return self.id in current_app.config["ADMIN_ID"]
-        #return self.username in current_app.config["ADMIN_NAME"]
-    
+        # return self.username in current_app.config["ADMIN_NAME"]
+
     def in_favorite(self, post, collection=None):
         if not collection:
             for c in self.favorites.all():
@@ -131,7 +132,7 @@ class User(UserMixin, db.Model):
             return post in collection.contents
         else:
             return False
-    
+
     def add_favorite(self, post, collection):
         if not self.in_favorite(post, collection):
             collection.contents.append(post)
@@ -209,7 +210,9 @@ class Post(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey("category.id"))
 
     comments = db.relationship("Comment", back_populates="post", cascade="all, delete-orphan")
-    favorite = db.relationship("FavoriteCollection", secondary=favorite_collect_contents_table, back_populates="contents")
+    favorite = db.relationship(
+        "FavoriteCollection", secondary=favorite_collect_contents_table, back_populates="contents"
+    )
 
 
 class Comment(db.Model):
@@ -274,18 +277,18 @@ class Notification(db.Model):
 class AdminNotification(db.Model):  # 表示管理员接收到的举报通知
     __tablename__ = "admin_notification"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    reason = db.Column(db.Text) # 记录举报理由
+    reason = db.Column(db.Text)  # 记录举报理由
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
     state = db.Column(db.Integer, default=0)  # 表示已读还是未读
     object = db.Column(db.Integer, default=0)  # 0表示是举报post本身 1表示举报comment。
     action_id = db.Column(db.Integer)  # 这个举报信息是由哪个用户发出的
     link = db.Column(db.String(100), default="#")
-    body = db.Column(db.Text) #被举报对象的文字信息
+    body = db.Column(db.Text)  # 被举报对象的文字信息
 
     # 表示这个通知要发给哪个管理员
     # user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     # user = db.relationship("User", back_populates="admin_notifications")
-    
+
     # 举报对应哪个post
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
     post = db.relationship("Post", back_populates="admin_notifications")
@@ -293,3 +296,18 @@ class AdminNotification(db.Model):  # 表示管理员接收到的举报通知
     # 举报对应哪个comment
     comment_id = db.Column(db.Integer, db.ForeignKey("comment.id"))
     comment = db.relationship("Comment", back_populates="admin_notifications")
+
+
+class DeleteNotification(db.Model):  ## 用于管理员删除用户的帖子或评论时，给相应的用户发送通知
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    reason = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
+    state = db.Column(db.Integer, default=0)  # 表示已读还是未读
+    object = db.Column(db.Integer, default=0)  # 0表示是删除post本身 1表示删除comment。
+    action_id = db.Column(db.Integer)  # 哪个管理员删除了该内容
+
+    # 删除的哪个post
+    # post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
+    post_id = db.Column(db.Integer, default=-1)
+
+    comment_id = db.Column(db.Integer, default=-1)

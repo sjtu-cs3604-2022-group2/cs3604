@@ -562,7 +562,7 @@ def admin_delete():
 
         action_delete=ActionDelete(admin_id)
 
-        if comment_id == -1:
+        if comment_id == -1: 
             post = Post.query.get(post_id)
             obj=ObjectPost(post)
             

@@ -39,9 +39,6 @@ def login():
             # session["user"] = record
             login_user(record, remember=False)
             return redirect(url_for("posts.index"))
-        # if username=='zkn' and password=='111':
-        #     flash('登陆成功')
-        #     return redirect(url_for('posts.index'))
         else:
             flash("用户名或密码错误")
             return redirect(url_for("user.login"))
