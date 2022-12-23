@@ -104,7 +104,6 @@ def detail(post_id):
     # print(repr(post.body))
     post.num_views += 1
     db.session.commit()
-    print("add")
 
     if current_user.is_admin:
         return render_template(
@@ -123,6 +122,7 @@ def detail(post_id):
             recommend_posts=recommendation_posts,
             recommend_users=recommendation_users,
             likes=list_like_of_user,
+            collections= current_user.favorites.all()
         )
     else:
         return render_template(
@@ -141,6 +141,7 @@ def detail(post_id):
             recommend_posts=recommendation_posts,
             recommend_users=recommendation_users,
             likes=list_like_of_user,
+            collections= current_user.favorites.all()
         )
 
 

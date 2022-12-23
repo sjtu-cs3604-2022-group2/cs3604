@@ -105,6 +105,11 @@
         background-color: #fbfbfb;
     }
 
+    .collections.list-group-item {
+        cursor: pointer;
+        padding:0px;
+    }
+
     .collections.list-group-item > *{
         cursor: pointer;
     }
@@ -215,6 +220,9 @@
 </div>
 {% endblock other_content%}
 
+
+
+
 {%block modals%}
 <div class="modal fade" id="favoriteModal" tabindex="-1" role="dialog" aria-labelledby="favoriteModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="height:60%; width:33%;margin-top:10%;">
@@ -227,28 +235,23 @@
             <div class="modal-body" style="height:70%;padding-left: 5%;padding-right: 5%;">
                 <p>请选择收藏夹</p>
                 <input id='chosen-collection' style="display: none;">
-                <div class="collection-list" style="height:80%;overflow:auto; ">
-                    <ul class="list-group">
-                        {#{%for i in range(collections|length)  %}#}
-                        {%for i in range(5)  %}
-                        {# <li class="list-group-item collections" id="collection{{collection[i].id}}" onclick="choose_collection(this);">{{collection[i].name}}</li>#}
-                        <li class="list-group-item collections" id="collection{{i}}" onclick="choose_collection(this);">
-                            <label style="height:100%;width:100%;">
-                                <input type="checkbox" style="margin-top:6px;">
-                                <span>实验</span>
-                            </label>
+                <div class="collection-list-div" style="height:80%;overflow:auto; ">
+                    <ul class="list-group" id="collection-list">
+                        {%for i in range(collections|length)  %}
+                        <li class="list-group-item collections" id="collection{{collections[i].id}}" onclick="choose_collection(this);">
+                                <div style="height:100%;width:100%;padding: 10px 15px;">
+                                    <input type="checkbox" style="margin-top:6px;">
+                                    <span>{{collections[i].name}}</span>
+                                </div>
                         </li>
+                        
                         {%endfor%}
-                        <!-- <li class="list-group-item collections" id="collection1" onclick="choose_collection(this);"><input type="checkbox">实验</li>
-                        <li class="list-group-item collections" id="collection2" onclick="choose_collection(this);"><input type="checkbox">实验</li>
-                        <li class="list-group-item collections" id="collection3" onclick="choose_collection(this);"><input type="checkbox">实验</li>
-                        <li class="list-group-item collections" id="collection4" onclick="choose_collection(this);"><input type="checkbox">实验</li>
-                        <li class="list-group-item collections" id="collection5" onclick="choose_collection(this);"><input type="checkbox">实验实验实验实验实验实验实验实验实验实验</li> -->
+                       
                     </ul>
                 </div>
                 <div class='add-collection-div' style="text-align: center;">
-                    <input id='new-collection' placeholder="新建收藏夹(不超过20字)" style="height:34px;">
-                    <button class="btn btn-primary" onclick="add_collection();">新建</button>
+                    <input id='new-collection-name' placeholder="新建收藏夹(不超过20字)" style="height:34px; width:80%;">
+                    <button class="btn btn-primary" onclick="add_collection();" style="width:19%;">新建</button>
                 </div>
 
             </div>
@@ -376,7 +379,7 @@
 
                                 <div class="actions pull-right">
 
-                                    {% if 1 %}
+                                    {% if 1 or current_user.in_favorite(post) %}
                                         
                                         <button type="button" class="tolltip-button thumbs-up2 favorite" data-toggle="modal" data-target="#favoriteModal"
                                             data-placement="bottom" title="Favorite" >
@@ -998,6 +1001,107 @@
                 error : function() { }
             });
     }
+</script>
+
+<script>
+    function choose_collection(a){
+       
+        // 用checkbox实现单选效果
+        var box=$(a).find("input[type='checkbox']")
+        var target_input=$("#chosen-collection");
+        // event.preventDefault();
+        if(!$(box).prop("checked")){
+            var idString=$(a).prop("id");
+            var collection_id=parseInt(idString.substring(10));
+            
+            $(target_input).val(collection_id);
+
+            var other_list_items=$(a).siblings()
+            var other_boxes=$(other_list_items).find("input[type='checkbox']")
+            $(box).prop("checked",true);//设置当前选中checkbox的状态为checked
+            $(other_boxes).prop("checked",false); 
+            $(a).css("color","#00aeec");
+            $(other_list_items).css("color","#333333");
+            return false;
+        }
+        else{
+            $(box).prop("checked",false);
+            $(target_input).val('');
+            $(a).css("color","#333333");
+            return false;
+        }
+    }
+
+    function create_list_item(id,name){
+        var elem='<li class="list-group-item collections" id=\"collection'+id+'\" onclick="choose_collection(this);">\
+                    <div style="height:100%;width:100%;padding: 10px 15px;">\
+                    <input type="checkbox" style="margin-top:6px;">\
+                    <span>'
+                    +name+
+                    '</span></div></li>';
+
+        $("#collection-list").append(elem);
+    }
+
+    function add_collection(){
+        var name=$("#new-collection-name").val();
+        if(name.length==0){
+            return;
+        }
+        else if(name.length>20){
+            alert("超过字数");
+            return;
+        }
+        var dic={"user_id":{{current_user.id}},
+                    "new_collection_name":name };
+        $.ajax({
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{url_for('posts.add_collection')}}" ,//url
+                data: dic,
+                success: function (id_json) { 
+                    var id=id_json['new_id'];
+                    create_list_item(id,name);
+                    $("#new-collection-name").val('');
+                  },
+                error : function() { }
+            });
+    }
+
+    function favorite(){
+        var collection_id=$("#chosen-collection").val();
+        var dic={"user_id":{{current_user.id}},
+                    "post_id":{{post.id}},
+                    "collection_id":collection_id 
+                };
+        $.ajax({
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{url_for('posts.favorite')}}" ,//url
+                data: dic,
+                success: function () { 
+                    location.reload();
+                  },
+                error : function() { }
+            });
+    }
+
+    function cancel_favorite(){
+        var dic={"user_id":{{current_user.id}},
+                    "post_id":{{post.id}}
+                };
+        $.ajax({
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{url_for('posts.cancel_favorite')}}" ,//url
+                data: dic,
+                success: function () { 
+                    location.reload();
+                  },
+                error : function() { }
+            });
+    }
+
 </script>
 
 {% endblock %}
