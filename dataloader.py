@@ -1,4 +1,5 @@
 import os
+import time
 import random
 import json
 from faker import Faker
@@ -32,7 +33,8 @@ def clear_uploads():
 
 
 def init_categories(count=5):
-    print(f"create {count} Categories")
+    print(f"创建 {count} 个Categories", end='')
+    t0 = time.perf_counter()
     for c in Category.query.all():
         db.session.delete(c)
     db.session.commit()
@@ -49,10 +51,13 @@ def init_categories(count=5):
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
+    t1 = time.perf_counter()
+    print(f"用时{t1-t0:.2f}s")
 
 
 def init_user(count=30):
-    print(f"create {count} Users")
+    print(f"创建 {count} 个Users", end='')
+    t0 = time.perf_counter()
     with open("./data/user.json", "r", encoding="utf8") as f:
         users = json.load(f)
     for u in User.query.all():
@@ -104,11 +109,17 @@ def init_user(count=30):
                 follow_u = User.query.get(positive)
                 if follow_u:
                     u.follow(follow_u)
+    # randomize follow
+    for f in Follow.query.all():
+        f.timestamp = fake.date_time_this_year()
     db.session.commit()
+    t1 = time.perf_counter()
+    print(f"用时{t1-t0:.2f}s")
 
 
 def init_post(count=180):
-    print(f"create {count} Posts")
+    print(f"创建 {count} 个Posts", end='')
+    t0 = time.perf_counter()
     with open("./data/data.json", "r", encoding="utf8") as f:
         posts = json.load(f)
     for p in Post.query.all():
@@ -164,12 +175,15 @@ def init_post(count=180):
             db.session.add(comment)
             db.session.commit()
     db.session.commit()
+    t1 = time.perf_counter()
+    print(f"用时{t1-t0:.2f}s")
 
 
 def init_message():
+    t0 = time.perf_counter()
     num_users = User.query.count()
-    count = num_users * (num_users - 1) // 2
-    print(f"create {count} Messages")
+    count = num_users * (num_users - 1)
+    print(f"创建 {count} 个Messages", end='')
     for p in Message.query.all():
         db.session.delete(p)
     db.session.commit()
@@ -185,6 +199,8 @@ def init_message():
             )
             db.session.add(comment)
     db.session.commit()
+    t1 = time.perf_counter()
+    print(f"用时{t1-t0:.2f}s")
 
 
 def init_likes():
@@ -199,6 +215,27 @@ def init_likes():
     db.session.commit()
 
 
+def init_favorite():
+    print("初始化收藏数据", end='')
+    t0 = time.perf_counter()
+    posts = Post.query.all()
+    random.shuffle(posts)
+    for user in User.query.all():
+        collection = FavoriteCollection(
+            user=user, 
+            name=f"{user.username}的收藏夹",
+            timestamp=fake.date_time_this_year()
+        )
+        db.session.add(collection)
+        i = random.randint(4,6)
+        for p in posts[:i]:
+            user.add_favorite(p, collection)
+        posts = posts[i:]
+    db.session.commit()
+    t1 = time.perf_counter()
+    print(f"用时{t1-t0:.2f}s")
+
+
 if __name__ == "__main__":
     app = create_app("development")
     context = app.test_request_context()
@@ -210,6 +247,7 @@ if __name__ == "__main__":
     init_post()
     init_message()
     init_likes()  # 初始化点赞数据
+    init_favorite() # 初始化收藏数据
     # init photo
     # init likes
     # init notifications

@@ -1,12 +1,13 @@
 import os
 import random
+import json
 from flask import Blueprint, render_template, g, flash, request, redirect, url_for, current_app, session
 from flask_login import login_required
 from flask_dropzone import random_filename
 from sqlalchemy import or_, and_
 from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
 from extensions import db
-from models import Category, Photo, Post, User, Comment, Notification
+from models import *
 from utils import *
 from abstraction import *
 from actiontype import *
@@ -103,12 +104,9 @@ def detail(post_id):
     # print(repr(post.body))
     post.num_views += 1
     db.session.commit()
-    print("add")
 
     if current_user.is_admin:
-
         return render_template(
-            # "posts/detail-tmp-extend.html",
             "posts/admin-detail.html",
             User=User,
             current_user=current_user,
@@ -124,10 +122,10 @@ def detail(post_id):
             recommend_posts=recommendation_posts,
             recommend_users=recommendation_users,
             likes=list_like_of_user,
+            collections= current_user.favorites.all()
         )
     else:
         return render_template(
-            # "posts/detail-tmp-extend.html",
             "posts/detail-tmp-extend.html",
             User=User,
             current_user=current_user,
@@ -143,6 +141,7 @@ def detail(post_id):
             recommend_posts=recommendation_posts,
             recommend_users=recommendation_users,
             likes=list_like_of_user,
+            collections= current_user.favorites.all()
         )
 
 
@@ -153,6 +152,7 @@ from app import csrf
 @bp.route("/upload", methods=["POST", "GET"])
 def upload():
     if request.method == "POST" and "file" in request.files:
+        print("调用1次")
         current_user = User.query.get(session["user_id"])
         f = request.files.get("file")
         session["photo_nums"] = session.get("photo_nums", 0) + 1
@@ -699,3 +699,70 @@ def read_admin_notification():
     notice = AdminNotification.query.get(notice_id)
     notice.state = StateType.READ.value
     db.session.commit()
+
+
+@csrf.exempt
+@bp.route("/author_delete", methods=["POST"])
+def author_delete():
+    if request.method == "POST":
+        form = request.form
+        post_id = int(form["post_id"])
+        user_id = int(form['user_id'])
+        post = Post.query.get(post_id)
+        obj = ObjectPost(post)
+        action_delete = ActionDelete(user_id)
+        action_delete.set_object(obj)
+        action_delete.delete_object()
+    return json.dumps({'url': url_for('posts.index')})
+
+
+@csrf.exempt
+@bp.route("/add_collection", methods=["POST"])
+def add_collection():
+    if request.method == "POST":
+        form = request.form
+        user_id = int(form['user_id'])
+        new_name = form["new_collection_name"]
+
+        # 给user新建名为new_name的收藏
+        #获得新的收藏夹的id (new_id)
+        user = User.query.get(user_id)
+        collection = FavoriteCollection(user=user, name=new_name)
+        db.session.add(collection)
+        db.session.commit()
+        new_id = collection.id
+        dic = {"new_id": new_id}
+        return json.dumps(dic)
+
+
+@csrf.exempt
+@bp.route("/favorite", methods=["POST"])
+def favorite():
+    if request.method == "POST":
+        form = request.form
+        user_id = int(form['user_id'])
+        post_id = int(form['post_id'])
+        collection_id = int(form['collection_id'])
+
+        # 把post加入相应收藏夹
+        user = User.query.get(user_id)
+        post = Post.query.get(post_id)
+        collection = FavoriteCollection.query.get(collection_id)
+        user.add_favorite(post, collection)
+    return "202"
+
+
+@csrf.exempt
+@bp.route("/cancel_favorite", methods=["POST"])
+def cancel_favorite():
+    if request.method == "POST":
+        form = request.form
+        user_id = int(form['user_id'])
+        post_id = int(form['post_id'])
+
+        # 把post取消收藏
+        # 注意：默认将post从该用户的全部收藏夹中取消收藏
+        user = User.query.get(user_id)
+        post = Post.query.get(post_id)
+        user.remove_favorite(post)
+    return "202"

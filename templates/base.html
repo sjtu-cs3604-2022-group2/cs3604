@@ -23,7 +23,7 @@
     />
     <link
       rel="stylesheet"
-      href="https://at.alicdn.com/t/c/font_3724642_dw14pio9i6b.css"
+      href="https://at.alicdn.com/t/c/font_3724642_16xg87kdspp.css"
     />
 
     <link
@@ -146,7 +146,7 @@
                   style="padding: 0; margin-right: 2px"
                 >
                   <li><a href="/index">首页</a></li>
-                  <li><a href="/follow_posts">关注的人的Post</a></li>
+                  <li><a href="/follow_posts">关注</a></li>
 
                   <li class="dropdown">
                     <a
@@ -265,7 +265,9 @@
       </div>
       {% endblock nav%} {% block content %} {% endblock content%}
     </div>
-    {% block other_content %} {% endblock other_content%} {% block scripts %}
+    {% block other_content %} {% endblock other_content%}
+    {% block modals %} {% endblock modals%}
+    {% block scripts %}
     <script>
       function shows(a) {
         $(".search-in-area").text(a);
