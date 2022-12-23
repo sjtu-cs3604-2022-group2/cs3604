@@ -244,9 +244,7 @@
                                     <span>{{collections[i].name}}</span>
                                 </div>
                         </li>
-                        
                         {%endfor%}
-                       
                     </ul>
                 </div>
                 <div class='add-collection-div' style="text-align: center;">
@@ -379,8 +377,7 @@
 
                                 <div class="actions pull-right">
 
-                                    {% if 1 or current_user.in_favorite(post) %}
-                                        
+                                    {% if not current_user.in_favorite(post) %}
                                         <button type="button" class="tolltip-button thumbs-up2 favorite" data-toggle="modal" data-target="#favoriteModal"
                                             data-placement="bottom" title="Favorite" >
                                             <i class="iconfont icon-favorite " aria-hidden="true"></i>

@@ -748,8 +748,7 @@ def favorite():
         user = User.query.get(user_id)
         post = Post.query.get(post_id)
         collection = FavoriteCollection.query.get(collection_id)
-        user.add_favorite(collection, post)
-
+        user.add_favorite(post, collection)
     return "202"
 
 
@@ -765,7 +764,5 @@ def cancel_favorite():
         # 注意：默认将post从该用户的全部收藏夹中取消收藏
         user = User.query.get(user_id)
         post = Post.query.get(post_id)
-        for collection in user.favorites.all():
-            if post in collection.contents:
-                collection.contents.remove(post)
+        user.remove_favorite(post)
     return "202"

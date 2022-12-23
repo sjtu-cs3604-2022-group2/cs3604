@@ -121,15 +121,34 @@ class User(UserMixin, db.Model):
         return self.id in current_app.config["ADMIN_ID"]
         #return self.username in current_app.config["ADMIN_NAME"]
     
-    def in_favorite(self, collection, post):
-        if self.favorites.filter_by(id=collection.id).filter_by(user_id=self.id).first() is not None:
+    def in_favorite(self, post, collection=None):
+        if not collection:
+            for c in self.favorites.all():
+                if post in c.contents:
+                    return True
+            return False
+        elif self.favorites.filter_by(id=collection.id).filter_by(user_id=self.id).first() is not None:
             return post in collection.contents
         else:
             return False
     
-    def add_favorite(self, collection, post):
-        if not self.in_favorite(collection, post):
+    def add_favorite(self, post, collection):
+        if not self.in_favorite(post, collection):
             collection.contents.append(post)
+            db.session.commit()
+            return True
+        else:
+            return False
+
+    def remove_favorite(self, post, collection=None):
+        if not collection:
+            for c in self.favorites.all():
+                if post in c.contents:
+                    c.contents.remove(post)
+            db.session.commit()
+            return True
+        elif self.favorites.filter_by(id=collection.id).filter_by(user_id=self.id).first() is not None:
+            collection.contents.remove(post)
             db.session.commit()
             return True
         else:

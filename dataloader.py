@@ -229,7 +229,7 @@ def init_favorite():
         db.session.add(collection)
         i = random.randint(4,6)
         for p in posts[:i]:
-            user.add_favorite(collection, p)
+            user.add_favorite(p, collection)
         posts = posts[i:]
     db.session.commit()
     t1 = time.perf_counter()
