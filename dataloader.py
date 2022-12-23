@@ -223,6 +223,7 @@ def init_favorite():
     for user in User.query.all():
         collection = FavoriteCollection(
             user=user, 
+            name=f"{user.username}的收藏夹",
             timestamp=fake.date_time_this_year()
         )
         db.session.add(collection)

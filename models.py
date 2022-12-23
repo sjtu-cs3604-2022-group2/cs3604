@@ -46,6 +46,7 @@ class FavoriteCollection(db.Model):
     __tablename__ = "favorite_collection"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    name = db.Column(db.String(64), nullable=True)
     contents = db.relationship("Post", secondary=favorite_collect_contents_table, back_populates="favorite")
     timestamp = db.Column(db.DateTime, default=datetime.now)
 

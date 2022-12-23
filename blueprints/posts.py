@@ -7,7 +7,7 @@ from flask_dropzone import random_filename
 from sqlalchemy import or_, and_
 from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
 from extensions import db
-from models import Category, Photo, Post, User, Comment, Notification
+from models import *
 from utils import *
 from abstraction import *
 from actiontype import *
@@ -107,9 +107,7 @@ def detail(post_id):
     print("add")
 
     if current_user.is_admin:
-
         return render_template(
-            # "posts/detail-tmp-extend.html",
             "posts/admin-detail.html",
             User=User,
             current_user=current_user,
@@ -128,7 +126,6 @@ def detail(post_id):
         )
     else:
         return render_template(
-            # "posts/detail-tmp-extend.html",
             "posts/detail-tmp-extend.html",
             User=User,
             current_user=current_user,
@@ -702,19 +699,20 @@ def read_admin_notification():
     notice.state = StateType.READ.value
     db.session.commit()
 
+
 @csrf.exempt
 @bp.route("/author_delete", methods=["POST"])
 def author_delete():
     if request.method == "POST":
         form = request.form
         post_id = int(form["post_id"])
-        user_id=int(form['user_id'])
+        user_id = int(form['user_id'])
         post = Post.query.get(post_id)
-        obj=ObjectPost(post)
-        action_delete=ActionDelete(user_id)
+        obj = ObjectPost(post)
+        action_delete = ActionDelete(user_id)
         action_delete.set_object(obj)
         action_delete.delete_object()
-    return json.dumps({'url':url_for('posts.index')})
+    return json.dumps({'url': url_for('posts.index')})
 
 
 @csrf.exempt
@@ -722,41 +720,51 @@ def author_delete():
 def add_collection():
     if request.method == "POST":
         form = request.form
-        user_id=int(form['user_id'])
-        new_name=form["new_collection_name"]
+        user_id = int(form['user_id'])
+        new_name = form["new_collection_name"]
 
-        #给user新建名为new_name的收藏
+        # 给user新建名为new_name的收藏
         #获得新的收藏夹的id (new_id)
-        #然后把下面的内容取消注释
+        user = User.query.get(user_id)
+        collection = FavoriteCollection(user=user, name=new_name)
+        db.session.add(collection)
+        db.session.commit()
+        new_id = collection.id
+        dic = {"new_id": new_id}
+        return json.dumps(dic)
 
-
-        # dic={"new_id":new_id}
-        # return json.dumps(dic)
 
 @csrf.exempt
 @bp.route("/favorite", methods=["POST"])
 def favorite():
     if request.method == "POST":
         form = request.form
-        user_id=int(form['user_id'])
-        post_id=int(form['post_id'])
-        collection_id=int(form['collection_id'])
+        user_id = int(form['user_id'])
+        post_id = int(form['post_id'])
+        collection_id = int(form['collection_id'])
 
-        #把post加入相应收藏夹
-        pass
+        # 把post加入相应收藏夹
+        user = User.query.get(user_id)
+        post = Post.query.get(post_id)
+        collection = FavoriteCollection.query.get(collection_id)
+        user.add_favorite(collection, post)
 
-        
     return "202"
+
 
 @csrf.exempt
 @bp.route("/cancel_favorite", methods=["POST"])
 def cancel_favorite():
     if request.method == "POST":
         form = request.form
-        user_id=int(form['user_id'])
-        post_id=int(form['post_id'])
+        user_id = int(form['user_id'])
+        post_id = int(form['post_id'])
 
-        #把post取消收藏
-
-
+        # 把post取消收藏
+        # 注意：默认将post从该用户的全部收藏夹中取消收藏
+        user = User.query.get(user_id)
+        post = Post.query.get(post_id)
+        for collection in user.favorites.all():
+            if post in collection.contents:
+                collection.contents.remove(post)
     return "202"
