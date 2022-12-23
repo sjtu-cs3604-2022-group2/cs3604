@@ -715,3 +715,48 @@ def author_delete():
         action_delete.set_object(obj)
         action_delete.delete_object()
     return json.dumps({'url':url_for('posts.index')})
+
+
+@csrf.exempt
+@bp.route("/add_collection", methods=["POST"])
+def add_collection():
+    if request.method == "POST":
+        form = request.form
+        user_id=int(form['user_id'])
+        new_name=form["new_collection_name"]
+
+        #给user新建名为new_name的收藏
+        #获得新的收藏夹的id (new_id)
+        #然后把下面的内容取消注释
+
+
+        # dic={"new_id":new_id}
+        # return json.dumps(dic)
+
+@csrf.exempt
+@bp.route("/favorite", methods=["POST"])
+def favorite():
+    if request.method == "POST":
+        form = request.form
+        user_id=int(form['user_id'])
+        post_id=int(form['post_id'])
+        collection_id=int(form['collection_id'])
+
+        #把post加入相应收藏夹
+        pass
+
+        
+    return "202"
+
+@csrf.exempt
+@bp.route("/cancel_favorite", methods=["POST"])
+def cancel_favorite():
+    if request.method == "POST":
+        form = request.form
+        user_id=int(form['user_id'])
+        post_id=int(form['post_id'])
+
+        #把post取消收藏
+
+
+    return "202"
