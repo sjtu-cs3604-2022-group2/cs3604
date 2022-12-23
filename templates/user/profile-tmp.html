@@ -275,7 +275,7 @@
                 <div class="td active" value="显示" onclick="show1()" id="nav1-1"><i class="material-icons">av_timer</i><span>动态</span></div>
                 <div class="td" value="隐藏" onclick="show2()" id="btn2"><i class="material-icons">people</i><span>Ta的关注</span></div>
                 <div class="td" value="隐藏" onclick="show()"  id="btn1"><i class="material-icons">archive</i><span>资料</span></div>
-                <div class="td"><i class="material-icons"></i></div>
+                <div class="td" value="隐藏" onclick="show3()" id="btn3"><i class="material-icons">star</i><span>收藏</span></div>
 
               </div>
             </div>
@@ -320,82 +320,121 @@
         {% endfor %}
 
         <div id="loading"><i class="material-icons">autorenew</i></div>
-        </div> 
+      </div> 
 
 
 
-        <div id = "show2">
-          <ul class="card-list" style="width:100%;">
-	          {% for post in poster_user.posts %}
-            <li class="card">
-              <a class="card-image" href="https://michellezauner.bandcamp.com/album/psychopomp-2" target="_blank" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-100.jpg);" data-image-full="https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-500.jpg">
-                <img src="../../static/image/imgs_icons/category{{ post.category_id }}.png" alt="Psychopomp" />
-              </a>
-              <a class="card-description" href="{{url_for('posts.detail',post_id=post.id)}}" target="_blank">
-                <p> {{post.title}}</p>
-              </a>
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
+      <div id = "show2">
+        <ul class="card-list" style="width:100%;">
+          {% for post in poster_user.posts[:2] %}
+          <li class="card">
+            <a class="card-image" target="_blank" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-100.jpg);" data-image-full="https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-500.jpg">
+              <img src="https://ts1.cn.mm.bing.net/th?id=OIP-C.B6pZ8N_dG3MNAYppM-zX0AHaEo&w=316&h=197&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2" alt="Psychopomp" />
+            </a>
+            <a class="card-description" href="{{url_for('posts.detail',post_id=post.id)}}" target="_blank">
+              <p> {{post.title}}</p>
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
 
-        <div id = "show3">
-
-
-
-          <div class="container-fluid">
-
-      
-            <table id="usertable"  class = "table table-striped" style = "height:auto;width: 100%;" >
-              <thead>
-                <tr class="text-center">
-                  <th ><center>ID</center></th>
-                  <th ><center>头像</center></th>
-                  <th ><center>昵称</center></th>
-                  <th ><center>签名</center></th>
-                  <th></th> 
-                  <th></th>     
-                </tr>
-              </thead>
-      
-              <tbody>
-                {% for follow_user in poster_user.followed %}
-                <tr>
-                  <td align="center">{{follow_user.id}}</td> 
-                  <td align="center">
-                    <a href={{ "%d" | format(follow_user.id)}}>
-                      <img class='avatar' src="{{follow_user.image}}" alt='avatar'>
-                    </a>
-                  </td>
-                  <td align="center">{{follow_user.username}}</td>
-                  <td align="center"  class="line-limit-length">{{follow_user.about}}</td>
-                  <td align="center"><a href={{ "/chat/%d" | format(follow_user.id)}}><div class ="testbtn" style="width: 10px;">
-                       私聊
-                  </div></a></td>
-                  <td align="center"><div class='btn-group dropright'>
-                    {% if follow_user.id in current_all_follower_id %}
-                    <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
-                      <input type="text" name="unfollow" value="{{follow_user.id}}" style="display:none">
+      <div id = "show3">
+        <div class="container-fluid">
+          <table id="usertable"  class = "table table-striped" style = "height:auto;width: 100%;" >
+            <thead>
+              <tr class="text-center">
+                <th ><center>ID</center></th>
+                <th ><center>头像</center></th>
+                <th ><center>昵称</center></th>
+                <th ><center>签名</center></th>
+                <th></th> 
+                <th></th>     
+              </tr>
+            </thead>
+    
+            <tbody>
+              {% for follow_user in poster_user.followed %}
+              <tr>
+                <td align="center">{{follow_user.id}}</td> 
+                <td align="center">
+                  <a href={{ "%d" | format(follow_user.id)}}>
+                    <img class='avatar' src="{{follow_user.image}}" alt='avatar'>
+                  </a>
+                </td>
+                <td align="center">{{follow_user.username}}</td>
+                <td align="center"  class="line-limit-length">{{follow_user.about}}</td>
+                <td align="center"><a href={{ "/chat/%d" | format(follow_user.id)}}><div class ="testbtn" style="width: 10px;">
+                      私聊
+                </div></a></td>
+                <td align="center"><div class='btn-group dropright'>
+                  {% if follow_user.id in current_all_follower_id %}
+                  <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
+                    <input type="text" name="unfollow" value="{{follow_user.id}}" style="display:none">
+                    <input type="text" name="currentPage" value="{{poster_user.id}}" style="display:none">
+                    <button type="submit" class='btn btn-primary btn-sm transactionButton'>取消关注</button>
+                  </form>
+                  {% else %}
+                  <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
+                      <input type="text" name="follow" value="{{poster_user.id}}" style="display:none">
                       <input type="text" name="currentPage" value="{{poster_user.id}}" style="display:none">
-                      <button type="submit" class='btn btn-primary btn-sm transactionButton'>取消关注</button>
-                    </form>
-                    {% else %}
-                    <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
-                        <input type="text" name="follow" value="{{poster_user.id}}" style="display:none">
-                        <input type="text" name="currentPage" value="{{poster_user.id}}" style="display:none">
-                        <button class="btn btn-primary btn-sm transactionButton" type="submit">&nbsp;&nbsp;&nbsp;关注&nbsp;&nbsp;&nbsp;</button>
-                    </form>
-                    {% endif %}
-                  </div></td> 
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+                      <button class="btn btn-primary btn-sm transactionButton" type="submit">&nbsp;&nbsp;&nbsp;关注&nbsp;&nbsp;&nbsp;</button>
+                  </form>
+                  {% endif %}
+                </div></td> 
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <div id = "show4">
+        <nav>
+        <!--   Hover-Pop menu -->
+          <div class="show4-menu show4-hover-pop">
+            <div class="show4-menu-content" id = "favor-choose">哈哈</div>
+            
+            <div class="show4-dropdown">
+              {% for i in range(favor_lists|length) %}
+              {% set favor_list = favor_lists[i] %}
+              <a value={{i}} onclick="ChooseFavor(this)">{{favor_list}}</a>
+
+              {% endfor %}
+              <a >》》收藏夹《《</a>
+            </div>
           </div>
+
+        </nav>
+        <div class="favor-all">
+                <ul class="card-list" style="width:100%;">
+                  {% for post in poster_user.posts[:2] %}
+                  <li class="card">
+                    <a class="card-image" target="_blank" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-100.jpg);" data-image-full="https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-500.jpg">
+                      <img src="https://ts1.cn.mm.bing.net/th?id=OIP-C.B6pZ8N_dG3MNAYppM-zX0AHaEo&w=316&h=197&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2" alt="Psychopomp" />
+                    </a>
+                    <a class="card-description" href="{{url_for('posts.detail',post_id=post.id)}}" target="_blank">
+                      <p> {{post.title}}</p>
+                    </a>
+                  </li>
+                  {% endfor %}
+                </ul>
+                <ul class="card-list" style="width:100%;">
+                  {% for post in poster_user.posts[2:4] %}
+                  <li class="card">
+                    <a class="card-image" target="_blank" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-100.jpg);" data-image-full="https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-500.jpg">
+                      <img src="https://ts3.cn.mm.bing.net/th?id=OIP-C.QFdwl07_aviM1ch2KpyyFgHaEo&w=316&h=197&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2" alt="Psychopomp" />
+                    </a>
+                    <a class="card-description" href="{{url_for('posts.detail',post_id=post.id)}}" target="_blank">
+                      <p> {{post.title}}</p>
+                    </a>
+                  </li>
+                  {% endfor %}
+                </ul>
         </div>
 
-
-
+      </div>
 
 
 

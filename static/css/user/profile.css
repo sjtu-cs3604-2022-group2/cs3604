@@ -1150,3 +1150,114 @@
     margin-bottom: 0px !important;
 
   }
+
+
+
+/* favorite css start --- */
+/* collor pallet */
+:root {
+  --clr1: #6d9cc8;
+  --clr2: #FFF8F6;
+  --clr3: #fde3d9;
+  --clr4: #b0cae3;
+}
+
+
+
+
+
+
+
+#show4 .show4-menu {
+  height: 100%;
+  width: fit-content;
+  padding: 0  10px;
+  margin: 0 5px;
+  position: relative;
+  /*** Styling ***/
+  color: var(--clr3);
+    
+}
+
+
+ #show4  .show4-menu-content{
+    height: 100%;
+    width: fit-content;
+    padding: 0;
+    margin-bottom: 1px;
+    border: none;
+    /*** Styling ***/
+    font-size:1.3rem;
+    font-weight: 700;
+    color: inherit;
+    text-shadow: -1px -1px 0 gray;
+    text-align: center;
+    line-height: 35px;
+  } 
+
+
+
+/***** DropDown Style *****/
+.show4-dropdown {
+  margin-left:auto; margin-right:auto;
+  display: none;
+  position: absolute;
+  left:-60px;
+  box-sizing: border-box;
+  width: fit-content;
+  white-space: nowrap;
+  padding: 0;
+  /*** Styling ***/
+  background: var(--clr2);
+
+
+}
+  .show4-dropdown a {
+    height: auto;
+    display: block;
+    margin: 0;
+    padding: 7px 12px;
+    /*** styling ***/
+    font-size: 1.3rem;
+    text-align: center;
+    font-family: sans-serif;
+    font-weight: bold;
+    color: var(--clr1);
+    background: var(--clr2);
+    transition: all 0.15s ease;
+  }
+    .show4-dropdown a:first-child {border-top-left-radius:3px; border-top-right-radius:3px;}
+    .show4-dropdown a:last-child {
+      padding: 9px 12px!important;
+      font-size: 1.5rem!important;
+      border-bottom-left-radius:3px; border-bottom-right-radius:3px;}
+    .show4-dropdown a:hover{color: var(--clr2);
+    background: var(--clr1);
+    }
+
+/***** NavBar *****/
+#show4 nav {
+  display: flex;
+  justify-content: space-around;
+  margin: 0 auto;
+  width: 60%;
+  height:40px;
+  /*STYLES*/
+  background: var(--clr1);
+  border: none;
+  border-radius: 3px;
+  box-shadow:0 0 50px rgba(255,255,255,0.6);
+}
+
+/***** Hover-Pop Menu *****/
+.show4-hover-pop:hover .show4-dropdown {display: block;}
+
+
+
+
+
+
+
+
+
+/* favorite css end --- */

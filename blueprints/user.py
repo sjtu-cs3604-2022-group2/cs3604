@@ -115,6 +115,9 @@ def profile(uid):
     recommend_category = list(set([p.category.name for p in recommend_posts]))
     recommend_users = CF_get_recommendation_users(uid)
 
+    # 测试收藏功能，到时候要删掉（12.23）
+    favor_lis=['第一个收藏夹：美食','第二个收藏夹：游戏']
+
     return render_template(
         "user/profile-tmp.html",
         current_user=user,
@@ -123,7 +126,8 @@ def profile(uid):
         profile_form=profile_form,
         recommend_posts=recommend_posts,
         recommend_user=recommend_users,
-        recommend_category=recommend_category
+        recommend_category=recommend_category,
+        favor_lists=favor_lis
     )
 
 

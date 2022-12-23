@@ -7,7 +7,7 @@ html, body {
 }
 
 .card-list {
-	display: block;
+	display: none;
 
 	padding: 0;
 	font-size: 0;
@@ -20,7 +20,7 @@ html, body {
 	display: inline-block;
 
 	width: 12rem;
-    height:20rem;
+    height:15rem;
 	margin: 1rem;
 	font-size: 1rem;
 	text-decoration: none;
