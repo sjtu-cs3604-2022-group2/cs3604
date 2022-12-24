@@ -560,7 +560,7 @@ def admin_delete():
 
         print(post_id, floor, comment_id, admin_id, reason)
 
-        action_delete=ActionDelete(admin_id)
+        action_delete=ActionDelete(admin_id,reason)
 
         if comment_id == -1: 
             post = Post.query.get(post_id)
@@ -675,6 +675,7 @@ def read_notification():
     notice = Notification.query.get(notice_id)
     notice.state = StateType.READ.value
     db.session.commit()
+    return "202"
 
 
 @bp.route("/admin_notifications")
@@ -699,6 +700,7 @@ def read_admin_notification():
     notice = AdminNotification.query.get(notice_id)
     notice.state = StateType.READ.value
     db.session.commit()
+    return "202"
 
 
 @csrf.exempt
@@ -766,3 +768,31 @@ def cancel_favorite():
         post = Post.query.get(post_id)
         user.remove_favorite(post)
     return "202"
+
+
+
+
+@csrf.exempt
+@bp.route("/get_delete_record", methods=["POST"])
+def get_delete_record():
+    if request.method == "POST":
+        form = request.form
+        delete_record_id = int(form['delete_record_id'])
+        record=DeleteRecord.query.get(delete_record_id)
+        reason=record.reason
+        original_link=record.original_link
+        comment_id = record.comment_id
+        post_id=record.post_id
+        post=Post.query.get(post_id)
+        title=post.title
+        if(comment_id==-1):
+             content=post.body
+             obj=ObjectType.OBJECT_POST.value
+        else:
+            comment=Comment.query.get(comment_id)
+            content=comment.body
+            obj=ObjectType.OBJECT_COMMENT.value
+
+        dic={"reason":reason,"original_link":original_link,
+                "object":obj,"title":title,"content":content}
+        return json.dumps(dic)

@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, g, flash, request, redirect, url_f
 
 
 from blueprints import posts
-from models import User, Post, Comment, Notification, AdminNotification
+from models import User, Post, Comment, Notification, AdminNotification, DeleteRecord
 from actiontype import *
 from utils import filter_body_content
 from extensions import db
@@ -98,7 +98,7 @@ class ObjectComment(Object):
         return (self.object.post_id,self.object.id)
 
     def get_object_type(self):
-        return ObjectType.OBJECT_REPLY.value
+        return ObjectType.OBJECT_COMMENT.value
 
     def get_mainlink(self):
         return url_for("posts.detail", post_id=self.object.post_id)
@@ -220,19 +220,34 @@ class ActionReport(AbstractAction):
         db.session.commit()
 
 class ActionDelete(AbstractAction):
-    def __init__(self,user_id):
+    def __init__(self,user_id,reason):
         self.user_id=user_id
+        self.reason=reason
 
     def delete_object(self):
         self.obj.set_invalid()
 
     def send_notification(self):
+         
         text=self.obj.get_text()
-        link='#'
+        
         obj_type=self.obj.get_object_type()
         dst_user=self.obj.get_dst_user()
         post_id=self.obj.get_obj_id_tuple()[0]
         comment_id=self.obj.get_obj_id_tuple()[1]
+
+        ori_link=self.obj.get_mainlink() # +self.obj.get_sublink()
+
+        record=DeleteRecord(reason=self.reason,
+                            action_id=self.user_id,user_id=dst_user,
+                            object=obj_type,
+                            post_id=post_id,comment_id=comment_id,
+                            original_link=ori_link)
+
+        db.session.add(record)
+        db.session.commit()
+
+        link='#delete_record'+str(record.id)
         notice = Notification(body=text, 
                               state=StateType.UNREAD.value,
                               action=OptionType.DELETE.value, 
@@ -241,4 +256,6 @@ class ActionDelete(AbstractAction):
                               action_id=self.user_id, post_id=post_id,comment_id=comment_id)
         db.session.add(notice)
         db.session.commit()
+
+        
 

@@ -13,4 +13,4 @@ class StateType(Enum):
 
 class ObjectType(Enum):
     OBJECT_POST = 0
-    OBJECT_REPLY = 1
+    OBJECT_COMMENT = 1

@@ -41,7 +41,9 @@ render_pagination %} {% block head %}
                 </div>
               </div>
               <div class="posttext pull-right">
-                <h3>
+                <h3 style="word-break: break-all;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;width:90%;">
                   <a
                     href="{{url_for('posts.detail',post_id=index_posts[i].id)}}"
                     target="_blank"
