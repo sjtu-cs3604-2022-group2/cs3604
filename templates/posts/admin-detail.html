@@ -208,13 +208,11 @@
                   {{ topic.body | safe }}
                 </div>
 
-                {% for image in topic.photos%}
-                <img
-                  class="topic_image"
-                  src="{{image.photo_path}}"
-                  width="60%"
-                />
-                {% endfor %}
+                {#----------------------
+                  {% for image in topic.photos%}
+                  <img class='topic_image' src='{{image.photo_path}}' width="60%">
+                  {% endfor %}
+                  ----------------------#}
               </div>
 
               <div class="tag pull-right">
