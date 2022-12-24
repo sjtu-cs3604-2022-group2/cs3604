@@ -298,16 +298,19 @@ class AdminNotification(db.Model):  # 表示管理员接收到的举报通知
     comment = db.relationship("Comment", back_populates="admin_notifications")
 
 
-class DeleteNotification(db.Model):  ## 用于管理员删除用户的帖子或评论时，给相应的用户发送通知
+class DeleteRecord(db.Model):  ## 用于管理员删除用户的帖子或评论时，给相应的用户发送通知
+    __tablename__ = "delete_record"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     reason = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.now, index=True)
-    state = db.Column(db.Integer, default=0)  # 表示已读还是未读
     object = db.Column(db.Integer, default=0)  # 0表示是删除post本身 1表示删除comment。
     action_id = db.Column(db.Integer)  # 哪个管理员删除了该内容
-
+    user_id = db.Column(db.Integer)
+    original_link=db.Column(db.String(100), default="#")
     # 删除的哪个post
     # post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
     post_id = db.Column(db.Integer, default=-1)
 
     comment_id = db.Column(db.Integer, default=-1)
+
+
