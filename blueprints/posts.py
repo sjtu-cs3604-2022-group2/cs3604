@@ -5,6 +5,7 @@ from flask import Blueprint, render_template, g, flash, request, redirect, url_f
 from flask_login import login_required
 from flask_dropzone import random_filename
 from sqlalchemy import or_, and_
+from flask_ckeditor import upload_success, upload_fail
 from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
 from extensions import db
 from models import *
@@ -146,8 +147,6 @@ def detail(post_id):
 
 
 from app import csrf
-
-
 @csrf.exempt
 @bp.route("/upload", methods=["POST", "GET"])
 def upload():
@@ -175,9 +174,26 @@ def upload():
     return "202"
 
 
-@bp.route("/textform", methods=["POST"])
-def textform():
-    return "202 "
+@bp.route('/ckeditor_upload', methods=['POST'])
+def ckeditor_upload():
+    f = request.files.get('upload')  # 获取上传图片文件对象，键必须为'upload'
+    # Add more validations here
+    extension = f.filename.split('.')[1].lower()
+    if extension not in ['jpg', 'gif', 'png', 'jpeg']:  # 验证文件类型示例
+        return upload_fail(message='Image only!')  # 返回upload_fail调用
+
+    current_user = User.query.get(session["user_id"])
+    upload_path = current_app.config["FILE_UPLOAD_PATH"]
+    filename = random_filename(f.filename)
+    photo_path = url_for("static", filename="uploads/" + filename)
+    f.save(os.path.join(upload_path, filename))
+    session["photo_nums"] = session.get("photo_nums", 0) + 1
+    photo_num = session["photo_nums"]
+    session[f"photo_{photo_num}"] = photo_path
+    photo = Photo(filename=filename, user=current_user, photo_path=photo_path)
+    db.session.add(photo)
+    db.session.commit()
+    return upload_success(url=photo_path)
 
 
 @bp.route("/contributers", methods=["GET"])
