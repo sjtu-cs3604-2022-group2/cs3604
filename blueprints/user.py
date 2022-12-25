@@ -74,7 +74,7 @@ def profile(uid):
     # 必须使用封装以实现valid的筛选，否则前端逻辑会很麻烦
     attrs_direct = ['id', 'username', 'about', 'image']
     attrs_verify = ['posts', 'photos', 'comments', 'like_posts', 'like_comments']
-    attrs_follow = ['followers', 'followed']
+    attrs_follow = ['followers', 'followed']+['favorites']
     # ["followed", "followers"]: List[User]
     ValidUser = namedtuple('ValidUser', attrs_verify+attrs_direct+attrs_follow)
     
@@ -89,14 +89,17 @@ def profile(uid):
                 if hasattr(o, 'valid') and getattr(o, 'valid'):
                     # 'posts', 'comments', 'like_posts', 'like_comments'
                     valid.append(o)
-                elif hasattr(o, 'post') and getattr(getattr(o, 'post'), 'valid'):
+                elif hasattr(o, 'post'):
                     # 'photos'
-                    valid.append(o)
+                    p = o.post
+                    if p and p.valid:
+                        valid.append(o)
             if valid and hasattr(valid[0], 'timestamp'):
                 valid = sorted(valid, key=lambda x: x.timestamp, reverse=True)
             info[a] = valid
         info['followed'] = [r.followed for r in user.followed.all()]
         info['followers'] = [r.follower for r in user.followers.all()]
+        info['favorites'] = [c for c in user.favorites.all()]
         return ValidUser(**info)
     
     profile_form = ProfileForm()
@@ -112,9 +115,6 @@ def profile(uid):
     recommend_category = list(set([p.category.name for p in recommend_posts]))
     recommend_users = CF_get_recommendation_users(uid)
 
-    # 测试收藏功能，到时候要删掉（12.23）
-    favor_lis=['第一个收藏夹：美食','第二个收藏夹：游戏']
-
     return render_template(
         "user/profile-tmp.html",
         current_user=user,
@@ -124,7 +124,6 @@ def profile(uid):
         recommend_posts=recommend_posts,
         recommend_user=recommend_users,
         recommend_category=recommend_category,
-        favor_lists=favor_lis
     )
 
 

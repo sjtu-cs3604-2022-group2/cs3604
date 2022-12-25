@@ -394,53 +394,33 @@
         <nav>
         <!--   Hover-Pop menu -->
           <div class="show4-menu show4-hover-pop">
-            <div class="show4-menu-content" id = "favor-choose">哈哈</div>
-            
+            <div class="show4-menu-content" id = "favor-choose">选择收藏夹</div>
             <div class="show4-dropdown">
-              {% for i in range(favor_lists|length) %}
-              {% set favor_list = favor_lists[i] %}
-              <a value={{i}} onclick="ChooseFavor(this)">{{favor_list}}</a>
-
+              {% for i in range(poster_user.favorites|length) %}
+              {% set favor_list = poster_user.favorites[i] %}
+              <a value={{i}} onclick="ChooseFavor(this)">{{favor_list.name}}</a>
               {% endfor %}
-              <a >》》收藏夹《《</a>
             </div>
           </div>
 
         </nav>
         <div class="favor-all">
-                <ul class="card-list" style="width:100%;">
-                  {% for post in poster_user.posts[:2] %}
-                  <li class="card">
-                    <a class="card-image" target="_blank" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-100.jpg);" data-image-full="https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-500.jpg">
-                      <img src="https://ts1.cn.mm.bing.net/th?id=OIP-C.B6pZ8N_dG3MNAYppM-zX0AHaEo&w=316&h=197&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2" alt="Psychopomp" />
-                    </a>
-                    <a class="card-description" href="{{url_for('posts.detail',post_id=post.id)}}" target="_blank">
-                      <p> {{post.title}}</p>
-                    </a>
-                  </li>
-                  {% endfor %}
-                </ul>
-                <ul class="card-list" style="width:100%;">
-                  {% for post in poster_user.posts[2:4] %}
-                  <li class="card">
-                    <a class="card-image" target="_blank" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-100.jpg);" data-image-full="https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-500.jpg">
-                      <img src="https://ts3.cn.mm.bing.net/th?id=OIP-C.QFdwl07_aviM1ch2KpyyFgHaEo&w=316&h=197&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2" alt="Psychopomp" />
-                    </a>
-                    <a class="card-description" href="{{url_for('posts.detail',post_id=post.id)}}" target="_blank">
-                      <p> {{post.title}}</p>
-                    </a>
-                  </li>
-                  {% endfor %}
-                </ul>
+          {% for collection in poster_user.favorites %}
+            <ul class="card-list" style="width:100%;">
+              {% for post in collection.contents %}
+              <li class="card">
+                <a class="card-image" target="_blank" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-100.jpg);" data-image-full="https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-500.jpg">
+                  <img src="https://ts1.cn.mm.bing.net/th?id=OIP-C.B6pZ8N_dG3MNAYppM-zX0AHaEo&w=316&h=197&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2" alt="Psychopomp" />
+                </a>
+                <a class="card-description" href="{{url_for('posts.detail',post_id=post.id)}}" target="_blank">
+                  <p> {{post.title}}</p>
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          {% endfor %}
         </div>
-
       </div>
-
-
-
-
-
-
 
       </div>
       <div class="td" id="r-col">

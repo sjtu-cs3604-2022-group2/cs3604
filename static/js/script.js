@@ -55,7 +55,7 @@ $(document).ready(function () {
     socket.off('new message').on('new message', function (data) {
         message_count++;
         if (!document.hasFocus()) {
-            document.title = '(' + message_count + ') ' + 'CatChat';
+            document.title = '(' + message_count + ') ' + 'Chat';
         }
         if (data.user_id !== current_user_id) {
             messageNotify(data);
@@ -191,7 +191,7 @@ $(document).ready(function () {
 
         $(window).focus(function () {
             message_count = 0;
-            document.title = 'CatChat';
+            document.title = 'Chat';
         });
 
         activateSemantics();
