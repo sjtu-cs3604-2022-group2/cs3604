@@ -33,6 +33,7 @@ numpy==1.23.5
 packaging==21.3
 pandas==1.5.2
 pathspec==0.10.2
+Pillow==9.3.0
 platformdirs==2.5.4
 pycodestyle==2.10.0
 pyparsing==3.0.9
@@ -48,8 +49,8 @@ SQLAlchemy==1.4.42
 text-unidecode==1.3
 threadpoolctl==3.1.0
 tomli==2.0.1
+typing-extensions==4.4.0
 visitor==0.1.3
 Werkzeug==2.2.2
 WTForms==2.2.1
 zipp==3.10.0
-coverage==7.0.0

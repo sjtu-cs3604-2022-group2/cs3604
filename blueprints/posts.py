@@ -1,11 +1,14 @@
 import os
+import io
 import random
 import json
+from PIL import Image
 from flask import Blueprint, render_template, g, flash, request, redirect, url_for, current_app, session
 from flask_login import login_required
 from flask_dropzone import random_filename
 from sqlalchemy import or_, and_
 from flask_ckeditor import upload_success, upload_fail
+import base64
 from forms import AddReplyForm, CommentTowardsForm, AddReplyPopForm, ReportForm, NewPostForm
 from extensions import db
 from models import *
@@ -179,14 +182,32 @@ def ckeditor_upload():
     f = request.files.get('upload')  # 获取上传图片文件对象，键必须为'upload'
     # Add more validations here
     extension = f.filename.split('.')[1].lower()
-    if extension not in ['jpg', 'gif', 'png', 'jpeg']:  # 验证文件类型示例
+    if extension not in ['jpg', 'gif', 'png', 'jpeg','bmp']:  # 验证文件类型示例
         return upload_fail(message='Image only!')  # 返回upload_fail调用
+
+    filename = random_filename(f.filename)
+    bts=f.stream.read()
+    img = io.BytesIO(bts)
+    img = Image.open(img)
+    width,height=img.size
+
+    max_width=795 #px
+    scale=1
+    if width>max_width:
+        scale=max_width/width
+
+    width*=scale
+    height*=scale
+
+    img = img.resize((int(width), int(height)), Image.ANTIALIAS)
+    
 
     current_user = User.query.get(session["user_id"])
     upload_path = current_app.config["FILE_UPLOAD_PATH"]
-    filename = random_filename(f.filename)
+    
     photo_path = url_for("static", filename="uploads/" + filename)
-    f.save(os.path.join(upload_path, filename))
+    img.save(os.path.join(upload_path, filename))
+    # f.save(os.path.join(upload_path, filename))
     session["photo_nums"] = session.get("photo_nums", 0) + 1
     photo_num = session["photo_nums"]
     session[f"photo_{photo_num}"] = photo_path
