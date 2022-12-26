@@ -113,7 +113,7 @@
     <h3>输入内容</h3>
     {{new_post_form.post_text(id='post_text')}} {{ ckeditor.load() }} {{
     ckeditor.config(name='post_text',height=300 ,custom_config="uiColor:
-    '#fbfbfb' " ) }}
+    '#fbfbfb', disallowedContent:'img{width,height};img[width,height]' " ) }}
   </form>
 
   <div class="wrap">

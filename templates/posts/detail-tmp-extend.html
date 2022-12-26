@@ -146,7 +146,7 @@
                         {{ add_reply_pop_form.text_body3}}
                         {{ add_reply_pop_form.submit3(class=' btn btn-primary add-reply-btn notclear')}}
                         {{ ckeditor.load() }}
-                        {{ ckeditor.config(name='text_body3' ,custom_config="contentsCss:'/static/css/posts/inner_ckeditor.css'" ) }}
+                        {{ ckeditor.config(name='text_body3',id="text_body3" ,custom_config="contentsCss:'/static/css/posts/inner_ckeditor.css', disallowedContent:'img{width,height};img[width,height]'" ) }}
                     </form>
                     
                 </div>
@@ -173,7 +173,7 @@
                         {{comment_towards_form.text_body2}}
                         {{comment_towards_form.submit2(class=' btn btn-primary add-reply-btn notclear')}}
                         {{ ckeditor.load() }}
-                        {{ ckeditor.config(name='text_body2' ,custom_config="contentsCss:'/static/css/posts/inner_ckeditor.css'") }}
+                        {{ ckeditor.config(name='text_body2',id='text_body2' ,custom_config="contentsCss:'/static/css/posts/inner_ckeditor.css', disallowedContent:'img{width,height};img[width,height]'") }}
                     </form>
                    
                 </div>
@@ -543,7 +543,7 @@
                                 {{ add_reply_form.post_id1(style='display:none',value=post.id,class='notclear' )}}
                                 {{add_reply_form.text_body1}}
                                 {{add_reply_form.submit1(class=' btn btn-primary add-reply-btn notclear')}} {{ ckeditor.load()}}
-                                {{ ckeditor.config(name='text_body1' ,height=250, class='add_reply_form_cke',custom_config="contentsCss:'/static/css/posts/inner_ckeditor.css'" ) }}
+                                {{ ckeditor.config(name='text_body1',id='text_body1' ,height=250, class='add_reply_form_cke',custom_config="contentsCss:'/static/css/posts/inner_ckeditor.css', disallowedContent:'img{width,height};img[width,height]'" ) }}
                                             </form>
                                     </div>
                                 </div>
