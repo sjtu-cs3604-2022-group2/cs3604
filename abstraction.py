@@ -201,7 +201,7 @@ class ActionReport(AbstractAction):
 
     def send_report(self):
         post_id,comment_id=self.obj.get_obj_id_tuple()
-        link=self.obj.get_mainlink()+self.obj.get_sublink()
+        link="/admin"+self.obj.get_mainlink()+self.obj.get_sublink()
         obj_type=self.obj.get_object_type()
         text=self.obj.get_text()
         text=text.replace("&nbsp;",' ')
