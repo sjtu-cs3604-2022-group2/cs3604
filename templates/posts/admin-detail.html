@@ -1,7 +1,23 @@
 {% extends 'posts/detail-tmp-extend.html'%} {% block head %}
 
-<title>Admin details</title>
+<script>
+  var ref="";
+  if(document.referrer.length>=21){
+    ref=document.referrer.substring(21);
+  }
+  
+  if(ref!="{{url_for('posts.admin_notifications')}}" && ref!=window.location.href ){
+    window.location="{{url_for('posts.detail',post_id=post.id)}}";
+  }
+</script>
+
 {{super()}}
+<meta name="referrer" content="unsafe-url" />
+
+
+<title>Admin details</title>
+
+
 
 <link
   rel="stylesheet"

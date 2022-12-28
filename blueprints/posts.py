@@ -109,9 +109,8 @@ def detail(post_id):
     post.num_views += 1
     db.session.commit()
 
-    if current_user.is_admin:
-        return render_template(
-            "posts/admin-detail.html",
+    return render_template(
+            "posts/detail-tmp-extend.html",
             User=User,
             current_user=current_user,
             post_user=post_user,
@@ -128,9 +127,33 @@ def detail(post_id):
             likes=list_like_of_user,
             collections= current_user.favorites.all()
         )
-    else:
-        return render_template(
-            "posts/detail-tmp-extend.html",
+
+
+
+@bp.route("/admin/detail/<int:post_id>")
+def admin_detail(post_id):
+    user_id = session["user_id"]
+    current_user = User.query.get(user_id)
+    if(not current_user.is_admin):
+        redirect(url_for("posts.detail",post_id=post_id))
+    
+    add_reply_form = AddReplyForm()
+    comment_towards_form = CommentTowardsForm()
+    add_reply_pop_form = AddReplyPopForm()
+    report_form = ReportForm()
+    post = Post.query.get(post_id)
+    if not post or post.valid == 0:
+        return render_template("errors/404.html")
+    post_user = post.user
+    
+
+    list_like_of_user = get_list_of_like(post_id, user_id)
+    recommendation_users = CF_get_recommendation_users(user_id)
+    recommendation_posts = CF_get_recommendation_posts(user_id)
+    body_list = post.body.split("\n\r\n")
+    # print(repr(post.body))
+    return render_template(
+            "posts/admin-detail.html",
             User=User,
             current_user=current_user,
             post_user=post_user,
@@ -141,7 +164,6 @@ def detail(post_id):
             comment_towards_form=comment_towards_form,
             add_reply_pop_form=add_reply_pop_form,
             report_form=report_form,
-            related_topics=related_topics,
             recommend_posts=recommendation_posts,
             recommend_users=recommendation_users,
             likes=list_like_of_user,
