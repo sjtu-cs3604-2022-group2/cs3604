@@ -641,7 +641,7 @@ def admin_delete():
             action_delete.delete_object()
             action_delete.send_notification()
 
-            redirect_url=url_for("posts.detail", post_id=post_id)
+            redirect_url=url_for("posts.admin_detail", post_id=post_id)
 
             if(0):
 

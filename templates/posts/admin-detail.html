@@ -6,8 +6,10 @@
     ref=document.referrer.substring(21);
   }
   
-  if(ref!="{{url_for('posts.admin_notifications')}}" && ref!=window.location.href ){
-    window.location="{{url_for('posts.detail',post_id=post.id)}}";
+  if(ref!="{{url_for('posts.admin_notifications')}}" && document.referrer!=window.location.href &&ref!="{{url_for('posts.admin_delete')}}"){
+    alert(ref);
+    alert(document.referrer);
+    //window.location="{{url_for('posts.detail',post_id=post.id)}}";
   }
 </script>
 
