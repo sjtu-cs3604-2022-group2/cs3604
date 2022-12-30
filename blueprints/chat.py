@@ -7,7 +7,7 @@ from sqlalchemy import or_, and_
 from extensions import socketio, db
 # from forms import ProfileForm
 from models import Message, User
-
+from app import dropzone,csrf
 
 chat_bp = Blueprint("chat", __name__, url_prefix="/chat")
 

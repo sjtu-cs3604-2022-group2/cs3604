@@ -113,10 +113,25 @@
           <input type="text" id="message-textarea" class="msger-input" placeholder="请输入消息...">
           <button type="submit" class="msger-send-btn" id="snippet-button">发送</button>
         </form>
+
+        <div class="wrap">
+          
+          <h4>上传图片</h4>
+      
+          <div class="avatar-input-area">
+              <div class="avatar-preview">
+                {{dropzone.create(action=url_for("user.profile_upload"), id="upload_image")}}
+              </div>
+
+          </div>
+
+          <input id="copy_url_one" style="display:none" readonly="readonly">
+        </div>
       </section>
 {% endblock %}
 
 {% block scripts %}
+<script src="{{url_for('static',filename='js/posts/dropzone-avatar.js')}}"></script>
     {{ super() }}
     <script type="text/javascript">
         var socket = io('/');
