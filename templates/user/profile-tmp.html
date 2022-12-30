@@ -153,9 +153,6 @@
                 </form>
 
 
-                <style type="text/css">
-                  
-                </style>
                 <div class="avatar-input-area">
                   <div class="avatar-upload">
                     <div class="avatar-edit">
@@ -274,7 +271,7 @@
                 <div class="td" ><i class="material-icons"></i></div>
                 <div class="td active" value="显示" onclick="show1()" id="nav1-1"><i class="material-icons">av_timer</i><span>动态</span></div>
                 <div class="td" value="隐藏" onclick="show2()" id="btn2"><i class="material-icons">people</i><span>Ta的关注</span></div>
-                <div class="td" value="隐藏" onclick="show()"  id="btn1"><i class="material-icons">archive</i><span>资料</span></div>
+                <div class="td" value="隐藏" onclick="show()"  id="btn1"><i class="material-icons">archive</i><span>浏览历史</span></div>
                 <div class="td" value="隐藏" onclick="show3()" id="btn3"><i class="material-icons">star</i><span>收藏</span></div>
 
               </div>
@@ -410,7 +407,7 @@
               {% for post in collection.contents %}
               <li class="card">
                 <a class="card-image" target="_blank" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-100.jpg);" data-image-full="https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-500.jpg">
-                  <img src="https://ts1.cn.mm.bing.net/th?id=OIP-C.B6pZ8N_dG3MNAYppM-zX0AHaEo&w=316&h=197&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2" alt="Psychopomp" />
+                  <img src={{post.photos[0].photo_path}} alt="Psychopomp" />
                 </a>
                 <a class="card-description" href="{{url_for('posts.detail',post_id=post.id)}}" target="_blank">
                   <p> {{post.title}}</p>
