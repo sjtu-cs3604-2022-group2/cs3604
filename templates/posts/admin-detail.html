@@ -25,6 +25,9 @@
   href="{{ url_for('static',filename='css/posts/admin.css')}}"
 />
 <style>
+  .admin-detail .answer-content .footer .actions{
+    margin-top:0px;
+  }
   .footer.pull-right i {
     font-size: 10px;
   }
@@ -242,15 +245,21 @@
               </div>
               <div class="footer pull-right">
                 <div class="post-stamps pull-left">
+                  
+                  <i class="iconfont icon-time" aria-hidden="true">
+                    {{post.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</i
+                  >
                   <i class="iconfont icon-view" aria-hidden="true">
                     {{post.num_views}} 浏览</i
                   >
                   <i class="iconfont icon-comment1" aria-hidden="true">
                     {{post.num_comments}} 回复</i
                   >
-                  <i class="iconfont icon-time" aria-hidden="true">
-                    {{post.post_time}}</i
-                  >
+                
+                  <i class="iconfont icon-like" aria-hidden="true" style="font-size:14px;margin-right:0px"></i>
+                    <span> {{post.num_likes}} 点赞</span>
+                  
+                 {#------------举报----------}
                   <button
                     type="button"
                     class="tolltip-button thumbs-up2"
@@ -265,28 +274,32 @@
                   >
                     <i class="iconfont icon-jubao" aria-hidden="true"> 举报</i>
                   </button>
+                  {----------------------------#}
+
                 </div>
 
+                {#-------------点赞、回复楼主弹窗-------------------}
                 <div class="actions pull-right">
+
+                  <div style="width:70px;">
+                    <i class="iconfont icon-like" aria-hidden="true" style="font-size:14px ;"></i>
+                    <span> {{post.num_likes}} 点赞</span>
+                  </div>
+                  
                   <button
                     type="button"
                     class="tolltip-button thumbs-up2"
                     data-toggle="tooltip"
                     data-placement="bottom"
                     title="Like"
-                    style="color:
-                                            {%if likes[0]%}
-                                                #5dc362;
-                                            {%else%}
-                                                inherit;
-                                            {%endif%}
-                                            "
-                    onclick="like(this,{{likes[0]}},-1,-1);return false;"
+                    style="color:inherit; "
+                    disabled="disabled"
                   >
                     <i class="iconfont icon-like" aria-hidden="true"></i>
                     <span> {{post.num_likes}}</span>
                   </button>
 
+                  
                   <button
                     type="button"
                     class="tolltip-button thumbs-up2"
@@ -298,7 +311,9 @@
                     <i class="iconfont icon-comment-o" aria-hidden="true"></i>
                     <span> 添加回复</span>
                   </button>
+                  
                 </div>
+                {------------------------------------#}
               </div>
             </div>
 
@@ -360,7 +375,10 @@
                     <i class="iconfont icon-time" aria-hidden="true">
                       {{comment.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</i
                     >
-                    <span> &nbsp;{{i+2}}楼</span>
+                    <span> {{i+2}}楼</span>
+                    <span> &nbsp;{{comment.num_likes}}&nbsp;点赞</span>
+
+                    {#------------举报----------}
                     <button
                       type="button"
                       class="tolltip-button thumbs-up2"
@@ -377,28 +395,30 @@
                         举报</i
                       >
                     </button>
+                    {-----------------#}
                   </div>
+                  
+                  {#-------------点赞、回复n楼弹窗-------------------}
                   <div class="actions pull-right">
+                    <div style="width:70px;">
+                      <i class="iconfont icon-like" aria-hidden="true" style="font-size:14px ;"></i>
+                      <span> {{comment.num_likes}} 点赞</span>
+                    </div>
+                    
                     <button
                       type="button"
                       class="tolltip-button thumbs-up2"
                       data-toggle="tooltip"
                       data-placement="bottom"
                       title="Like"
-                      style="color:
-                                            {%if likes[i+1]%}
-                                                #5dc362;
-                                            {%else%}
-                                                inherit;
-                                            {%endif%}
-                                            "
-                      onclick="like(this,{{likes[i+1]}},{{comment.id}},{{i+2}});return false;"
+                      style="color:inherit;"
+                      disabled="disabled"
                     >
                       <i class="iconfont icon-like" aria-hidden="true"></i>
                       <span> {{comment.num_likes}}</span>
                     </button>
 
-                    {# 待定！ #}
+                    
                     <button
                       type="button"
                       class="tolltip-button thumbs-up2"
@@ -412,7 +432,9 @@
                       <i class="iconfont icon-Reply" aria-hidden="true"></i>
                       <span> 回复</span>
                     </button>
+                    
                   </div>
+                  {---------------------#}
                 </div>
               </div>
               {% else %}
@@ -427,6 +449,7 @@
           {% endfor %}
         </div>
 
+        {#--------底部回复------------
         <div
           class="add-reply-section"
           style="padding-left: 0; padding-right: 0; margin-top: 10px"
@@ -452,6 +475,7 @@
             </div>
           </div>
         </div>
+        -------------------------------#}
       </div>
 
 

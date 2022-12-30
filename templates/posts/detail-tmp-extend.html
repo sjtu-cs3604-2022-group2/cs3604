@@ -367,10 +367,10 @@
                             </div>
                             <div class="footer pull-right">
                                 <div class="post-stamps pull-left">
-
+                                    <i class="iconfont icon-time" aria-hidden="true"> {{post.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</i>
                                     <i class="iconfont icon-view" aria-hidden="true"> {{post.num_views}} 浏览</i>
                                     <i class="iconfont icon-comment1" aria-hidden="true"> {{post.num_comments}} 回复</i>
-                                    <i class="iconfont icon-time" aria-hidden="true"> {{post.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</i>
+                                    
                                     <button type="button" class="tolltip-button thumbs-up2" data-toggle="tooltip"
                                         data-placement="bottom" onclick="report_post();"
                                         style="border:none;background-color:#ffffff;margin-left: 4px;">
