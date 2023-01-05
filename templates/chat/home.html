@@ -114,18 +114,11 @@
           <button type="submit" class="msger-send-btn" id="snippet-button">发送</button>
         </form>
 
-        <div class="wrap">
-          
-          <h4>上传图片</h4>
-      
-          <div class="avatar-input-area">
-              <div class="avatar-preview">
-                {{dropzone.create(action=url_for("user.profile_upload"), id="upload_image")}}
-              </div>
-
-          </div>
-
-          <input id="copy_url_one" style="display:none" readonly="readonly">
+        <div class="msg-bubble">    
+          <form method="post" action="{{url_for('chat.chat_upload')}}" enctype="multipart/form-data" class="msger-inputarea">
+            <input type="file" id="pic" name="pic" accept="image/png, image/jpeg" class="msger-send-btn">
+            <button type="submit" class="msger-send-btn">上传</button>
+          </form>
         </div>
       </section>
 {% endblock %}

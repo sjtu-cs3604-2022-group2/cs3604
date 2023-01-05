@@ -90,6 +90,8 @@ def init_user(count=30):
         image=get_image(),
     )
     db.session.add(user)
+    photo = Photo(user_id=user.id, photo_path=user.image)
+    db.session.add(photo)
     for i in range(count):
         raw = users[i]
         user = User(
@@ -101,6 +103,8 @@ def init_user(count=30):
             image=get_image(),
         )
         db.session.add(user)
+        photo = Photo(user_id=user.id, photo_path=user.image)
+        db.session.add(photo)
     db.session.commit()
     for u in User.query.all():
         for i in range(6):

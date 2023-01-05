@@ -6,7 +6,7 @@
             <div class="msg-info-name">{{message.author.username}}</div>
             <div class="msg-info-time">{{message.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</div>
         </div>
-        <div class="msg-text">{{message.body}}</div>
+        <div class="msg-text">{{message.body | safe}}</div>
     </div>
 </div>
 {% elif message.author_id != session["user_id"] %}
@@ -17,7 +17,7 @@
             <div class="msg-info-name">{{message.author.username}}</div>
             <div class="msg-info-time">{{message.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</div>
         </div>
-        <div class="msg-text">{{message.body}}</div>
+        <div class="msg-text">{{message.body | safe}}</div>
     </div>
 </div>
 {% else %}
@@ -28,7 +28,7 @@
             <div class="msg-info-name">{{message.author.username}}</div>
             <div class="msg-info-time">{{message.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</div>
         </div>
-        <div class="msg-text">{{message.body}}</div>
+        <div class="msg-text">{{message.body | safe}}</div>
         <div class="bt-table">
             <input type='text' name="link{{message.id}}" value="message/delete/{{message.id}}" style="display: none;">
             <button  class="hover-btn outline delete-button" >删除</button>

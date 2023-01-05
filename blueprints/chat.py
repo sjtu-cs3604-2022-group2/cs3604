@@ -1,13 +1,12 @@
+import os
 from flask import render_template, redirect, url_for, request, Blueprint, current_app, abort, session
 from flask_login import current_user, login_required
 from flask_socketio import emit
+from flask_dropzone import random_filename
 from sqlalchemy import or_, and_
-# import sys
-# sys.path.append('c:\\PROJECTS\\new\\cs3604')
 from extensions import socketio, db
-# from forms import ProfileForm
-from models import Message, User
-from app import dropzone,csrf
+from models import Message, User, Photo
+from app import dropzone, csrf
 
 chat_bp = Blueprint("chat", __name__, url_prefix="/chat")
 
@@ -15,27 +14,30 @@ online_users = []
 
 
 @socketio.on('new message')
-def new_message(message_body):
+def new_message(message_body, **args):
     uid = session.get('room', 0)
     print(f"uid={uid},session={session}")
     html_message = message_body
     message = Message(author=current_user._get_current_object(), body=html_message, to_id=uid)
     db.session.add(message)
     db.session.commit()
+    if args.get("flush"):
+        return redirect(url_for("chat.home", uid=uid))
     emit('new message',
         {'message_html': render_template('chat/_message.html', message=message, flag=True),
         'message_body': html_message,
         'image': current_user.image,
         'username': current_user.username,
         'user_id': current_user.id},
-        broadcast=True, include_self=False)
+         broadcast=True, namespace='/',
+         include_self=False)
     emit('new message',
          {'message_html': render_template('chat/_message.html', message=message, flag=False),
           'message_body': html_message,
           'image': current_user.image,
           'username': current_user.username,
           'user_id': current_user.id},
-         broadcast=False)
+         broadcast=False, namespace='/')
 
 
 @socketio.on('new message', namespace='/anonymous')
@@ -135,3 +137,24 @@ def delete_message(message_id):
         db.session.delete(message)
         db.session.commit()
     return '', 204
+
+
+@csrf.exempt
+@chat_bp.route('/chat_upload', methods=['POST'])
+def chat_upload():
+    uid = session["room"]
+    user_id = session["user_id"]
+    if "pic" in request.files:
+        f = request.files.get("pic")
+        filename = random_filename(f.filename)
+        upload_path = os.path.join(current_app.config["FILE_UPLOAD_PATH"], filename)
+        photo_path = url_for("static", filename="uploads/" + filename)
+        f.save(upload_path)
+        photo = Photo(filename=filename,
+                      user_id=user_id,
+                      photo_path=photo_path)
+        db.session.add(photo)
+        db.session.commit()
+        message_body = f"<img src=\"{photo.photo_path}\" width=\"200\">"
+        return new_message(message_body, flush=True)
+    return redirect(url_for("chat.home", uid=uid))
