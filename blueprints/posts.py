@@ -213,7 +213,7 @@ def ckeditor_upload():
     img = Image.open(img)
     width,height=img.size
 
-    max_width=795 #px
+    max_width=750 #px
     scale=1
     if width>max_width:
         scale=max_width/width
