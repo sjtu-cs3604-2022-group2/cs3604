@@ -271,8 +271,8 @@
                 <div class="td" ><i class="material-icons"></i></div>
                 <div class="td active" value="显示" onclick="show1()" id="nav1-1"><i class="material-icons">av_timer</i><span>动态</span></div>
                 <div class="td" value="隐藏" onclick="show2()" id="btn2"><i class="material-icons">people</i><span>Ta的关注</span></div>
-                <div class="td" value="隐藏" onclick="show()"  id="btn1"><i class="material-icons">archive</i><span>浏览历史</span></div>
-                <div class="td" value="隐藏" onclick="show3()" id="btn3"><i class="material-icons">star</i><span>收藏</span></div>
+                <div class="td" value="隐藏" onclick="show3()"  id="btn3"><i class="material-icons">star</i><span>收藏</span></div>
+                <div class="td" value="隐藏" onclick="show()" id="btn1"></div>
 
               </div>
             </div>
@@ -322,6 +322,7 @@
 
 
       <div id = "show2">
+        aaaaaaaaa
         <ul class="card-list" style="width:100%;">
           {% for post in poster_user.posts[:2] %}
           <li class="card">
