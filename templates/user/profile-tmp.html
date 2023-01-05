@@ -196,15 +196,11 @@
             <i class="l-i" id="l-i-i"></i>
             <span>关于我</span>
 
-            
-            
-            
-            <div class=" lb-action"><i class="material-icons">edit</i></div>
+            <div class="lb-action" onclick="privacy_click()"><i class="material-icons">edit</i></div>
 
           </div>
           <div id="i-box">
-            <p  id="i-box-about">{{poster_user.about}}</p>
-            {#<div id="u-loc"><i class="material-icons">location_on</i><a href="#">Shanghai</a>, <a href="#">China</a></div>#}
+            <p id="i-box-about">{{poster_user.about}}</p>
           </div>
         </div>
         <div class="l-cnt l-mrg">
@@ -245,14 +241,13 @@
         <div class="l-cnt l-mrg">
           <div class="cnt-label">
             <i class="l-i" id="l-i-k"></i>
-
             <span>偏好的分区<i id="k-nm">{{ recommend_category | length }}</i></span>
           </div>
           <div>
             {% for category in recommend_category %}
             <div class="q-ad-c">
-              <a href="#" class="q-ad">
-                <span>{{category}} 区</span>
+              <a href="{{url_for('posts.search',search_category='分区',search_content=category)}}" class="q-ad">
+                <span>{{category}}区</span>
               </a>
             </div>
             {% endfor %}
@@ -286,18 +281,17 @@
 
           <div class="post">
             <div class="tb">
-              <a href="#" class="td p-p-pic"><img
-                  src={{poster_user.image}} ></a>
+              <a href="#" class="td p-p-pic"><img src={{poster_user.image}} ></a>
               <div class="td p-r-hdr">
                 <div class="p-u-info">
-                  <a href="#">{{poster_user.username}}</a>分享了一段经历关于 <a href="#">< {{post.category.name}} ></a>
+                  <a href="{{url_for('posts.detail',post_id=post.id)}}">{{post.title}}</a>
                 </div>
                 <div class="p-dt">
                   <i class="material-icons">calendar_today</i>
                   <span>{{post.timestamp}}</span>
                 </div>
                 <div class="post-body">
-                  {{post.body| safe }}
+                  {{post.body | safe }}
                 </div>
               </div>
               <div class="hsbtn td p-opt"><i class="material-icons">keyboard_arrow_down</i></div>
@@ -361,10 +355,14 @@
                   </a>
                 </td>
                 <td align="center">{{follow_user.username}}</td>
-                <td align="center"  class="line-limit-length">{{follow_user.about}}</td>
-                <td align="center"><a href={{ "/chat/%d" | format(follow_user.id)}}><div class ="testbtn" style="width: 10px;">
-                      私聊
-                </div></a></td>
+                <td align="center" class="line-limit-length">{{follow_user.about}}</td>
+                <td align="center">
+                  <a href={{"/chat/%d" | format(follow_user.id)}}>
+                  <div class ="btn-link" style="width:12px;">
+                      <button type="submit" class='btn btn-info btn-sm transactionButton'>私聊</button>
+                  </div>
+                  </a>
+                </td>
                 <td align="center"><div class='btn-group dropright'>
                   {% if follow_user.id in current_all_follower_id %}
                   <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
@@ -392,7 +390,7 @@
         <nav>
         <!--   Hover-Pop menu -->
           <div class="show4-menu show4-hover-pop">
-            <div class="show4-menu-content" id = "favor-choose">选择收藏夹</div>
+            <div class="show4-menu-content" id="favor-choose">选择收藏夹</div>
             <div class="show4-dropdown">
               {% for i in range(poster_user.favorites|length) %}
               {% set favor_list = poster_user.favorites[i] %}
