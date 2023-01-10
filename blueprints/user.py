@@ -150,6 +150,15 @@ def profile_upload():
         upload_path = os.path.join(current_app.config["FILE_UPLOAD_PATH"], filename)
         photo_path = url_for("static", filename="uploads/" + filename)
         f.save(upload_path)
+        old_path = user.image
+        old_photo = Photo.query.filter(Photo.photo_path==old_path).first()
+        if old_photo:
+            old_photo.destroy()
+            db.session.delete(old_photo)
+        photo = Photo(filename=filename,
+                      user_id=user_id,
+                      photo_path=photo_path)
+        db.session.add(photo)
         user.image = photo_path
         db.session.commit()
         print(user.image)

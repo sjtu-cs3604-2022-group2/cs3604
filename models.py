@@ -1,6 +1,7 @@
-from email.policy import default
+import os
 import random
 from datetime import datetime
+from email.policy import default
 from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
 from extensions import db, login_manager
@@ -168,6 +169,13 @@ class Photo(db.Model):
 
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
     post = db.relationship("Post", back_populates="photos")
+    
+    def destroy(self):
+        if os.path.exists(self.photo_path):
+            os.remove(self.photo_path)
+            return True
+        else:
+            return False
 
 
 class Category(db.Model):

@@ -9,7 +9,6 @@ test.ipynb
 .vscode/settings.json
 database.csv
 datasets.csv
-data.db
 user_similar.csv
 
 migrations
