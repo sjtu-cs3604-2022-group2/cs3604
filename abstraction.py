@@ -2,8 +2,6 @@
 
 from flask import Blueprint, render_template, g, flash, request, redirect, url_for, current_app, session
 
-
-from blueprints import posts
 from models import User, Post, Comment, Notification, AdminNotification, DeleteRecord
 from actiontype import *
 from utils import filter_body_content
@@ -190,9 +188,10 @@ class ActionUnlike(AbstractAction):
         object=self.obj.get_object()
         cur_user = User.query.get(self.user_id)
         like_list=self.obj.get_like_list(cur_user)
-        like_list.remove(object)
-        object.num_likes -= 1
-        db.session.commit()
+        if(object in like_list):
+            like_list.remove(object)
+            object.num_likes -= 1
+            db.session.commit()
 
 class ActionReport(AbstractAction):
     def __init__(self,user_id,reason):
