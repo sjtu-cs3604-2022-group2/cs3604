@@ -67,6 +67,7 @@ $(document).ready(function () {
     });
 
     function new_message(e) {
+        // e is the keydown event
         var $textarea = $('#message-textarea');
         var message_body = $textarea.val().trim();
         if (e.which === ENTER_KEY && !e.shiftKey && message_body) {
