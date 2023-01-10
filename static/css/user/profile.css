@@ -1127,6 +1127,9 @@
   #show3{
     display:none;
   }
+  #show4{
+    display: none;
+  }
   .gap-post{
     color: #e9ebee;
     width:100%;

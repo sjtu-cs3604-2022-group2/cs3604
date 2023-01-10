@@ -5,7 +5,7 @@ from extensions import db
 app=create_app("development")
 context = app.test_request_context()
 context.push()
-class ModelTest(unittest.TestCase):
+class ModelsTest(unittest.TestCase):
     client = app.test_client()
     user_reg1=User()
     def setUp(self): 
