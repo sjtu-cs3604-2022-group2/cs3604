@@ -319,10 +319,12 @@
                         <div class="topic-content pull-right">
                             
                             {%if topic.user.id==current_user.id%}
-                            <div class="author-operations pull-right" style="width:13%;margin-top: 20px;">
+                            <div class="author-operations pull-right" style="width:10%;margin-top: 20px;">
+                                {#--------------修改按钮-----------------
                                 <button class="tolltip-button author-edit-btn thumbs-up2" data-toggle="modal" data-target="#authorEditModal">
                                     <i class="icon iconfont icon-edit" style="font-size:20px;"></i>
                                 </button>
+                                ----------------------------------#}
                                 <button class="tolltip-button author-delete-btn thumbs-up2" data-toggle="modal" data-target="#authorDeleteModal">
                                     <i class="icon iconfont icon-delete" style="font-size:20px;"></i>
                                 </button>
