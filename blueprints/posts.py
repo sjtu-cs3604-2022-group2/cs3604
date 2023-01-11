@@ -233,6 +233,7 @@ def ckeditor_upload():
     session["photo_nums"] = session.get("photo_nums", 0) + 1
     photo_num = session["photo_nums"]
     session[f"photo_{photo_num}"] = photo_path
+    session['filenames'].append(filename)
     photo = Photo(filename=filename, user=current_user, photo_path=photo_path)
     db.session.add(photo)
     db.session.commit()
@@ -250,13 +251,18 @@ def newpost():
     user_id = int(session.get("user_id"))
     current_user = User.query.get(user_id)
     new_post_form = NewPostForm()
+    
     if request.method == "GET":
         # session['']
         session["photo_nums"] = 0
+        session['filenames']=[]
     if request.method == "POST":
         # print("hello word")
         title = new_post_form.title.data
-        cat_id = new_post_form.categories.data[0]  ### 这里允许多分类，但是目前数据库里面一篇post对应一个分类。
+        if(len(new_post_form.categories.data)>0):
+            cat_id = new_post_form.categories.data[0]  ### 这里允许多分类，但是目前数据库里面一篇post对应一个分类。
+        else:
+            cat_id=0
         body = new_post_form.post_text.data  ### ，没有去掉两边的标签
         # print(title,cat_id,body)
         new_post = Post(title=title, category_id=cat_id, body=body)
@@ -288,6 +294,12 @@ def newpost():
         # db.session.commit()
 
         # return "已经成功提交"
+
+        valid_filenames=get_img_filenames(body)
+        invalid_filenames=list(set(session['filenames'])-set(valid_filenames))
+        delete_files('static/uploads/',invalid_filenames)
+
+        session['filenames']=[]
         return redirect(url_for("posts.index"))
 
     return render_template("posts/newpost-tmp-extend.html", current_user=current_user, new_post_form=new_post_form)

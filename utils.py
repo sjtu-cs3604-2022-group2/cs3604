@@ -191,3 +191,14 @@ def CF_get_recommendation_posts(user_id, num_posts=10):
     # return list()
     tmp = list(rs_result)[:num_posts]
     return [Post.query.get(post_id) for post_id in tmp]
+
+
+def get_img_filenames(body:str):
+    re_str="<img src=\"/static/uploads/(.+?)\" />"
+    lst=re.findall(re_str,body)
+    return lst
+
+def delete_files(prefix:str,lst:list):
+    for f in lst:
+        if(os.path.exists(prefix+f)):
+            os.remove(prefix+f)
