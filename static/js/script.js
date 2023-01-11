@@ -236,3 +236,19 @@ function scrollToBottom() {
     var $messages = $('.messages');
     $messages.scrollTop($messages[0].scrollHeight);
 };
+function showInputArea() {
+    var btnobj=document.getElementById("btnobj");
+    
+    var shobj=document.getElementById("pic-input");
+    if(shobj.value=="显示"){
+        shobj.value="隐藏";
+        shobj.style.display="none";
+        btnobj.innerText="∨上传图片";
+
+    }else{
+        shobj.value="显示";
+        shobj.style.display="block";
+        btnobj.innerText="∧上传图片";
+        scrollBy(0,document.body.scrollHeight);
+    }
+}

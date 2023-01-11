@@ -112,14 +112,16 @@
         <form class="msger-inputarea">
           <input type="text" id="message-textarea" class="msger-input" placeholder="请输入消息...">
           <button type="submit" class="msger-send-btn" id="snippet-button">发送</button>
+          <div class="msger-send-btn" id="btnobj" onclick="showInputArea()">∨上传图片</div>
         </form>
-
+<div id="pic-input" value="隐藏">
         <div class="msg-bubble">    
           <form method="post" action="{{url_for('chat.chat_upload')}}" enctype="multipart/form-data" class="msger-inputarea">
             <input type="file" id="pic" name="pic" accept="image/png, image/jpeg" class="msger-send-btn">
             <button type="submit" class="msger-send-btn">上传</button>
           </form>
         </div>
+</div>
       </section>
 {% endblock %}
 

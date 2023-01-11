@@ -270,3 +270,7 @@ button.white-purple:hover {
   width:60%;
   height:60%;
 }
+
+#pic-input{
+  display: none;
+}
