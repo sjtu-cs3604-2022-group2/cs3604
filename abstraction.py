@@ -219,7 +219,7 @@ class ActionReport(AbstractAction):
         db.session.commit()
 
 class ActionDelete(AbstractAction):
-    def __init__(self,user_id,reason):
+    def __init__(self,user_id,reason=''):
         self.user_id=user_id
         self.reason=reason
 

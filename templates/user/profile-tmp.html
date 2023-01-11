@@ -391,10 +391,10 @@
         <!--   Hover-Pop menu -->
           <div class="show4-menu show4-hover-pop">
             <div class="show4-menu-content" id="favor-choose">选择收藏夹</div>
-            <div class="show4-dropdown">
+            <div class="show4-dropdown" style="left:-11%;">
               {% for i in range(poster_user.favorites|length) %}
               {% set favor_list = poster_user.favorites[i] %}
-              <a value={{i}} onclick="ChooseFavor(this)">{{favor_list.name}}</a>
+              <a value={{i}} onclick="ChooseFavor(this)" style="cursor:pointer;">{{favor_list.name}}</a>
               {% endfor %}
             </div>
           </div>
@@ -402,16 +402,20 @@
         </nav>
         <div class="favor-all">
           {% for collection in poster_user.favorites %}
-            <ul class="card-list" style="width:100%;">
+            <ul class="card-list" >
               {% for post in collection.contents %}
-              <li class="card">
-                <a class="card-image" target="_blank" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-100.jpg);" data-image-full="https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-500.jpg">
-                  <img src={{post.photos[0].photo_path}} alt="Psychopomp" />
-                </a>
-                <a class="card-description" href="{{url_for('posts.detail',post_id=post.id)}}" target="_blank">
-                  <p> {{post.title}}</p>
-                </a>
-              </li>
+                {%if post.valid==1%}
+                <li class="card">
+                  <a class="card-image" target="_blank" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-100.jpg);" data-image-full="https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-500.jpg">
+                    {% if post.photos|length >0 %}
+                      <img src={{post.photos[0].photo_path}} alt="Psychopomp" style="max-height:50%;" />
+                    {%endif%}
+                  </a>
+                  <a class="card-description" href="{{url_for('posts.detail',post_id=post.id)}}" target="_blank">
+                    <p> {{post.title}}</p>
+                  </a>
+                </li>
+                {%endif%}
               {% endfor %}
             </ul>
           {% endfor %}

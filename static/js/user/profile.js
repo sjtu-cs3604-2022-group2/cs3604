@@ -131,7 +131,7 @@ function ChooseFavor(aTag){
     var num_order = parseInt(aTag.getAttribute("value"));
     let favors_all = getElementsByLocalNameOfClassName('favor-all','ul');
     setNone();
-    favors_all[num_order].setAttribute('style','display:block');
+    favors_all[num_order].setAttribute('style','display:block;width:100%;');
 
 }
 function setNone(){
