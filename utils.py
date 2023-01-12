@@ -196,7 +196,9 @@ def CF_get_recommendation_posts(user_id, num_posts=10):
 def get_img_filenames(body:str):
     re_str="<img src=\"/static/uploads/(.+?)\" />"
     lst=re.findall(re_str,body)
-    return lst
+    re_str="<img alt="" src=\"/static/uploads/(.+?)\" />"
+    lst1=re.findall(re_str,body)
+    return lst+lst1
 
 def delete_files(prefix:str,lst:list):
     for f in lst:

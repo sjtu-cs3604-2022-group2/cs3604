@@ -887,21 +887,28 @@
         var lst2=$('.answer-description img');
         // var pic_list=lst1.concat(lst2);
         // console.log(pic_list);
+        
         for (var i = 0; i < lst1.length; ++i) {
             var pic = lst1[i];
             var cur_width = pic.clientWidth;
+            if(cur_width<=750){
+                continue;
+            }
             var cur_height = pic.clientHeight;
-            var rate = 50 * cur_height / cur_width;
-            pic.style.width = '50%';
-            pic.style.height = rate + '%';
+            var newh = 750 * cur_height / cur_width;
+            pic.style.width = '750px';
+            pic.style.height = parseInt(newh+'') + 'px';
         }
         for (var i = 0; i < lst2.length; ++i) {
             var pic = lst2[i];
             var cur_width = pic.clientWidth;
+            if(cur_width<=750){
+                continue;
+            }
             var cur_height = pic.clientHeight;
-            var rate = 50 * cur_height / cur_width;
-            pic.style.width = '50%';
-            pic.style.height = rate + '%';
+            var newh = 750 * cur_height / cur_width;
+            pic.style.width = '750px';
+            pic.style.height = parseInt(newh+'') + 'px';
         }
     }
 </script>
@@ -909,7 +916,7 @@
 <script>
     // $(document).ready(function () {
     window.onload=function () {
-        //adjust_picture();
+        adjust_picture();
         var h = document.body.offsetHeight * 2;
         console.log(h);
         $('#fade').css('height', h + 'px');
