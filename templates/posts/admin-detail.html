@@ -7,9 +7,9 @@
   }
   
   if(ref!="{{url_for('posts.admin_notifications')}}" && document.referrer!=window.location.href &&ref!="{{url_for('posts.admin_delete')}}"){
-    alert(ref);
-    alert(document.referrer);
-    //window.location="{{url_for('posts.detail',post_id=post.id)}}";
+    //alert(ref);
+    //alert(document.referrer);
+    window.location="{{url_for('posts.detail',post_id=post.id)}}";
   }
 </script>
 
