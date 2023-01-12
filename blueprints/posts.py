@@ -580,7 +580,7 @@ def add_reply(type_of_form):
 @bp.route("/notifications")
 def notifications():
     current_user = User.query.get(session["user_id"])
-    notices = current_user.notifications
+    notices = current_user.notifications[::-1]
     return render_template("user/notification.html", current_user=current_user, notices=notices, User=User)
 
 
@@ -753,7 +753,7 @@ def read_notification():
 def admin_notifications():
     current_user = User.query.get(session["user_id"])
     notices = current_user.notifications
-    admin_notices = AdminNotification.query.all()
+    admin_notices = AdminNotification.query.all()[::-1]
     return render_template(
         "user/admin-notification.html",
         current_user=current_user,
