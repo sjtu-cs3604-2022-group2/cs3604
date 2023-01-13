@@ -1,0 +1,23 @@
+.container-fluid {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+    width:100%;
+}
+
+.avatar-preview img{
+    border:5px dashed gray;
+    max-height:50%;
+}
+.avatar-input-area{
+    margin-top: 20px;
+    border: 1px dashed #0087f7;
+    margin-bottom: 20px;
+    border-radius: 1em;
+    padding: 5px;
+    color: rgb(84, 84, 84);
+    height:23%;
+    background-color: azure;
+    /* overflow-y: hidden; */
+}

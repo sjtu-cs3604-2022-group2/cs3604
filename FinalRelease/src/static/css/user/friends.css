@@ -1,0 +1,58 @@
+img.avatar {
+	width: 50px;
+  }
+
+  body {
+    display: flex;
+    background-image: var(--body-bg);
+    font-family: Helvetica, sans-serif;
+    flex-flow: column wrap;
+    padding:0px; margin:0px;
+    background: #e5f2fd;
+
+  }
+  .line-limit-length {
+    width:10px;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; 
+
+}
+.hanzi-font{
+
+    text-align: center; /*居中*/
+    font-size: 50px; /*字体大小*/
+    color: rgb(47, 140, 211); /*字体颜色*/
+    font-family:STKaiti3   ; /*设置字体为华文彩云*/
+}
+thead{
+  background: #c9dff0;
+}
+.page-head > h1{
+  /* font-size: 40px;
+  color:white;
+  text-shadow: 5px 5px 5px rgb(40, 171, 203), 0px 0px 2px rgb(40, 171, 203), 2px 2px 3px rgb(40, 171, 203); */
+
+  margin:25px;
+
+padding:10px;
+vertical-align: middle;
+
+text-align: center;
+width:270px;
+
+box-sizing:border-box;
+
+font-family:楷体;
+
+border:1px solid #91bbec;
+
+background:#ede2dc;
+
+-webkit-text-stroke: 4px #104cbc;
+
+font-size:55px;
+
+color:transparent;
+text-align:center;
+}

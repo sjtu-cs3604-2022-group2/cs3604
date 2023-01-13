@@ -1,0 +1,212 @@
+{% extends 'base.html'%} {% block head %}
+
+<title>Notifications</title>
+{{super()}}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/user/notification.css')}}"
+/>
+
+{%endblock head%}
+
+{%block modals%}
+<div class="modal fade" id="deleteRecordModal" tabindex="-1" role="dialog" aria-labelledby="deleteRecordModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="height:60%; width:33%;margin-top:10%;">
+      <div class="modal-content" style="height:100%;" >
+          <div class="modal-header" style="border-bottom:none ;">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="deleteRecordModalLabel" style="text-align: center;padding-top: 10px;">您的...已被删除</h4>
+              
+          </div>
+          <div class="modal-body" style="height:70%;padding-left: 5%;padding-right: 5%;">
+            <div class="warpper" style="height:100%;overflow:auto;">
+              <p>管理员删除理由：</p>
+              <p id="admin-delete-reason"></p>
+
+              <div id="put-origin-address"></div>
+
+              <div id="detail-content"></div>
+            </div>
+        
+
+          </div>
+      </div><!-- /.modal-content -->
+  </div><!-- /.modal -->
+</div>
+{%endblock modals%}
+
+{%block content%}
+
+<table class="table table-hover notice_table">
+  <caption>
+    <h1>通知</h1>
+  </caption>
+  <thead>
+    <tr>
+      <!-- <th>状态</th>
+        <th>来自</th>
+        <th>动作</th>
+        <th>详情</th>
+        <th>时间</th> -->
+    </tr>
+  </thead>
+  <tbody>
+    {%set states=["未读","已读"]%} {%set actions=["点赞","评论","删除"]%} {%set
+    objects=["帖子","回帖"]%} 
+    {%for notice in notices%}
+    <tr class="state{{notice.state}}" id="notice{{notice.id}}">
+      <td class="state">{{states[notice.state]}}</td>
+      <td class="from_user">
+        <span>{{User.query.get(notice.action_id).username}}</span>
+      </td>
+      <td class="action">
+        <span>{{actions[notice.action]}}</span><span>了你的</span
+        ><sapn>{{objects[notice.object]}}</sapn>
+      </td>
+      <td class="object_detail">
+        
+          {% if notice.action == 2 %} <!--删除-->
+          <div >
+            <a  href='javascript:void(0);' onclick="read({{notice.id}},{{notice.state}});show_delete_record( {{notice.link | replace('#delete_record','')}}  );">
+              {{notice.body |safe }}
+            </a>
+          </div>
+          {% else %}
+          <div onclick="read({{notice.id}},{{notice.state}});">
+            <a  href='{{notice.link}}' target="_Blank">{{notice.body |safe }}</a>
+          </div>
+          {% endif %}
+        
+      </td>
+      <td class="timestamp">{{notice.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</td>
+    </tr>
+    {%endfor%}
+  </tbody>&nbsp;
+</table>
+
+{%endblock content%}
+
+{%block scripts%}
+{{super()}}
+<script>
+  function read(id,read_already){
+    if (read_already == 1 || read_already == '1' || read_already == 'true' || read_already=='True'){
+      return;
+    }
+
+    var tr=$('#notice'+id);
+    tr.removeClass('state0');
+    tr.addClass('state1');
+    console.log($(tr).children());
+    var state_td=$(tr).children()[0];
+    state_td.innerHTML="已读";
+
+    var dic={'notice_id':id};
+
+    $.ajax({
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{url_for('posts.read_notification')}}" ,//url
+                data: dic,
+                success: function () {},
+                error : function() { }
+            });
+  }
+</script>
+
+<script>
+  function adjust(){
+    adjust_picture();
+    adjust_para();
+  }
+
+  function adjust_picture(){
+    var lst1=$('.modal-content img');
+        for (var i = 0; i < lst1.length; ++i) {
+            var pic = lst1[i];
+            var cur_width = $(pic).width();
+            var cur_height = $(pic).height();
+            var rate = 60 * cur_height / cur_width;
+            pic.style.width = '60%';
+            pic.style.height = rate + '%';
+        }
+      }
+
+  function adjust_para(){
+    var p=$('p');
+    p.addClass("break_all");
+  }
+</script>
+
+<script>
+  function show_delete_record(delete_record_id){
+    var dic={'delete_record_id':delete_record_id};
+
+    $.ajax({
+            type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "{{url_for('posts.get_delete_record')}}" ,//url
+            data: dic,
+            success: function (a) {
+              console.log(a["title"]);
+              var elem_p=$("#admin-delete-reason");
+              $(elem_p).html(a["reason"]);
+              var title=a["title"];
+              var content=a["content"];
+              var link=a["original_link"];
+              if(a["object"]==0){
+                show_post_detail(title,content);
+              }
+              else if (a["object"]==1){
+                show_comment_detail(title,content,link);
+              }
+            },
+            error : function() { }
+        });
+}
+
+function show_post_detail(title,content){
+  var h4=$("#deleteRecordModalLabel");
+  h4.html("您的帖子已被删除");
+
+  var link_elem=$("#put-origin-address");
+  link_elem.html("");
+
+  var elem=$("#detail-content");
+  var title_elem="<div>\
+                    <p>原帖标题：《"+title+"》</p>\
+                  </div>";
+  var content_elem="<p>原帖内容：</p><div>"+content+"</div>";
+  elem.html(title_elem+content_elem);
+  adjust();
+  $("#deleteRecordModal").modal("show");
+}
+
+function show_comment_detail(title,content,link){
+  var h4=$("#deleteRecordModalLabel");
+  h4.html("您的评论已被删除");
+
+  var link_elem=$("#put-origin-address");
+  var link_a="<p> 原帖：<a href=\""+link+"\" target=\"_Blank\"> 《"+title+"》</a> </p>";
+  link_elem.html(link_a);
+
+
+  var elem=$("#detail-content");
+  var title_elem="";
+  // var title_elem="<div>\
+  //                   <p>帖子标题：《"+title+"》</p>\
+  //                 </div>";
+  var content_elem="<p>原评论内容：</p><div>"+content+"</div>";
+  elem.html(title_elem+content_elem);
+  adjust();
+  $("#deleteRecordModal").modal("show");
+}
+
+
+</script>
+
+
+
+
+{%endblock scripts%}

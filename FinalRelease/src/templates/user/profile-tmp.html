@@ -1,0 +1,453 @@
+
+
+  {%block head %}
+  <meta charset="UTF-8">
+  <title>{{poster_user.username}}主页</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer" />
+
+
+  <link
+  href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<link href="https://fonts.font.im/css?family=Kalam" rel="stylesheet" />
+<link
+  href="https://fonts.googlefonts.cn/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
+  rel="stylesheet"
+  type="text/css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://at.alicdn.com/t/c/font_3724642_dw14pio9i6b.css"
+/>
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/base.min.css')}}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/user/avatar.css')}}"
+/>
+
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/mybootstrap.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/change-infor.css')}}">
+  <link href="https://fonts.font.im/css?family=Kalam" rel="stylesheet">
+  <link
+    href='https://fonts.googlefonts.cn/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+    rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/card.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user/profile.css')}}">
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js" defer></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js" defer></script>
+  <script  type="text/javascript" src="{{ url_for('static',filename='js/user/profile.js')}}" defer> </script>
+  <script  type="text/javascript" src="{{ url_for('static',filename='js/user/change-infor.js')}}" defer></script>
+
+  {%endblock head %}
+  {% extends 'base.html' %}
+  {% block content %}
+<!-- <body style="margin:0;"> -->
+  <main>
+
+
+  <div id="profile-upper">
+    <div id="profile-banner-image">
+      <img
+        src="/static/image/imgs_icons/bgimg.jpg"
+        alt="Banner image">
+    </div>
+    <div id="profile-d">
+      <div id="profile-pic">
+        <img src={{poster_user.image}} >
+      </div>
+      <div id="u-name">{{poster_user.username}}</div>
+      <div class="tb" id="m-btns">
+        {% if poster_user.id != current_user.id %}
+
+          {% if poster_user.id not in current_all_follower_id %}
+          <button class="td">
+            <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href={{ "/chat/%d" | format(poster_user.id)}}><span>私聊</span></a></div>
+          </button>
+        <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
+          <div class="td">
+            <input type="text" name="follow" value="{{poster_user.id}}" style="display:none">
+            <input type="text" name="currentPage" value="{{poster_user.id}}" style="display:none">
+            <button class="m-btn" type="submit"><i class="material-icons">people</i><span>关注</span></button>
+          </div>
+        </form>
+          {% else %}
+          <button class="td">
+            <div class="m-btn"><i class="material-icons">format_list_bulleted</i><a href={{ "/chat/%d" | format(poster_user.id)}}><span>&nbsp;&nbsp;&nbsp;私聊&nbsp;&nbsp;&nbsp;&nbsp;</span></a></div>
+          </button>
+          <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
+            <div class="td">
+              <input type="text" name="unfollow" value="{{poster_user.id}}" style="display:none">
+              <input type="text" name="currentPage" value="{{poster_user.id}}" style="display:none">
+              <button type="submit" class='m-btn'><i class="material-icons">people</i><span>取消关注</span></button>
+            </div>
+          </form>
+          {% endif %}
+        {% endif %}
+
+
+        <div class="td">
+          <style type="text/css">
+            body{
+              margin: 0px;
+            }
+            .pop-window{
+              position: fixed;
+              left: 0px;
+              top: 0px;
+              background: rgba(0, 0, 0, 0.35);
+              width: 100%;
+              height: 100%;
+              z-index: 9999;
+            }
+            .window-inside{
+              position: relative;
+              background: #fff;
+              width: 50%;
+              height: 80%;
+              border-radius: 5px;
+              margin: 5% auto;
+
+            }
+            #window-header{
+              height: 40px;
+            }
+            #window-header-right{
+              position: absolute;
+              width: 25px;
+              height: 25px;
+              border-radius: 5px;
+              background: red;
+              color: #fff;
+              right: 5px;
+              top: 5px;
+              text-align: center;
+            }
+          </style>
+  
+
+          <div class="pop-window" id='pop-window'>
+            <div class="window-inside" style="padding:20px;">
+              <div id="window-header">
+                <form method="post" enctype="multipart/form-data" action="{{url_for('user.profile_upload')}}" id="form">
+                  {{profile_form.csrf_token(class='notclear')}}
+                  {{profile_form.user_id(style='display:none',class='notclear',value=current_user.id)}}
+                  <div class="username-input-area" style="margin-bottom:10px;"><span>请输入新的用户名:</span>{{profile_form.username()}}</div>
+                  <div class="about-input-area" style="margin-bottom:10px;"><span>请输入新的简介:</span>{{profile_form.about()}}</div>
+                  {{profile_form.submit()}}
+                </form>
+
+
+                <div class="avatar-input-area">
+                  <div class="avatar-upload">
+                    <div class="avatar-edit">
+                        
+                    </div>
+                    <div class="avatar-preview">
+                      <span>请拖放或者选择新头像:</span>
+                      {{dropzone.create(action=url_for("user.profile_upload"), id="upload_image")}}
+                    </div>
+                    </div>
+                </div>
+                  
+                <div id="window-header-right" onclick="pop_window_hide()">x</div>
+              </div>
+            </div>
+          </div>
+          <script type="text/javascript">
+            document.getElementById('pop-window').style.display="none";
+            function privacy_click(){
+              document.getElementById('pop-window').style.display="";
+            }
+            function pop_window_hide(){
+              document.getElementById('pop-window').style.display="none";
+            }
+          </script>
+          <script src="{{url_for('static',filename='js/posts/dropzone-avatar.js')}}"></script>
+
+        </div>
+
+
+      </div>
+
+    </div>
+    <div id="black-grd"></div>
+  </div>
+  <div id="main-content">
+    <div class="tb">
+      <div class="td" id="l-col">
+        <div class="l-cnt">
+          <div class="cnt-label">
+            <i class="l-i" id="l-i-i"></i>
+            <span>关于我</span>
+
+            <div class="lb-action" onclick="privacy_click()"><i class="material-icons">edit</i></div>
+
+          </div>
+          <div id="i-box">
+            <p id="i-box-about">{{poster_user.about}}</p>
+          </div>
+        </div>
+        <div class="l-cnt l-mrg">
+          <div class="cnt-label">
+            <i class="l-i" id="l-i-p"></i>
+            <span>相册</span>
+            <div class="lb-action" id="b-i"><i class="material-icons">keyboard_arrow_down</i></div>
+          </div>
+          <div id="photos">
+            <div class="tb">
+              <div class="tr">
+                {% for photo in poster_user.photos[0:3] %}
+                <div class="td">
+                  <img
+                    src="{{photo.photo_path}}">
+                </div>
+                {% endfor %}
+              </div>
+              <div class="tr">
+                {% for photo in poster_user.photos[3:6] %}
+                <div class="td">
+                  <img
+                    src="{{photo.photo_path}}">
+                </div>
+                {% endfor %}
+              </div>
+              <div class="tr">
+                {% for photo in poster_user.photos[6:9] %}
+                <div class="td">
+                  <img
+                    src="{{photo.photo_path}}">
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="l-cnt l-mrg">
+          <div class="cnt-label">
+            <i class="l-i" id="l-i-k"></i>
+            <span>偏好的分区<i id="k-nm">{{ recommend_category | length }}</i></span>
+          </div>
+          <div>
+            {% for category in recommend_category %}
+            <div class="q-ad-c">
+              <a href="{{url_for('posts.search',search_category='分区',search_content=category)}}" class="q-ad">
+                <span>{{category}}区</span>
+              </a>
+            </div>
+            {% endfor %}
+            
+          </div>
+        </div>
+
+      </div>
+      <div class="td" id="m-col">
+        <div class="m-mrg" id="p-tabs">
+          <div class="tb">
+            <div class="td">
+              <div class="tb" id="p-tabs-m">
+
+
+                <div class="td" ><i class="material-icons"></i></div>
+                <div class="td active" value="显示" onclick="show1()" id="nav1-1"><i class="material-icons">av_timer</i><span>动态</span></div>
+                <div class="td" value="隐藏" onclick="show2()" id="btn2"><i class="material-icons">people</i><span>Ta的关注</span></div>
+                <div class="td" value="隐藏" onclick="show3()"  id="btn3"><i class="material-icons">star</i><span>收藏</span></div>
+                <div class="td" value="隐藏" onclick="show()" id="btn1"></div>
+
+              </div>
+            </div>
+            <div class="td" id="p-tab-m"><i class="material-icons">keyboard_arrow_down</i></div>
+          </div>
+        </div>
+      <div id = "show1" >
+
+        
+        {% for post in poster_user.posts %}
+
+          <div class="post">
+            <div class="tb">
+              <a href="#" class="td p-p-pic"><img src={{poster_user.image}} ></a>
+              <div class="td p-r-hdr">
+                <div class="p-u-info">
+                  <a href="{{url_for('posts.detail',post_id=post.id)}}">{{post.title}}</a>
+                </div>
+                <div class="p-dt">
+                  <i class="material-icons">calendar_today</i>
+                  <span>{{post.timestamp}}</span>
+                </div>
+                <div class="post-body">
+                  {{post.body | safe }}
+                </div>
+              </div>
+              <div class="hsbtn td p-opt"><i class="material-icons">keyboard_arrow_down</i></div>
+            </div>
+            <div>
+              <div class="p-acts">
+                <div class="p-act like"><i class="material-icons">thumb_up_alt</i><span>{{post.num_likes}}</span></div>
+
+              </div>
+            </div>
+          </div>
+
+
+          <div class="gap-post">
+
+            </div>
+        {% endfor %}
+
+        <div id="loading"><i class="material-icons">autorenew</i></div>
+      </div> 
+
+
+
+      <div id = "show2">
+        aaaaaaaaa
+        <ul class="card-list" style="width:100%;">
+          {% for post in poster_user.posts[:2] %}
+          <li class="card">
+            <a class="card-image" target="_blank" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-100.jpg);" data-image-full="https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-500.jpg">
+              <img src="https://ts1.cn.mm.bing.net/th?id=OIP-C.B6pZ8N_dG3MNAYppM-zX0AHaEo&w=316&h=197&c=8&rs=1&qlt=90&o=6&dpr=1.6&pid=3.1&rm=2" alt="Psychopomp" />
+            </a>
+            <a class="card-description" href="{{url_for('posts.detail',post_id=post.id)}}" target="_blank">
+              <p> {{post.title}}</p>
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div id = "show3">
+        <div class="container-fluid">
+          <table id="usertable"  class = "table table-striped" style = "height:auto;width: 100%;" >
+            <thead>
+              <tr class="text-center">
+                <th style="width:5%"><center>ID</center></th>
+                <th style="width:5%"><center>头像</center></th>
+                <th style="width:10%"><center>昵称</center></th>
+                <th style="width:40%"><center>签名</center></th>
+                <th style="width:15%"></th> 
+                <th style="width:15%"></th>     
+              </tr>
+            </thead>
+    
+            <tbody>
+              {% for follow_user in poster_user.followed %}
+              <tr>
+                <td align="center">{{follow_user.id}}</td> 
+                <td align="center">
+                  <a href={{ "%d" | format(follow_user.id)}}>
+                    <img class='avatar' src="{{follow_user.image}}" alt='avatar'>
+                  </a>
+                </td>
+                <td align="center">{{follow_user.username}}</td>
+                <td align="center" class="line-limit-length">{{follow_user.about}}</td>
+                <td align="center">
+                  <a href={{"/chat/%d" | format(follow_user.id)}}>
+                  <div class ="btn-link" style="width:12px;">
+                      <button type="submit" class='btn btn-info btn-sm transactionButton'>私聊</button>
+                  </div>
+                  </a>
+                </td>
+                <td align="center"><div class='btn-group dropright'>
+                  {% if follow_user.id in current_all_follower_id %}
+                  <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
+                    <input type="text" name="unfollow" value="{{follow_user.id}}" style="display:none">
+                    <input type="text" name="currentPage" value="{{poster_user.id}}" style="display:none">
+                    <button type="submit" class='btn btn-primary btn-sm transactionButton'>取消关注</button>
+                  </form>
+                  {% else %}
+                  <form method="post" action="{{url_for('user.profile_follow')}}" enctype="multipart/form-data">
+                      <input type="text" name="follow" value="{{poster_user.id}}" style="display:none">
+                      <input type="text" name="currentPage" value="{{poster_user.id}}" style="display:none">
+                      <button class="btn btn-primary btn-sm transactionButton" type="submit">&nbsp;&nbsp;&nbsp;关注&nbsp;&nbsp;&nbsp;</button>
+                  </form>
+                  {% endif %}
+                </div></td> 
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <div id = "show4">
+        <nav>
+        <!--   Hover-Pop menu -->
+          <div class="show4-menu show4-hover-pop">
+            <div class="show4-menu-content" id="favor-choose">选择收藏夹</div>
+            <div class="show4-dropdown" style="left:-11%;">
+              {% for i in range(poster_user.favorites|length) %}
+              {% set favor_list = poster_user.favorites[i] %}
+              <a value={{i}} onclick="ChooseFavor(this)" style="cursor:pointer;">{{favor_list.name}}</a>
+              {% endfor %}
+            </div>
+          </div>
+
+        </nav>
+        <div class="favor-all">
+          {% for collection in poster_user.favorites %}
+            <ul class="card-list" >
+              {% for post in collection.contents %}
+                {%if post.valid==1%}
+                <li class="card">
+                  <a class="card-image" target="_blank" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-100.jpg);" data-image-full="https://s3-us-west-2.amazonaws.com/s.cdpn.io/310408/psychopomp-500.jpg">
+                    {% if post.photos|length >0 %}
+                      <img src={{post.photos[0].photo_path}} alt="Psychopomp" style="max-height:50%;" />
+                    {%endif%}
+                  </a>
+                  <a class="card-description" href="{{url_for('posts.detail',post_id=post.id)}}" target="_blank">
+                    <p> {{post.title}}</p>
+                  </a>
+                </li>
+                {%endif%}
+              {% endfor %}
+            </ul>
+          {% endfor %}
+        </div>
+      </div>
+
+      </div>
+      <div class="td" id="r-col">
+        <div id="chat-bar">
+          <div id="chat-lb"><i class="material-icons"></i><span>Ta关注的人</span></div>
+          <div id="cts">
+            {% for follow_user in poster_user.followed %}
+            <div class="on-ct active">
+              <a href={{ "/chat/%d" | format(follow_user.id)}}><img src={{follow_user.image}}></a>
+            </div>
+            {% endfor %}
+            
+            
+            <div class="on-ct" id="ct-sett" onclick="privacy_click()"><i class="material-icons">settings</i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div id="device-bar-2"><i class="fab fa-apple"></i></div> -->
+  </main>
+<!-- </body> -->
+{% endblock %}
+  <!-- <script type="text/javascript" src="profile.js"></script> -->
+
+
+
+
+
+

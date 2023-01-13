@@ -1,0 +1,164 @@
+{% extends 'base.html'%} {% block head %} {{super()}}
+<title>New Post</title>
+<link
+  href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+  rel="stylesheet"
+/>
+<link
+  href="{{url_for('static',filename='css/posts/select2-bootstrap.min.css')}}"
+  rel="stylesheet"
+/>
+
+{{dropzone.load_css()}} {{dropzone.style('border: 0px; min-height: 100px; ')}}
+
+<style>
+  form h3 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+  }
+
+  .select2-container--bootstrap4
+    .select2-selection--multiple
+    .select2-selection__choice {
+    margin-top: 2px;
+    margin-left: 4px;
+    margin-right: 4px;
+    background-color: inherit;
+    border: solid 1px #cdf0e7;
+    /* border: 0px; */
+  }
+
+  .select2-selection__rendered li button {
+    background-color: inherit;
+    border: 0px;
+  }
+  #cke_post_text {
+    /* border-radius: 2em; */
+    border: 0px;
+    box-shadow: 0 0 1px 1px #c9c9c5;
+  }
+
+
+  #cke_1_top {
+    border-bottom: 0px;
+    border-radius: 2.01em 2.01em 0em 0em;
+  }
+  #cke_1_bottom {
+    border-top: 0px;
+    border-radius: 0em 0em 0.5em 0.5em;
+  }
+
+  .wrap {
+    margin-top: 20px;
+    border: 1px dashed #0087f7;
+    margin-bottom: 20px;
+    border-radius: 1em;
+    padding: 5px;
+    color: rgb(84, 84, 84);
+  }
+
+  .submit-btn {
+    width: 40%;
+    height: 35px;
+    line-height: 27px;
+    color: white;
+
+    border-radius: 3px;
+    border-width: 0;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    margin-left: 30%;
+    outline: none;
+    font-size: 17px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .submit-btn:hover {
+    background-color: cornflowerblue;
+  }
+</style>
+
+<style type="text/css">
+  .dropzone .dz-preview a.dz-copy-url:link, .dropzone .dz-preview a.dz-remove:link { 
+    color: #337ab7; text-decoration: none; 
+  }/* 未访问的链接 */
+  .dropzone .dz-preview a.dz-copy-url:visited, .dropzone .dz-preview a.dz-remove:visited {
+     color: #337ab7; text-decoration: none;
+     } /* 已访问的链接 */
+  .dropzone .dz-preview a.dz-copy-url:hover, .dropzone .dz-preview a.dz-remove:hover { 
+    color: rgb(231, 99, 99); text-decoration: none; 
+  }/* 鼠标移动到链接上 */
+  .dropzone .dz-preview a.dz-copy-url:active, .dropzone .dz-preview a.dz-remove:active {
+     color: rgb(247, 81, 81); text-decoration: none;
+     } /* 选定的链接 */
+</style>
+
+{% endblock head %} {%block content %}
+<div class="newpost" style="padding-left: 10%; padding-right: 10%">
+  <form
+    method="post"
+    enctype="multipart/form-data"
+    action="{{url_for('posts.newpost')}}"
+    id="new_post_form"
+  >
+    {{ new_post_form.csrf_token}}
+    <h3>输入标题</h3>
+    {{new_post_form.title(id='post_title',style='width:50%; border:solid 1px
+    #ced4da;border-radius:0.25em; font-size:18px; height:37px;line-height:37px;
+    outline:none;')}}
+    <h3>选择分区</h3>
+    {{
+    new_post_form.categories(class='form-control',id='categories',style='width:50%;')
+    }}
+    <h3>输入内容</h3>
+    {{new_post_form.post_text(id='post_text')}} {{ ckeditor.load() }} {{
+    ckeditor.config(name='post_text',height=450 ,custom_config="uiColor:
+    '#fbfbfb', disallowedContent:'img{width,height};img[width,height]' " ) }}
+  </form>
+
+
+{#--------dropzone-----------------
+  <div class="wrap">
+    <h4>上传图片</h4>
+
+    
+    {{dropzone.create(action=url_for("posts.upload"),id="uploadform")}}
+    <input id="copy_url_one" style="display:none" readonly="readonly">
+  </div>
+  ---------------------------------#}
+
+
+  <div>
+    <button class="btn btn-primary submit-btn" onclick="submit_form();">
+      发布
+    </button>
+  </div>
+</div>
+{%endblock content%} {%block scripts%} {{super()}}
+
+<script src="{{url_for('static',filename='js/posts/dropzone.min.js')}}"></script>
+
+
+<script>
+  function submit_form() {
+    $("#new_post_form").submit();
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ url_for('static', filename='js/posts/zh-CN.js') }}"></script>
+
+<script type="text/javascript">
+  $("#categories").select2({
+    theme: "bootstrap4",
+    placeholder: "添加标签", // 设置选择框里面的提示性语句
+    allowClear: false, // 设置是否可以一次性清除掉所有标签
+    language: "zh-CN",
+  });
+</script>
+<script>
+  $(".select2-container .select2-search")[0].style.width = "50%";
+  $(".select2-container .select2-search textarea")[0].style.width = "40%";
+</script>
+
+
+{%endblock scripts%}

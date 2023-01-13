@@ -1,0 +1,156 @@
+{% extends 'base.html'%} {% block head %}
+
+<title>Admin Notifications</title>
+{{super()}}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='css/user/notification.css')}}"
+/>
+<meta name="referrer" content="unsafe-url" />
+<style>
+  .admin_notice_table tbody tr .action {
+    width: 10%;
+}
+  .admin_notice_table tbody tr .object_detail {
+    width: 28%;
+}
+  .admin_notice_table tbody tr .reason {
+    width: 25%;
+}
+</style>
+{%endblock head%} {%block content%}
+
+<div class="switch">
+  
+</div>
+
+<div class="admin_notification">
+<table class="table table-hover notice_table admin_notice_table">
+  <caption>
+    <h1>管理员通知</h1>
+  </caption>
+  <thead>
+    <!-- <tr>
+      <th>状态</th>
+        <th>来自</th>
+        <th>动作</th>
+        <th>详情</th>
+        <th>举报理由</th>
+        <th>时间</th>
+    </tr> -->
+  </thead>
+  <tbody>
+    {%set states=["未读","已读"]%}{%set
+    objects=["帖子","回帖"]%} {%for notice in admin_notices%}
+    <tr class="state{{notice.state}}" id="admin_notice{{notice.id}}">
+      <td class="state">{{states[notice.state]}}</td>
+      <td class="from_user">
+        <span>{{User.query.get(notice.action_id).username}}</span>
+      </td>
+      <td class="action">
+        <span>举报</span><span>了</span
+        ><sapn>{{objects[notice.object]}}</sapn>
+      </td>
+      <td class="object_detail">
+        <div onclick="admin_read({{notice.id}},{{notice.state}});"><a  href='{{notice.link}}' target="_Blank">{{notice.body |safe }}</a></div>
+      </td>
+      <td class="reason">
+        <div><span>举报理由：</span>{{notice.reason |safe }}</div>
+      </td>
+      <td class="timestamp">{{notice.timestamp.strftime("%Y-%m-%d %I:%M:%S %p")}}</td>
+    </tr>
+    {%endfor%}
+  </tbody>&nbsp;
+</table>
+</div>
+{%endblock content%}
+
+{%block scripts%}
+{{super()}}
+<script>
+  function read(id,read_already){
+    if (read_already == 1 || read_already == '1' || read_already == 'true' || read_already=='True'){
+      return;
+    }
+
+    var tr=$('#notice'+id);
+    tr.removeClass('state0');
+    tr.addClass('state1');
+    console.log($(tr).children());
+    var state_td=$(tr).children()[0];
+    state_td.innerHTML="已读";
+
+    var dic={'notice_id':id};
+
+    $.ajax({
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{url_for('posts.read_notification')}}" ,//url
+                data: dic,
+                success: function () {},
+                error : function() { }
+            });
+  }
+</script>
+<script>
+  function admin_read(id,read_already){
+    if (read_already == 1 || read_already == '1' || read_already == 'true' || read_already=='True'){
+      return;
+    }
+
+    var tr=$('#admin_notice'+id);
+    tr.removeClass('state0');
+    tr.addClass('state1');
+    console.log($(tr).children());
+    var state_td=$(tr).children()[0];
+    state_td.innerHTML="已读";
+
+    var dic={'admin_notice_id':id};
+
+    $.ajax({
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{url_for('posts.read_admin_notification')}}" ,//url
+                data: dic,
+                success: function () {},
+                error : function() { }
+            });
+  }
+</script>
+{#
+<!-- <script>
+
+  function filter(str,link){
+    console.log('******');
+    console.log(str);
+    var re1=new RegExp("</p>","g");
+    var re=new RegExp("<.+?>","g");
+      //var newstr=str.replace(re1,"&nbsp;&nbsp;&nbsp;");
+      var newstr=str.replace(re1,"   ");
+      newstr=newstr.replace(re,'');
+      if(newstr.length>40){
+        newstr=newstr.substring(0,40);
+        if (newstr[newstr.length-1]!=' '){
+          newstr=newstr+'...';
+        }
+      }
+      newstr.replace("   ","&nbsp;&nbsp;&nbsp;");
+      console.log(newstr);
+      return newstr;
+
+  }
+  
+  $(window).on('load',function(){
+    var lst=$('.comment_body');
+    for(var i=0;i<lst.length;++i){
+      var element=lst[i];
+      var str=$(element).innerHTML;
+      var link={{notices[j].link}};
+      str=filter(str,link);
+      $(element).html(str);
+    }
+  })
+</script>  -->#}
+
+{%endblock scripts%}
