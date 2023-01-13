@@ -104,10 +104,6 @@ return {*}
 
 
 def get_df_table():
-    # if os.path.exists("datasets.csv"):
-    #     post_ids = [i for i in range(1, Post.query.count() + 1)]
-    #     return pd.read_csv("datasets.csv", header=0, names=post_ids)
-    # else:
     num_posts = Post.query.count()
     num_user = User.query.count()
 
@@ -121,7 +117,7 @@ def get_df_table():
 
     df = pd.DataFrame(datasets, columns=items, index=users)
 
-    df.to_csv("datasets.csv")
+    df.to_csv("data/datasets.csv")
 
     return df
 
@@ -133,22 +129,17 @@ return {*}
 
 
 def compute_user_similar():
-    # if os.path.exists("user_similar.csv"):
-    #     user_ids = [i for i in range(1, User.query.count() + 1)]
-    #     return pd.read_csv("user_similar.csv", header=0, names=user_ids)
-    # else:
     df = get_df_table()
     num_posts = Post.query.count()
     num_user = User.query.count()
     users = [i for i in range(1, num_user + 1)]
-    # items = [i for i in range(1, num_posts + 1)]
 
     # 计算用户间相似度
     user_similar = 1 - pairwise_distances(df.values, metric="jaccard")
     user_similar = pd.DataFrame(user_similar, columns=users, index=users)
 
     # 将该DataFrame 保存到文件中
-    user_similar.to_csv("user_similar.csv")
+    user_similar.to_csv("data/user_similar.csv")
     return user_similar
 
 

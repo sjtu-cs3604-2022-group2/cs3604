@@ -339,15 +339,6 @@ def sports():
     return "这是体育分区"
 
 
-@bp.route("/local")
-def local():
-    from fakes import real_data_load
-
-    real_data_load()
-
-    return "从本地成功更新数据库"
-
-
 # @bp.route("/search", methods=["GET", "POST"])
 @bp.route("/search/")
 def search():
