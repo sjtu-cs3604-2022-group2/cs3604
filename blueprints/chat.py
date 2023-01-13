@@ -1,4 +1,5 @@
 import os
+import json
 from flask import render_template, redirect, url_for, request, Blueprint, current_app, abort, session
 from flask_login import current_user, login_required
 from flask_socketio import emit
@@ -21,6 +22,7 @@ def new_message(message_body, **args):
     message = Message(author=current_user._get_current_object(), body=html_message, to_id=uid)
     db.session.add(message)
     db.session.commit()
+    print("???????????????????????????????????")
     if args.get("flush"):
         return redirect(url_for("chat.home", uid=uid))
     emit('new message',
@@ -155,6 +157,7 @@ def chat_upload():
                       photo_path=photo_path)
         db.session.add(photo)
         db.session.commit()
-        message_body = f"<img src=\"{photo.photo_path}\" width=\"200\">"
-        return new_message(message_body, flush=True)
+        message_body = f"<img src='{photo.photo_path}' width='200'>"
+        return json.dumps({'msg':message_body})
+        #return new_message(message_body, flush=True)
     return redirect(url_for("chat.home", uid=uid))

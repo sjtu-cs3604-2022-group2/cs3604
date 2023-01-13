@@ -116,9 +116,9 @@
         </form>
 <div id="pic-input" value="隐藏">
         <div >    
-          <form method="post" action="{{url_for('chat.chat_upload')}}" enctype="multipart/form-data" class="msger-inputarea" style="padding-left:30%;">
+          <form method="post" action="{{url_for('chat.chat_upload')}}" enctype="multipart/form-data" id="pic-form" class="msger-inputarea" style="padding-left:30%;">
             <input type="file" id="pic" name="pic" accept="image/png, image/jpeg" class="msger-send-btn" >
-            <button type="submit" class="msger-send-btn">上传</button>
+            <button type='button' id="pic-submit-btn" class="msger-send-btn">上传</button>
           </form>
         </div>
 </div>

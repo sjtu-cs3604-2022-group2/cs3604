@@ -90,6 +90,33 @@ $(document).ready(function () {
         }
     });
 
+    $('#pic-submit-btn').off('click').on('click', function () {
+        var picform=$('#pic-form');
+        var action_url=$(picform).prop('action');
+        var input_area=$('#pic');
+        var pic_input_file=$('#pic')[0].files[0];
+        console.log(pic_input_file);//alert('111');
+        var formdata=new FormData();
+        formdata.append('pic',pic_input_file);
+        $.ajax({
+            type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: action_url ,//url
+            data: formdata,
+            contentType : false,
+            processData : false,
+            success: function (a) {
+                var message=a['msg'];
+                // alert(message);
+                socket.emit('new message', message);
+                // alert("HHHH");
+                $(input_area).val('');
+                //window.location.reload();
+            },
+            error : function() {alert('?????') ;}
+        });
+    });
+
     // open message modal on mobile
     $("#message-textarea").focus(function () {
         if (screen.width < 600) {
